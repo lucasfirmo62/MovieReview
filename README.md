@@ -5,10 +5,10 @@
 O seguinte projeto é uma Rede Social proposta para a disciplina de Projeto Integrador e Engenharia de Software 1. 
 
 # Como executar o ambiente
-## Primeiro instale as dependências
-para instalar as depências utilize o comando:
 
-pip install -r requirements.txt
+Para executar o ambiente, você deve instalar as depências, para isso utilize o comando:
+
+`pip install -r requirements.txt`
 
 depois, entre na pasta de instalação e utilize o comando:
 
