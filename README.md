@@ -12,7 +12,7 @@ Para executar o ambiente, você deve instalar as depências, para isso utilize o
 
 depois, entre na pasta de instalação e utilize o comando:
 
-python manage.py runserver
+`python manage.py runserver`
 
 ## :mortar_board: Autores
 
