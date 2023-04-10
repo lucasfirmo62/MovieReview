@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.contrib.auth.hashers import make_password
+
 class Usuario(models.Model):
 
     nome_completo = models.CharField(max_length=240)
