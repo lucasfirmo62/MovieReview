@@ -1,40 +1,20 @@
-import {
-    Route,
-    BrowserRouter,
-    Routes,
-    Navigate
-} from 'react-router-dom';
+import {Route, BrowserRouter, Routes} from 'react-router-dom';
 
-import Login from './pages/login';
-import Home from './pages/home';
-import Signup from './pages/signup';
+import SignUp from './pages/sign-up'
+import Login from './pages/login'
+import Profile from './pages/profile'
+import EditProfile from './pages/edit-profile'
+import Home from './pages/home'
 
-const PrivateRoute = ({ children }) => {
-    const isAuthenticated = localStorage.getItem('token');
-
-    if (isAuthenticated) {
-        return children
-    }
-
-    return <Navigate to="/login" />
-}
-
-export default function Router() {
-    return (
+export default function Router(){
+    return(
         <BrowserRouter>
             <Routes>
-                <Route
-                    path="/"
-                    element={<PrivateRoute> <Home /> </PrivateRoute>}
-                />
-                <Route 
-                    path="/login" 
-                    element={<Login />} 
-                />
-                <Route 
-                    path="/signup" 
-                    element={<Signup />} 
-                />
+                <Route path="/sign-up" element={<SignUp />}/>
+                <Route path="/login" element={<Login />}/>
+                <Route path="/profile" element={<Profile />}/>
+                <Route path="/edit-profile" element={<EditProfile />}/>
+                <Route path="/" element={<Home />}/>
             </Routes>
         </BrowserRouter>
     )
