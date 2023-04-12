@@ -1,6 +1,16 @@
+from tkinter import CASCADE
 from django.db import models
 
 from django.contrib.auth.hashers import make_password
+
+
+AVALIACOES = [
+    (1,'1 - Horrível'),
+    (2,'2 - Ruim'),
+    (3,'3 - Mediano'),
+    (4,'4 - Bom'),
+    (5,'5 - Excelente')
+]
 
 class Usuario(models.Model):
 
@@ -12,21 +22,36 @@ class Usuario(models.Model):
     senha = models.CharField(max_length=100)
     super_critico = models.BooleanField(default=False)
 
-AVALIACOES = [
-    (1,'1 - Horrível'),
-    (2,'2 - Ruim'),
-    (3,'3 - Mediano'),
-    (4,'4 - Bom'),
-    (5,'5 - Excelente')
-]
-
 
 class Publicacao(models.Model):
 
     avaliacao = models.PositiveSmallIntegerField(choices=AVALIACOES)
     text_pub = models.CharField(max_length=400)
-    usuario_cod_user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    curtidas = models.PositiveIntegerField(default=0)
-    descurtidas = models.PositiveIntegerField(default=0)
-    comentario = models.CharField(max_length=200)
+
+#Conexões, pensar um pouco mais sobre isso
+class Conexao(models.Model):
+    usuario_alpha = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario_beta = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+class Curtidas(models.Model):
+    publicacao_cod = models.ForeignKey(Publicacao, on_delete=models.CASCADE)  
+    usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+class Comentario(models.Model):
+    publicacao_cod = models.ForeignKey(Publicacao, on_delete=models.CASCADE)  
+    usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)   
+    comentario = models.CharField(max_length=500)
+
+class ListAssistir(models.Models):
+    usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    filme_id = models.CharField(max_length=300)
+
+class ListFavorito(models.Models):
+    usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    filme_id = models.CharField(max_length=300)
+
+
+
+
