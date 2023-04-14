@@ -5,9 +5,11 @@ import {
     Navigate
 } from 'react-router-dom';
 
-import Login from './pages/login';
-import Home from './pages/home';
-import Signup from './pages/signup';
+import SignUp from './pages/sign-up'
+import Login from './pages/login'
+import Profile from './pages/profile'
+import EditProfile from './pages/edit-profile'
+import Home from './pages/home'
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('token');
@@ -33,7 +35,15 @@ export default function Router() {
                 />
                 <Route 
                     path="/signup" 
-                    element={<Signup />} 
+                    element={<SignUp />} 
+                />
+                <Route 
+                    path="/profile" 
+                    element={<PrivateRoute> <Profile /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/edit-profile" 
+                    element={<PrivateRoute> <EditProfile /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>
