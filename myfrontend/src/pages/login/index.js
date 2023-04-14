@@ -44,7 +44,7 @@ const Login = () => {
 
                             <div className="space-input">
                                 <button type="submit" className="button-simple">
-                                    <p>Criar Conta</p>
+                                    <p>Fazer Login</p>
                                 </button>
                             </div>
 
