@@ -10,8 +10,10 @@ Para executar o ambiente, você deve instalar as depências, para isso utilize o
 
 `pip install -r requirements.txt`
 
-depois, entre na pasta de instalação e utilize o comando:
+depois, entre na pasta 'myapi' para executar o backend e utilize os comandos:
 
+`python manage.py makemigrations`
+`python manage.py migrate`
 `python manage.py runserver`
 
 ## :mortar_board: Autores
