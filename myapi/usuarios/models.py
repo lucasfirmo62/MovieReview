@@ -29,12 +29,12 @@ class Publicacao(models.Model):
     text_pub = models.CharField(max_length=400)
     usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-
+'''
 #Conexões, pensar um pouco mais sobre isso
 class Conexao(models.Model):
     usuario_alpha = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     usuario_beta = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
+'''
 class Curtidas(models.Model):
     publicacao_cod = models.ForeignKey(Publicacao, on_delete=models.CASCADE)  
     usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -44,11 +44,11 @@ class Comentario(models.Model):
     usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)   
     comentario = models.CharField(max_length=500)
 
-class ListAssistir(models.Models):
+class ListAssistir(models.Model):
     usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     filme_id = models.CharField(max_length=300)
 
-class ListFavorito(models.Models):
+class ListFavorito(models.Model):
     usuario_cod = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     filme_id = models.CharField(max_length=300)
 
