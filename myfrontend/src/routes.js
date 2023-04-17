@@ -4,6 +4,7 @@ import SignUp from './pages/sign-up'
 import Login from './pages/login'
 import Profile from './pages/profile'
 import EditProfile from './pages/edit-profile'
+import Search from './pages/search'
 import Home from './pages/home'
 
 export default function Router(){
@@ -12,6 +13,7 @@ export default function Router(){
             <Routes>
                 <Route path="/sign-up" element={<SignUp />}/>
                 <Route path="/login" element={<Login />}/>
+                <Route path="/search" element={<Search />}/>
                 <Route path="/profile" element={<Profile />}/>
                 <Route path="/edit-profile" element={<EditProfile />}/>
                 <Route path="/" element={<Home />}/>
