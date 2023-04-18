@@ -35,7 +35,6 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -88,6 +87,10 @@ class Publication(models.Model):
 class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+class Connection(models.Model):
+    usuario_alpha = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conexao_alpha')
+    usuario_beta = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conexao_beta')
 
 class Comment(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
