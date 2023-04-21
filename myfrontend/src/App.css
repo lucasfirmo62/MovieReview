@@ -36,3 +36,29 @@
     transform: rotate(360deg);
   }
 }
+
+.container{
+  padding-left: 25%;
+  padding-right: 25%;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  max-width: 730px;
+  z-index: -1;
+}
+
+.button-simple{
+  width: 100%;
+  background-color: #D30069;
+  color: white;
+  text-align-last: center;
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 1px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
+}
+
+.button-simple:hover{
+  background-color: #e90074;
+}
