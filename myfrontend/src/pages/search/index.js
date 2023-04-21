@@ -54,44 +54,31 @@ const Search = () => {
     }, [])
 
     useEffect(() => {
-        async function fetchData1() {
-            if (isFilterWork === false || query !== beforeQuery) {
+        async function fetchData() {
+            let response;
 
-                if (query !== beforeQuery)
-                    setCurrentPage(1)
+            if (isFilterWork) {
+                response = await axios.get(
+                    `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR&with_genres=${genres}&with_text_query=${query}&year=${year}&sort_by=${sortby}&page=${currentPage}`
+                );
+            } else {
+                if (query !== beforeQuery) {
+                    setCurrentPage(1);
+                }
 
-                const response = await axios.get(
+                response = await axios.get(
                     `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&query=${query}&page=${currentPage}&language=pt-BR`
                 );
-
-                const results = response.data.results;
-
-                setMovies(results);
-
-                setTotalPages(response.data.total_pages);
-
-                setBeforeQuery(query)
-            }
-        }
-
-        fetchData1();
-    }, [isFilterWork, query, currentPage])
-
-    useEffect(() => {
-        if (isFilterWork) {
-            async function fetchData2() {
-                if (isFilterWork) {
-                    const response = await axios.get(
-                        `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR&with_genres=${genres}&with_text_query=${query}&year=${year}&sort_by=${sortby}&page=${currentPage}`
-                    );
-                    setMovies(response.data.results)
-                    setTotalPages(response.data.total_pages);
-                }
             }
 
-            fetchData2();
+            const results = response.data.results;
+            setMovies(results);
+            setTotalPages(response.data.total_pages);
+            setBeforeQuery(query);
         }
-    }, [isFilterWork, currentPage])
+
+        fetchData();
+    }, [isFilterWork, query, currentPage, genres, year, sortby, beforeQuery]);
 
 
     function filterMovies(year, genres, rating) {
