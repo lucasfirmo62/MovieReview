@@ -59,6 +59,7 @@
     padding: 1px;
     cursor: pointer;
     font-weight: bold;
+    border: none;
 }
 
 .button-simple:hover{
