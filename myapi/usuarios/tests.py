@@ -82,3 +82,32 @@ class SignalsTestCase(TestCase):
         response = client.get('/usuarios/')
         self.assertEqual(response.status_code, 401)
         
+class LogoutTestCase(TestCase):
+    
+    def setUp(self):
+        client = APIClient()
+        
+        self.user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        response = self.client.post('/api/token/', {'email': self.user1.email, 'password': '123mudar'})
+        self.token = response.data['access']
+    
+    def test_logout_success(self):
+        response = self.client.post('/logout/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 204)
+    
+    def test_logout_failed_invalid_token(self):
+        response = self.client.post('/logout/', HTTP_AUTHORIZATION='Bearer invalidtoken')
+        self.assertEqual(response.status_code, 401)
+        
+    def test_logout_failed_missing_token(self):
+        response = self.client.post('/logout/')
+        self.assertEqual(response.status_code, 401)
+        
