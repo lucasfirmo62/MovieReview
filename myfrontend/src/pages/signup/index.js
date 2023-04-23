@@ -1,10 +1,12 @@
 import React, {useState} from "react";
+import './styles.css'
 
-const Home = () => {
+const Signup = () => {
+
     return(
         <>
         </>
     )
 }
 
-export default Home;
+export default Signup;
