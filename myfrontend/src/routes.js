@@ -34,7 +34,7 @@ export default function Router() {
                     element={<Login />} 
                 />
                 <Route 
-                    path="/signup" 
+                    path="/sign-up" 
                     element={<SignUp />} 
                 />
                 <Route 
