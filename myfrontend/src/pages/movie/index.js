@@ -10,6 +10,9 @@ import Header from '../../components/header';
 import posternotfound from '../../assets/posternotfound.png'
 import userDefault from '../../assets/user-default.jpg'
 
+import { BsFillPlayFill } from 'react-icons/bs';
+import { AiFillCloseCircle } from 'react-icons/ai';
+
 const Movie = () => {
     const { id } = useParams();
 
@@ -18,6 +21,8 @@ const Movie = () => {
     const [cast, setCast] = useState([]);
     const [streamingProviders, setStreamingProviders] = useState([]);
     const [showTooltip, setShowTooltip] = useState(false);
+    const [trailer, setTrailer] = useState([]);
+    const [trailerUS, setTrailerUS] = useState([]);
 
     const castRef = useRef(null);
 
@@ -38,9 +43,41 @@ const Movie = () => {
 
             const castResponse = await axios.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.REACT_APP_TMDB_API_KEY}`);
             setCast(castResponse.data.cast);
+
+            const videoTrailer = await axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
+            setTrailer(videoTrailer.data);
+
+            const videoTrailerUS = await axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`);
+            setTrailerUS(videoTrailerUS.data);
         }
         fetchData();
     }, [id]);
+
+    setTimeout(function () {
+        if (!(trailer?.results)) {
+            document.getElementById("button-trailer").style.display = "none";
+            document.getElementById("back-button-trailer").style.display = "none";
+        }else{
+            document.getElementById("button-trailer").style.display = "block";
+            document.getElementById("back-button-trailer").style.display = "block";
+        }
+
+    }, 100);
+
+
+    function trailerShow() {
+        document.getElementById("content-video").style.display = "block";
+
+        if (trailer?.results[0]) {
+            document.getElementById("trailer").src = `https://www.youtube.com/embed/${trailer.results[0]?.key}?=autoplay=1`;
+        } else if (trailerUS?.results[0]) {
+            document.getElementById("trailer").src = `https://www.youtube.com/embed/${trailerUS.results[0]?.key}?=autoplay=1`;
+        }
+    }
+    function trailerHidden() {
+        document.getElementById("content-video").style.display = "none";
+        document.getElementById("trailer").src = "https://www.youtube.com/embed/undefined";
+    }
 
     return (
         <>
@@ -55,10 +92,18 @@ const Movie = () => {
                 }}
             >
                 <div className='movie-details-content'>
-                    <img
-                        src={movie?.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : posternotfound}
-                        alt={movie.title}
-                    />
+                    <div>
+                        <img
+                            src={movie?.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : posternotfound}
+                            alt={movie.title}
+                        />
+                        <div id='back-button-trailer' style={(window.screen.width <= 768) ? { backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdrop_path})`, backgroundSize: `auto`, backgroundPosition: `50% 50%` }
+                            :
+                            { backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.backdrop_path})`, backgroundSize: `auto`, backgroundPosition: `19% 77%` }
+                        } className='watch-trailer'>
+                        </div>
+                        <div id='button-trailer' onClick={trailerShow} className='button-trailer'><p><BsFillPlayFill /> Assistir Trailer</p></div>
+                    </div>
                     <div className="movie-details">
                         <div
                             className='title-details'
@@ -100,6 +145,10 @@ const Movie = () => {
                         ))}
                     </ul>
                 </div>
+            </div>
+            <div id='content-video' className='content-video'>
+                <iframe id="trailer" className='video-trailer' src={`https://www.youtube.com/embed/undefined`} allow='autoplay' />
+                <AiFillCloseCircle onClick={trailerHidden} className='close-trailer-button' />
             </div>
         </>
     );
