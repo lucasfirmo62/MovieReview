@@ -1,0 +1,196 @@
+.publication-content {
+    width: 90%;
+    background-color: #373737;
+    padding: 16px;
+    margin: auto;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-post-review {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.publication-content .publication-text-content {
+    display: flex;
+}
+
+.publication-content .publication-text-content textarea {
+    height: 20px;
+    border-radius: 16px;
+}
+
+.content-conf-review-write{
+    display: block;
+}
+
+.button-cancel{
+    display: none;
+}
+
+.button-add-movie {
+    background-color: rgba(0, 0, 0, 0);
+    transition: 0.2s;
+}
+
+.button-add-movie:hover {
+    background-color: rgba(110, 110, 110, 0.527);
+    transition: 0.2s;
+}
+
+.publication-movie-content {
+    display: none;
+}
+
+.content-add-movie {
+    display: flex;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
+
+.input-search-movie {
+    height: 28px;
+    border-radius: 2px;
+    border: none;
+    opacity: 0.5;
+    font-weight: bold;
+}
+
+
+.select-movie {
+    height: auto;
+    width: 100%;
+    opacity: 0.5;
+    border: none;
+    right: 10px;
+    font-size: 19px;
+}
+
+.content-reloaded {
+    display: flex;
+    justify-content: space-around;
+}
+
+.publication-content .user-image {
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    padding: 0 16px 0 16px;
+}
+
+.plus-icon {
+    font-size: 20px;
+    margin-bottom: -5px;
+    padding-right: 10px;
+}
+
+.adding-movie {
+    background-color: #494949;
+    width: auto;
+    padding: 10px;
+}
+
+.adding-movie p {
+    font-size: 14px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+}
+
+.selected-movie {
+    padding: 10px;
+    display: flex;
+}
+
+select {
+    padding: 5px;
+    border-radius: 16px;
+}
+
+.align-post-review {
+    display: none;
+}
+
+.post-review-conf {
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-review-conf p {
+    font-size: 14px;
+}
+
+button {
+    background-color: #D30069;
+    border: none;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #ff0381;
+    border: none;
+    transition: 0.2s;
+}
+
+.button-handleSubmit {
+    display: none;
+}
+
+@media only screen and (max-width: 1000px) {
+    .publication-content {
+        width: 100%;
+        display: flex;
+        padding: 0px;
+    }
+
+    .publication-content .publication-text-content {
+        padding: 5px;
+        display: flex;
+    }
+
+    .info-movie-holt {
+        display: none;
+    }
+
+    .movie-poster {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 30px;
+    }
+
+    .content-post-review {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .align-post-review {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .input-search-movie {
+        width: auto;
+        font-size: 19px;
+    }
+
+    textarea {
+        font-size: 17px;
+        height: auto;
+        border-radius: 16px;
+    }
+
+}

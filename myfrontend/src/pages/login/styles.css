@@ -1,0 +1,15 @@
+.button-simple{
+    width: 100%;
+    background-color: #D30069;
+    color: white;
+    text-align-last: center;
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 1px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.button-simple:hover{
+    background-color: #e90074;
+}
