@@ -1,0 +1,17 @@
+.alert-login-email{
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+    display: none;
+    height: 1px;
+    text-align-last: left;
+}
+
+.alert-login-pass{
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+    display: none;
+    height: 1px;
+    text-align-last: left;
+}

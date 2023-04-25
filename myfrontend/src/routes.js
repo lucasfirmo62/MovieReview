@@ -14,7 +14,7 @@ import Home from './pages/home'
 import Movie from './pages/movie'
 
 const PrivateRoute = ({ children }) => {
-    const isAuthenticated = localStorage.getItem('token');
+    const isAuthenticated = localStorage.getItem('tokenUser');
 
     if (isAuthenticated) {
         return children
