@@ -83,6 +83,9 @@ class Publication(models.Model):
     pub_text = models.CharField(max_length=400)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+    movie_id = models.IntegerField()
+    movie_title = models.CharField(max_length=200)
+    movie_director = models.CharField(max_length=200)
 
 class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
