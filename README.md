@@ -4,11 +4,9 @@
 
 O seguinte projeto é uma Rede Social proposta para a disciplina de Projeto Integrador e Engenharia de Software 1. 
 
-# Backend
+# Como executar o ambiente
 
-## Como executar o backend
-
-Para executar o ambiente, você deve instalar as dependências, para isso utilize o comando:
+Para executar o ambiente, você deve instalar as depências, para isso utilize o comando:
 
 `pip install -r requirements.txt`
 
@@ -17,21 +15,6 @@ depois, entre na pasta 'myapi' para executar o backend e utilize os comandos:
 `python manage.py makemigrations`
 `python manage.py migrate`
 `python manage.py runserver`
-
-# Frontend
-
-## Como executar o frontend
-
-Primeiro, entre na pasta do frontend.
-`cd myfrontend`
-
-Instale as dependências.
-
-`npm install`
-
-Por fim, execute o projeto.
-
-`npm start`
 
 ## :mortar_board: Autores
 
