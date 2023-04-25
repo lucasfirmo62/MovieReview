@@ -11,6 +11,7 @@ import Profile from './pages/profile'
 import EditProfile from './pages/edit-profile'
 import Search from './pages/search'
 import Home from './pages/home'
+import Movie from './pages/movie'
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('token');
@@ -28,7 +29,7 @@ export default function Router() {
             <Routes>
                 <Route
                     path="/"
-                    element={<PrivateRoute> <Home /> </PrivateRoute>}
+                    element={<PrivateRoute><Home /> </PrivateRoute>}
                 />
                 <Route 
                     path="/search" 
@@ -41,6 +42,10 @@ export default function Router() {
                 <Route 
                     path="/sign-up" 
                     element={<SignUp />} 
+                />
+                <Route 
+                    path="/movie/:id" 
+                    element={<PrivateRoute> <Movie /> </PrivateRoute>} 
                 />
                 <Route 
                     path="/profile" 
