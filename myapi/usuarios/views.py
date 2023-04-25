@@ -5,8 +5,8 @@ from rest_framework import viewsets
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
-from .models import User
-from .serializers import UserSerializer
+from .models import User, Publication
+from .serializers import UserSerializer, PublicationSerializer
 
 from .authentication import MyJWTAuthentication
 
@@ -34,3 +34,7 @@ class LogoutView(APIView):
         except Exception as e:
             return Response({"Erro": str(e)}, status=400)
     
+class PublicationViewSet(viewsets.ModelViewSet):
+    serializer_class = PublicationSerializer
+    queryset = Publication.objects.all()
+    authentication_classes = [MyJWTAuthentication]

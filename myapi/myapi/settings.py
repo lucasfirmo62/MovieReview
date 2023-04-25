@@ -97,6 +97,10 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = [    'GET',    'POST',    'OPTIONS']
+
 ROOT_URLCONF = "myapi.urls"
 
 TEMPLATES = [
