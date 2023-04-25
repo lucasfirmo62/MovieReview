@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+}
 
 # Application definition
 
@@ -37,7 +41,27 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'myapp',
+    
+    'corsheaders',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    
+    'usuarios',
+]
+
+AUTH_PASSWORD_HASHERS = [    
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',    
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',    
+    'django.contrib.auth.hashers.Argon2PasswordHasher',    
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',    
+    'django.contrib.auth.hashers.BCryptPasswordHasher'
+]
+
+AUTH_USER_MODEL = 'usuarios.User'
+
+AUTHENTICATION_BACKENDS = [
+    'usuarios.authentication.EmailBackend', 
+    'django.contrib.auth.backends.ModelBackend'
 ]
 
 MIDDLEWARE = [
@@ -48,6 +72,28 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',    
+    'django.middleware.common.CommonMiddleware',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_HEADERS = [
+    'accept',    
+    'accept-encoding',    
+    'authorization',    
+    'content-type',    
+    'dnt',    
+    'origin',    
+    'user-agent',   
+    'x-csrftoken',    
+    'x-requested-with',
 ]
 
 ROOT_URLCONF = "myapi.urls"
