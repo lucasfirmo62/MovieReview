@@ -29,7 +29,11 @@ export default function Router() {
             <Routes>
                 <Route
                     path="/"
-                    element={<PrivateRoute> <Home /> </PrivateRoute>}
+                    element={<PrivateRoute><Home /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/search" 
+                    element={<PrivateRoute><Search /></PrivateRoute>}
                 />
                 <Route 
                     path="/login" 
@@ -38,6 +42,10 @@ export default function Router() {
                 <Route 
                     path="/sign-up" 
                     element={<SignUp />} 
+                />
+                <Route 
+                    path="/movie/:id" 
+                    element={<PrivateRoute> <Movie /> </PrivateRoute>} 
                 />
                 <Route 
                     path="/profile" 

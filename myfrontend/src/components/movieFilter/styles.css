@@ -1,0 +1,70 @@
+.movie-filter-container {
+    background-color: #d3d3d3;
+    padding: 32px 16px;
+    border-radius: 8px;
+    border: none;
+}
+
+.movie-filter-container label {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.movie-filter-container select,
+.input-year {
+    padding: 4px;
+    border-radius: 4px;
+    border: none;
+    line-height: 1.5;
+    transition: border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+}
+
+.movie-filter-container button[type="submit"] {
+    display: inline-block;
+    padding: 8px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: #353334;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    margin-top: 8px;
+    transition: background-color 0.15s ease-in-out,
+                border-color 0.15s ease-in-out;
+}
+
+.movie-filter-container button[type="submit"]:hover {
+    background-color: #3a3839;
+}
+
+.movie-filter-container input, select, button {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+.movie-filter-container .input-year {
+    height: 38px;
+    line-height: 38px;
+}
+
+input::placeholder {
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .movie-filter-container {
+        border-radius: 0px 0px 8px 8px;
+        padding: 8px;
+    }
+}
