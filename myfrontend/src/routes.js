@@ -9,6 +9,7 @@ import SignUp from './pages/sign-up'
 import Login from './pages/login'
 import Profile from './pages/profile'
 import EditProfile from './pages/edit-profile'
+import Search from './pages/search'
 import Home from './pages/home'
 
 const PrivateRoute = ({ children }) => {
@@ -28,6 +29,10 @@ export default function Router() {
                 <Route
                     path="/"
                     element={<PrivateRoute> <Home /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/search" 
+                    element={<PrivateRoute><Search /></PrivateRoute>}
                 />
                 <Route 
                     path="/login" 
