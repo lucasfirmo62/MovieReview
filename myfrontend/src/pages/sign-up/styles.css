@@ -111,6 +111,15 @@
     text-align-last: left;
 }
 
+.alert-bio{
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+    display: none;
+    height: 1px;
+    text-align-last: left;
+}
+
 .alert-password-caracters{
     font-size: 11px;
     color: red;
