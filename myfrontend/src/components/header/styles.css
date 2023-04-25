@@ -1,0 +1,103 @@
+header {
+    display: flex;
+    background-color: #909090;
+    padding: 20px;
+}
+
+header div {
+    max-width: 1280px;
+    width: 70%;
+    display: flex;
+    margin: auto;
+    justify-content: space-between;
+}
+
+header img {
+    width: 64px;
+    height: 64px;
+}
+
+header div input {
+    padding: 8px;
+    border-radius: 8px;
+    width: 240px;
+    border: none;
+    padding-left: 38px;
+    font-size: 14px;
+    color: #000000;
+    outline: none;
+}
+
+header div input.open {
+    width: 100%;
+    transition: width 1s ease;
+}
+
+header .form-close {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+header .form-open {
+    position: relative;
+    width: max-content;
+}
+
+header .search-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 10px;
+    font-size: 16px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+@media (max-width: 760px) {
+
+    header {
+        background-color: #777777;
+    }
+
+    header .div-open {
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    header .img-open {
+        display: none;
+    }
+
+    header input[type='text'] {
+        height: 30px;
+        font-size: 14px;
+        padding-left: 30px;
+        border-radius: 15px;
+    }
+
+    header .form-close {
+        width: 100%;
+        position: relative;
+    }
+
+    header .form-open {
+        position: relative;
+        width: max-content;
+    }
+
+    header .input-open {
+        width: 100%;
+    }
+}
+
+
+
+
+
+
+
+
+
