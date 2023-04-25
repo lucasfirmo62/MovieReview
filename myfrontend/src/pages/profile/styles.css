@@ -1,0 +1,72 @@
+.content-box-profile{
+    background-color: #313131;
+    color: white;
+}
+
+.profile-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.image-user{
+    border-radius: 100%;
+    width: 150px;
+    padding: 20px;
+}
+
+.name-user{
+    padding: 20px;
+    font-size: 23px;
+}
+
+.tabs-profile{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.tabs-profile p{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 19px;
+}
+
+.tabs-profile p:hover{
+    background-color: #444444;
+}
+
+@media only screen and (max-width: 660px){
+
+    .container{
+        background-color: #909090;
+        padding-left: 0%;
+        padding-right: 0%;
+        padding-top: 0%;
+        padding-bottom: 5%;
+        max-width: 730px;
+    }
+
+    .profile-info{
+        display: block;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+    }
+    
+    .tabs-profile{
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        cursor: pointer;
+    }
+}
