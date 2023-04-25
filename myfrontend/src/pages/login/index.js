@@ -14,6 +14,7 @@ const Login = () => {
 
 
     async function handleSubmit(event) {
+        var loginError = false
         event.preventDefault();
 
         document.getElementById("alert-login-email").style.display = "none"
@@ -23,12 +24,16 @@ const Login = () => {
         if((document.getElementById('email-login').value.trim()) === ""){
             document.getElementById("alert-login-email").innerHTML = "Você não pode deixar o campo do email vazio"
             document.getElementById("alert-login-email").style.display = "block"
-            return
+            loginError = true
         }
 
         if((document.getElementById('pass-login').value.trim()) === ""){
             document.getElementById("alert-login-pass").innerHTML = "Você não pode deixar o campo da senha vazio"
             document.getElementById("alert-login-pass").style.display = "block"
+            loginError = true
+        }
+
+        if(loginError === true){
             return
         }
 
