@@ -1,0 +1,26 @@
+.pagination-content {
+    padding-top: 32px;
+    display: flex;
+}
+
+.pagination-content button {
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    margin: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    width: max-content;
+}
+
+.pagination-content button:hover {
+    color: #D30069;
+}
+
+@media (max-width: 760px) {
+    .pagination-content {
+        padding: 0px;
+        padding-top: 24px;
+    }
+}   
