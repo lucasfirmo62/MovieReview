@@ -12,7 +12,7 @@ import EditProfile from './pages/edit-profile'
 import Home from './pages/home'
 
 const PrivateRoute = ({ children }) => {
-    const isAuthenticated = localStorage.getItem('token');
+    const isAuthenticated = localStorage.getItem('tokenUser');
 
     if (isAuthenticated) {
         return children

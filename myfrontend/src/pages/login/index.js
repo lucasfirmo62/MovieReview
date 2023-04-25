@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import './styles.css'
 import api from '../../api'
 import { useNavigate } from 'react-router-dom';
-import { Navigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 
 const Login = () => {
@@ -12,12 +11,6 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginOption, setLoginOption] = useState(1);
-
-    var loginItem = localStorage.getItem('tokenUser');
-
-    if (loginItem) {
-        return <Navigate to="/" />;
-    }
 
 
     async function handleSubmit(event) {
@@ -30,11 +23,13 @@ const Login = () => {
         if((document.getElementById('email-login').value.trim()) === ""){
             document.getElementById("alert-login-email").innerHTML = "Você não pode deixar o campo do email vazio"
             document.getElementById("alert-login-email").style.display = "block"
+            return
         }
 
         if((document.getElementById('pass-login').value.trim()) === ""){
             document.getElementById("alert-login-pass").innerHTML = "Você não pode deixar o campo da senha vazio"
             document.getElementById("alert-login-pass").style.display = "block"
+            return
         }
 
         switch (loginOption) {
@@ -54,7 +49,6 @@ const Login = () => {
                 } catch (err) {
                     alert('Falha no login, tente novamente.');
                 }
-
         }
     }
 
