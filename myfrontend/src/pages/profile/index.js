@@ -52,6 +52,11 @@ const Profile = () => {
                         <p className="bio-text">{user.bio_text}</p>
                         <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
                     </div>
+                    <div className="tabs-profile">
+                        <p className="tab-profile">Followers</p>
+                        <p className="tab-profile">Following</p>
+                        <p className="tab-profile">Críticas</p>
+                    </div>
                 </div>
                 <div className="tabs-profile">
                     <p className="tab-profile">Followers</p>

@@ -6,8 +6,18 @@ import Profile from './pages/profile'
 import EditProfile from './pages/edit-profile'
 import Home from './pages/home'
 
-export default function Router(){
-    return(
+const PrivateRoute = ({ children }) => {
+    const isAuthenticated = localStorage.getItem('tokenUser');
+
+    if (isAuthenticated) {
+        return children
+    }
+
+    return <Navigate to="/login" />
+}
+
+export default function Router() {
+    return (
         <BrowserRouter>
             <Routes>
                 <Route path="/sign-up" element={<SignUp />}/>

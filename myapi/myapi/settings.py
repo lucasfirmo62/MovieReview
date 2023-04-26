@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     
     'usuarios',
 ]
@@ -95,6 +96,10 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',    
     'x-requested-with',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = [    'GET',    'POST',    'OPTIONS']
 
 ROOT_URLCONF = "myapi.urls"
 
