@@ -10,6 +10,9 @@ const Publication = () => {
     const [selectedMovie, setSelectedMovie] = useState('');
     const [postText, setPostText] = useState('');
 
+    // Variável pra guardar a nota
+    var movieScore = document.getElementById('score-menu');
+
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
@@ -58,9 +61,6 @@ const Publication = () => {
         if (((document.getElementById("review-text").value).length > 100) && (document.getElementById("button-handleSubmit").style.display === "block")) {
             alert("critica publicada")
         }
-
-
-
     };
 
     async function seeBest() {
@@ -98,6 +98,17 @@ const Publication = () => {
                         id="review-text"
                         onClick={seeBest}
                     />
+                </div>
+
+                <div className='score-context-menu'>
+                    <select id="score-menu">
+                        <option value="" disable selected hidden>Dê uma avaliação a este filme!</option>
+                        <option value="1">1 - Horrível </option>
+                        <option value="2">2 - Ruim</option>
+                        <option value="3">3 - Mediano</option>
+                        <option value="4">4 - Bom</option>
+                        <option value="5">5 - Excelente</option>
+                    </select>
                 </div>
 
                 <button onClick={addMovie} className="button-add-movie"><AiFillPlusCircle className="plus-icon" />Adicionar filme</button>
