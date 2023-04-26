@@ -68,8 +68,8 @@ const Publication = () => {
 
         let errorMsg = '';
 
-        if((document.getElementById("review-text").value).length < 100){
-            errorMsg += "A crítica precisa ter mais de 100 caracteres. ";
+        if((document.getElementById("review-text").value).length < 10){
+            errorMsg += "A crítica precisa ter mais de 10 caracteres. ";
         }
 
         if(selectedMovie === ''){
@@ -84,6 +84,34 @@ const Publication = () => {
             alert(errorMsg);
             return
         }
+
+        let id = localStorage.getItem("idUser")
+        id = id.substring(1,id.length-1)
+        let token = localStorage.getItem("tokenUser")
+        token = token.substring(1,token.length-1)
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString();
+
+        const data = {
+            "review": selectedReview,
+            "pub_text": postText,
+            "user_id": parseInt(id),
+            "date": formattedDate,
+            "movie_id": selectedMovie.id,
+            "movie_title": selectedMovie.original_title,
+        }
+
+        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+        api.post('/publicacoes/', data, {headers})
+            .then(response => {
+              console.log(response.data);
+              window.location.reload()
+            })
+            .catch(error => {
+              console.log(error);
+            });
     };
 
     async function seeBest() {
@@ -209,7 +237,7 @@ const Publication = () => {
                             <select id="review" value={selectedReview} onChange={handleReviewChange}>
                                 <option value="">Selecione uma nota</option>
                                 {REVIEWS.map(review => (
-                                    <option key={review.id} value={review.value}>{review.value}</option>
+                                    <option key={review.id} value={review.id}>{review.value}</option>
                                     ))}
                             </select>
                             <button id="button-handleSubmit" type="button" onClick={handleSubmit}>Publicar Crítica</button>

@@ -130,7 +130,6 @@ class PublicationTestCase(TestCase):
             user_id=self.user,
             movie_id=1,
             movie_title='La la land',
-            movie_director='Damien Chazelle'
         )
         
         response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
@@ -156,7 +155,6 @@ class PublicationTestCase(TestCase):
             'user_id': self.user.id,
             'movie_id': 2,
             'movie_title': 'Avatar',
-            'movie_director': 'James Cameron'
         }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
           
         response = self.client.get('/publicacoes/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
@@ -173,7 +171,6 @@ class PublicationTestCase(TestCase):
         self.assertEqual(response.data['user_id'], self.user.id)
         self.assertEqual(response.data['movie_id'], 1)
         self.assertEqual(response.data['movie_title'], 'La la land')
-        self.assertEqual(response.data['movie_director'], 'Damien Chazelle')
         
     def test_update_publication(self):
         response = self.client.put(f'/publicacoes/{self.publication.id}/', {
@@ -182,7 +179,6 @@ class PublicationTestCase(TestCase):
             'user_id': self.user.id,
             'movie_id': 1,
             'movie_title': 'Titanic',
-            'movie_director': 'James Cameron'
         }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
