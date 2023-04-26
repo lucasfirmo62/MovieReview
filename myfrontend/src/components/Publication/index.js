@@ -84,29 +84,6 @@ const Publication = () => {
             alert(errorMsg);
             return
         }
-
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleDateString();
-
-        const data = {
-            "review": 1,
-            "pub_text": postText,
-            "user_id": 1,
-            "date": formattedDate,
-            "movie_id": selectedMovie.id,
-            "movie_title": selectedMovie.original_title,
-        }
-
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgyNDA0Nzk2LCJpYXQiOjE2ODIzOTc1OTYsImp0aSI6IjFiYmFmM2ZiNTk4YzQ0ZDBiZTM4N2MyYTJhZWNiNWVkIiwidXNlcl9pZCI6MX0._AWfSIenAFD0YZeC611YSWQFL0EUeR5FFqziY_1Yqz8"
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
-        api.post('/publicacoes/', data, {headers})
-            .then(response => {
-              console.log(response.data);
-            })
-            .catch(error => {
-              console.log(error);
-            });
     };
 
     async function seeBest() {
