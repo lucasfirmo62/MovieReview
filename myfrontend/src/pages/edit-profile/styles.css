@@ -1,4 +1,19 @@
+.content-all{
+    display: flex;
+}
+
+.left-content{
+    width: 25%;
+    height: 100px;
+}
+
+.right-content{
+    width: 25%;
+    height: 100px;
+}
+
 .content-box-profile{
+    width: 50%;
     background-color: #313131;
     color: white;
 }
@@ -50,6 +65,11 @@
 
 @media only screen and (max-width: 1000px){
 
+    .content-all{
+        display: block;
+        margin-top: -100px;
+    }
+
     .container{
         background-color: #909090;
         padding-left: 0%;
@@ -59,12 +79,25 @@
         max-width: 730px;
     }
 
-    .profile-info{
+    .image-user{
+        border-radius: 100%;
+        width: 110px;
+        padding: 20px;
+    }
+
+    .left-content{
         display: block;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        padding: 5px;
+    }
+    
+    .right-content{
+        display: block;
+
+    }
+    
+    .content-box-profile{
+        width: 100%;
+        background-color: #313131;
+        color: white;
     }
 
     .conf-profile{

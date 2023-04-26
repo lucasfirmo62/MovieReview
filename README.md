@@ -8,24 +8,40 @@ O seguinte projeto é uma Rede Social proposta para a disciplina de Projeto Inte
 
 ## Como executar o backend
 
-Para executar o ambiente, você deve instalar as dependências, para isso utilize o comando:
+Para executar o ambiente, você deve instalar as dependências, para isso crie um ambiente virtual e o acesse:
+
+`python -m venv env`
+`source env/bin/activate`
+
+Para instalar as dependências listadas no arquivo requirements.txt:
 
 `pip install -r requirements.txt`
 
-depois, entre na pasta de instalação e utilize o comando:
+Depois disso, é necessário executar o comando `python manage.py makemigrations` para criar as migrações do banco de dados e, em seguida, o comando `python manage.py migrate` para aplicar essas migrações ao banco de dados.
+
+Para executar o backend:
 
 `python manage.py runserver`
+
+Para poder executar os testes do backend é utilizado o seguinte comando:
+
+`python manage.py test`
 
 # Frontend
 
 ## Como executar o frontend
 
 Primeiro, entre na pasta do frontend.
+
 `cd myfrontend`
 
 Instale as dependências.
 
 `npm install`
+
+Crie um arquivo .env na raíz do projeto e adicione a chave da API do TMDB:
+
+`REACT_APP_TMDB_API_KEY=91e9bea62105d3ed0765acbbd25020bd`
 
 Por fim, execute o projeto.
 
