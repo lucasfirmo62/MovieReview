@@ -68,8 +68,8 @@ const Publication = () => {
 
         let errorMsg = '';
 
-        if((document.getElementById("review-text").value).length < 100){
-            errorMsg += "A crítica precisa ter mais de 100 caracteres. ";
+        if((document.getElementById("review-text").value).length < 10){
+            errorMsg += "A crítica precisa ter mais de 10 caracteres. ";
         }
 
         if(selectedMovie === ''){
@@ -85,24 +85,31 @@ const Publication = () => {
             return
         }
 
+        let id = localStorage.getItem("idUser")
+        id = id.substring(1,id.length-1)
+        let token = localStorage.getItem("tokenUser")
+        token = token.substring(1,token.length-1)
+
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString();
 
         const data = {
             "review": 1,
             "pub_text": postText,
-            "user_id": 1,
+            "user_id": parseInt(id),
             "date": formattedDate,
             "movie_id": selectedMovie.id,
             "movie_title": selectedMovie.original_title,
         }
 
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgyNDA0Nzk2LCJpYXQiOjE2ODIzOTc1OTYsImp0aSI6IjFiYmFmM2ZiNTk4YzQ0ZDBiZTM4N2MyYTJhZWNiNWVkIiwidXNlcl9pZCI6MX0._AWfSIenAFD0YZeC611YSWQFL0EUeR5FFqziY_1Yqz8"
+        console.log(data)
+
         const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 
         api.post('/publicacoes/', data, {headers})
             .then(response => {
               console.log(response.data);
+              window.location.reload()
             })
             .catch(error => {
               console.log(error);

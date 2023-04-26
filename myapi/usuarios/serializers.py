@@ -25,6 +25,5 @@ class PublicationSerializer(serializers.ModelSerializer):
             'date',
             'movie_id',
             'movie_title',
-            'movie_director'
         ]
 

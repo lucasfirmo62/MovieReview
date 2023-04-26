@@ -6,6 +6,7 @@
     border-radius: 5px;
     display: flex;
     flex-direction: column;
+    margin-top: 12px;
 }
 
 .content-post-review {
@@ -26,6 +27,10 @@
 
 .content-conf-review-write{
     display: block;
+}
+
+.button-movie-search {
+    background: #9d9097;
 }
 
 .button-cancel {
@@ -63,12 +68,14 @@
     padding-left: 5px;
     padding-right: 5px;
     padding-bottom: 10px;
+    /* width: 100%; */
 }
 
 .input-search-movie {
     padding: 4px;
-    width: 90%;
-    max-width: 200px;
+    /* width: 90%; */
+    width: auto;
+    /* max-width: 200px; */
     height: 28px;
     border-radius: 2px;
     border: none;
