@@ -1,0 +1,127 @@
+.content-all{
+    display: flex;
+}
+
+.left-content{
+    width: 25%;
+    height: 100px;
+}
+
+.right-content{
+    width: 25%;
+    height: 100px;
+}
+
+.content-box-profile{
+    width: 50%;
+    background-color: #313131;
+    color: white;
+}
+
+.profile-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.image-user{
+    border-radius: 100%;
+    width: 150px;
+    padding: 20px;
+}
+
+.name-user{
+    padding: 20px;
+    font-size: 23px;
+}
+
+.conf-profile{
+    display: block;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.conf-profile p{
+    padding: 5px;
+    font-size: 19px;
+}
+
+.content-edit-space{
+    padding-bottom: 105px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.content-input-edit{
+    font-size: 19px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    width: 100%;
+}
+
+@media only screen and (max-width: 1000px){
+
+    .content-all{
+        display: block;
+        margin-top: -100px;
+    }
+
+    .container{
+        background-color: #909090;
+        padding-left: 0%;
+        padding-right: 0%;
+        padding-top: 0%;
+        padding-bottom: 5%;
+        max-width: 730px;
+    }
+
+    .image-user{
+        border-radius: 100%;
+        width: 110px;
+        padding: 20px;
+    }
+
+    .left-content{
+        display: block;
+    }
+    
+    .right-content{
+        display: block;
+
+    }
+    
+    .content-box-profile{
+        width: 100%;
+        background-color: #313131;
+        color: white;
+    }
+
+    .conf-profile{
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        cursor: pointer;
+        display: block;
+    }
+
+    .conf-profile p{
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: 28px;
+    }
+
+    .content-input-edit{
+        font-size: 28px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        width: 100%;
+    }
+
+}
