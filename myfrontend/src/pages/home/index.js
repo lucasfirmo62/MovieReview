@@ -4,18 +4,21 @@ import axios from 'axios';
 import styles from './styles.css';
 
 import Publication from "../../components/Publication";
+import Header from "../../components/header";
+import Menu from "../../components/menu";
 
 const Home = () => {
     return (
         <>
-            <div className="social-page">
-                <div className="social-section left-section">
-
+            <Header />
+            <div className="content-home">
+                <div className="home-left-content">
+                    <Menu />
                 </div>
-                <div className="social-section center-section">
+                <div className="content-box-home">
                     <Publication />
                 </div>
-                <div className="social-section right-section">
+                <div className="home-right-content">
 
                 </div>
             </div>
@@ -25,28 +28,3 @@ const Home = () => {
 
 export default Home;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// </form>
-
-
-{/* Aqui você pode exibir a lista de publicações */ }

@@ -1,28 +1,24 @@
 .content-menu {
-    position: fixed;
-    text-align-last: left;
-    width: 50%;
+    position: absolute;
+    width: 25%;
     background-color: #6e6e6e;
-    top: 10.3%;
     z-index: -1;
     height: 210px;
 }
 
 .menu-contrast {
-    position: fixed;
     text-align-last: left;
-    width: 50%;
-    top: 10.3%;
+    width: 100%;
     color: white;
+    padding-left: 20%;
 }
 
 .inside-menu {
     padding: 1px;
-    width: 30%;
+    width: 100%;
     cursor: pointer;
-    margin-left: 0px;
-    padding-left: 35%;
     font-size: 19px;
+    display: flex;
 }
 
 .inside-menu:hover {
@@ -32,9 +28,10 @@
 .icon {
     padding: 3px;
     font-size: 18px;
-    position: absolute;
-    left: 30%;
+    left: 10%;
     margin-top: 20px;
+    padding-left: 10px;
+    padding-right: 20px;
 }
 
 
@@ -57,6 +54,7 @@
         background-color: #6e6e6e;
         width: 100%;
         padding-bottom: 100px;
+        padding-left: 0%;
     }
 
     .inside-menu {

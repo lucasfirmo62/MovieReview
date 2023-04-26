@@ -1,15 +1,17 @@
-.button-simple{
-    width: 100%;
-    background-color: #D30069;
-    color: white;
-    text-align-last: center;
-    border-radius: 10px;
-    font-size: 16px;
-    padding: 1px;
-    cursor: pointer;
+.alert-login-email{
+    font-size: 11px;
+    color: red;
     font-weight: bold;
+    display: none;
+    height: 1px;
+    text-align-last: left;
 }
 
-.button-simple:hover{
-    background-color: #e90074;
+.alert-login-pass{
+    font-size: 11px;
+    color: red;
+    font-weight: bold;
+    display: none;
+    height: 1px;
+    text-align-last: left;
 }

@@ -1,0 +1,329 @@
+.movie-details-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-details-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.movie-details-container .movie-details-content {
+    position: relative;
+    z-index: 1;
+    padding: 32px;
+    max-width: 1080px;
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+    color: #FFFFFF;
+}
+
+.movie-details-container .movie-details-content img {
+    border-radius: 16px;
+    width: 300px;
+    height: 450px;
+}
+
+.movie-details-content .title-details {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    font-size: 14px;
+}
+
+.title-details h1+h1 {
+    margin-left: 8px;
+}
+
+.movie-details-content .movie-details {
+    margin-left: 32px;
+    font-size: 18px;
+    flex: 1;
+}
+
+.movie-details-content .movie-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 20px;
+}
+
+.movie-details-content .movie-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.movie-details-content .movie-release {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.movie-details-content .movie-director {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.movie-details-content .movie-streaming {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.movie-details-content .movie-rating {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.streamings-content img {
+    border: 2px solid #000000;
+    cursor: pointer;
+}
+
+.streamings-content img:hover {
+    border: 2px solid #D30069;
+}
+
+
+.watch-trailer {
+    width: auto;
+    background-color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    padding: 10px;
+    border-radius: 16px;
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+  }
+  
+  .button-trailer{
+    width: auto;
+    background-color: rgba(0, 0, 0, 0.938);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    position: absolute;
+    bottom: 30px;
+    padding-left: 83px;
+    padding-right: 83px;
+    left: auto;
+    border: solid 2px rgba(0, 0, 0, 0);
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  .button-trailer:hover{
+    background-color: rgba(0, 0, 0, 0.548);
+    border: solid 2px #D30069;
+    transition: 0.2s;
+  }
+  
+  .button-trailer p{
+    font-size: 18px;
+    text-shadow: 1.3px 1.2px rgba(0, 0, 0, 0.856);
+  }
+  
+  .content-video{
+    display: none;
+  }
+  
+  .video-trailer{
+    top: 108px;
+    width: 99.7%;
+    height: 100%;
+    position: absolute;
+    z-index: 100;
+    max-height: 577px;
+  }
+  
+  .close-trailer-button{
+    position: absolute;
+    top: 125px;
+    right: 50px;
+    z-index: 101;
+    font-size: 60px;
+    cursor: pointer;
+    color: #d30069b0;
+    transition: 0.2s;
+  }
+  
+  .close-trailer-button:hover{
+    color: #ff2929;
+    transition: 0.2s;
+  }
+
+.cast-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.cast-content::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.cast-content::-webkit-scrollbar-thumb {
+    background-color: #D30069;
+    border-radius: 4px;
+}
+
+.cast-content::-webkit-scrollbar-thumb:hover {
+    background-color: #A90052;
+}
+
+.cast-content::-webkit-scrollbar-thumb:active {
+    background-color: #78003D;
+}
+
+.movie-details-content .movie-details {
+    max-width: 610px;
+}
+
+.cast-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-self: flex-end;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 340px;
+    width: max-content;
+}
+
+.cast-content li {
+    padding-right: 8px;
+}
+
+.cast-content .cast-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    height: 280px;  
+}
+
+.cast-content .cast-item p {
+    margin-top: 8px;
+    text-align: center;
+    word-break: break-all;
+}
+
+.cast-item .movie-name {
+    font-size: 12px;
+}
+
+.cast-item .cast-block {
+    width: 100%;
+    margin-left: 32px;
+}
+
+@media (min-width: 1025px) {
+    .movie-name {
+        display: none;
+    }
+
+    .cast-block {
+        display: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    .movie-details-content .movie-details {
+        font-size: 12px;
+    }
+
+    .cast-content {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        max-width: 90%;
+        padding-top: 32px;
+        height: max-content;
+    }
+
+    .cast-content .cast-item {
+        flex-shrink: 0;
+        flex-basis: 10%;
+        margin-right: 8px;
+    }
+
+    .cast-content::-webkit-scrollbar {
+        display: none;
+    }
+
+    .cast-content::-webkit-scrollbar-track {
+        display: none;
+    }
+
+    .movie-details-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .movie-details-content .title-details {
+        flex-direction: column;
+    }
+
+    .button-trailer{
+        top: 485px;
+        bottom: auto;
+        left: auto;
+        padding-left: 82px;
+        padding-right: 82px;
+      }
+    
+      .video-trailer{
+        top: 0px;
+        width: 99.7%;
+        height: 100%;
+        position: fixed;
+        z-index: 100;
+        max-height: 577px;
+      }
+    
+      .close-trailer-button{
+        position: fixed;
+        top: 105px;
+        right: 50px;
+        z-index: 101;
+        font-size: 60px;
+        cursor: pointer;
+        color: white;
+        transition: 0.2s;
+      }
+}
+
+@media (max-width: 425px) {
+    .movie-details-content img {
+        width: 240px;
+        height: 350px;
+    }
+
+    .button-trailer{
+        top: 485px;
+        bottom: auto;
+        left: auto;
+      }
+    
+      .video-trailer{
+        top: 0px;
+        width: 99.7%;
+        height: 100%;
+        position: fixed;
+        z-index: 100;
+        max-height: 577px;
+      }
+}

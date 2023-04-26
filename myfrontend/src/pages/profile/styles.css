@@ -1,0 +1,140 @@
+.content-all{
+    display: flex;
+}
+
+.left-content{
+    width: 25%;
+    height: 100px;
+}
+
+.right-content{
+    width: 25%;
+    height: 100px;
+}
+
+.content-box-profile{
+    width: 50%;
+    background-color: #313131;
+    color: white;
+}
+
+.profile-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.image-user{
+    border-radius: 100%;
+    width: 150px;
+    padding: 20px;
+}
+
+.name-user{
+    padding-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 0px;
+    font-size: 23px;
+}
+
+.username-text{
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.623);
+}
+
+.tabs-profile{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.tabs-profile p{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+.tabs-profile p:hover{
+    background-color: #444444;
+}
+
+.edit-profile{
+    font-size: 14px;
+    color: white;
+}
+
+.edit-profile:hover{
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.623);
+}
+
+
+@media only screen and (max-width: 660px){
+
+    .content-all{
+        display: block;
+        margin-top: -100px;
+    }
+
+    .container{
+        background-color: #909090;
+        padding-left: 0%;
+        padding-right: 0%;
+        padding-top: 0%;
+        padding-bottom: 5%;
+        max-width: 730px;
+    }
+
+    .image-user{
+        border-radius: 100%;
+        width: 110px;
+        padding: 20px;
+    }
+
+    .left-content{
+        display: block;
+    }
+    
+    .right-content{
+        display: block;
+
+    }
+    
+    .content-box-profile{
+        width: 100%;
+        background-color: #313131;
+        color: white;
+    }
+
+    .profile-info{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+    }
+
+    
+    .tabs-profile{
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .tabs-profile p{
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: 17px;
+    }
+}
