@@ -156,13 +156,13 @@ select {
     max-width: 148px;
 }
 
-button {
+.align-post-review button {
     background-color: #D30069;
     border: none;
     transition: 0.2s;
 }
 
-button:hover {
+.align-post-review button:hover {
     background-color: #ff0381;
     border: none;
     transition: 0.2s;
