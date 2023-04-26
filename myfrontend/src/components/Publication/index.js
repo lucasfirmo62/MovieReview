@@ -94,15 +94,13 @@ const Publication = () => {
         const formattedDate = currentDate.toLocaleDateString();
 
         const data = {
-            "review": 1,
+            "review": selectedReview,
             "pub_text": postText,
             "user_id": parseInt(id),
             "date": formattedDate,
             "movie_id": selectedMovie.id,
             "movie_title": selectedMovie.original_title,
         }
-
-        console.log(data)
 
         const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 
@@ -239,7 +237,7 @@ const Publication = () => {
                             <select id="review" value={selectedReview} onChange={handleReviewChange}>
                                 <option value="">Selecione uma nota</option>
                                 {REVIEWS.map(review => (
-                                    <option key={review.id} value={review.value}>{review.value}</option>
+                                    <option key={review.id} value={review.id}>{review.value}</option>
                                     ))}
                             </select>
                             <button id="button-handleSubmit" type="button" onClick={handleSubmit}>Publicar Crítica</button>
