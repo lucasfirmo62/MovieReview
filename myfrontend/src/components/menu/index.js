@@ -1,8 +1,9 @@
 import React from "react";
 import './styles.css'
 import { AiFillHome } from 'react-icons/ai';
-import { CgProfile } from 'react-icons/cg';
+import { BsFillBookmarkStarFill } from 'react-icons/bs';
 import { BiLogOut } from 'react-icons/bi';
+import { CgProfile } from 'react-icons/cg';
 import { useNavigate } from 'react-router-dom';
 
 import api from '../../api';
