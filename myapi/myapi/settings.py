@@ -29,7 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
 }
 
 # Application definition
@@ -99,7 +99,7 @@ CORS_ALLOW_HEADERS = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ALLOW_METHODS = [    'GET',    'POST',    'OPTIONS']
+CORS_ALLOW_METHODS = '*'
 
 ROOT_URLCONF = "myapi.urls"
 

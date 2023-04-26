@@ -46,7 +46,8 @@ const Login = () => {
 
                 try {
                     const info_data = await api.post('/api/token/', data);
-
+                    
+                    localStorage.setItem('refreshTokenUser', JSON.stringify(info_data.data.refresh));
                     localStorage.setItem('tokenUser', JSON.stringify(info_data.data.access));
                     localStorage.setItem('idUser', JSON.stringify(info_data.data.id));
                     navigate(`/`)
