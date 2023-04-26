@@ -22,10 +22,9 @@ const Header = () => {
     function handleSubmit(event) {
         event.preventDefault();
 
-        const language = 'pt-BR';
         const query = event.target.elements.search.value.replace(/\s+/g, '+'); 
 
-        navigate(`/search?language=${language}&query=${query}`);
+        navigate(`/search?query=${query}`);
     }
 
     return (
