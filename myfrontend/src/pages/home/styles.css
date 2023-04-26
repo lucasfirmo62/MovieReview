@@ -1,3 +1,25 @@
+
+.content-home{
+    display: flex;
+    height: 100vh;
+}
+
+.home-left-content{
+    width: 25%;
+    height: 100px;
+}
+
+.home-right-content{
+    width: 25%;
+    height: 100px;
+}
+
+.content-box-home{
+    width: 50%;
+    background-color: #313131;
+    color: white;
+}
+
 .form {
     display: flex;
     flex-direction: column;
@@ -92,5 +114,23 @@ select {
         border-radius: 5px;
         border: 1px solid gray;
         margin-bottom: 0px;
+    }
+}
+
+
+@media only screen and (max-width: 660px){
+    .home-left-content{
+        display: block;
+    }
+    
+    .home-right-content{
+        display: block;
+
+    }
+    
+    .content-box-home{
+        width: 100%;
+        background-color: #313131;
+        color: white;
     }
 }
