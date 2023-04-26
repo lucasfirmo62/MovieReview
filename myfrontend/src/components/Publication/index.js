@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from "react";
 import './styles.css';
 import { AiFillPlusCircle } from 'react-icons/ai';
-import axios from 'axios';
+
+import axios from "axios";
+import api from '../../api';
+
+const REVIEWS = [
+    { id: 1, value: '1 - Horrível' },
+    { id: 2, value: '2 - Ruim' },
+    { id: 3, value: '3 - Mediano' },
+    { id: 4, value: '4 - Bom' },
+    { id: 5, value: '5 - Excelente' }
+];
 
 const Publication = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [movies, setMovies] = useState([]);
-    const [selectedMovie, setSelectedMovie] = useState('');
+    const [selectedMovie, setSelectedMovie] = useState({});
     const [postText, setPostText] = useState('');
+    const [selectedReview, setSelectedReview] = useState('');
 
-    // Variável pra guardar a nota
-    var movieScore = document.getElementById('score-menu');
+    function handleReviewChange(event) {
+        setSelectedReview(event.target.value);
+    }
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
@@ -35,40 +47,77 @@ const Publication = () => {
         }
     };
 
-    setTimeout(function () {
-        if ((document.getElementById("review-text").value).length > 0) {
-            document.getElementById("align-post-review").style.display = "block"
-        }
-    }, 100);
-
-
     const handleMovieSelect = (event) => {
         setSelectedMovie(event.target.value);
         document.getElementById("align-post-review").style.display = "block"
         document.getElementById("button-handleSubmit").style.display = "block"
+
+        document.getElementById("review").style.display = "block"
     };
 
     async function addMovie() {
-        document.getElementById("publication-movie-content").style.display = "block"
+        document.getElementById("publication-movie-content").style.display = "flex"
+        document.getElementById("publication-movie-content").style.flexDirection = "column"
+        document.getElementById("publication-movie-content").style.alignItems = "center"
+        document.getElementById("publication-movie-content").style.justifyItems = "center"
+        document.getElementById("button-add-movie").style.display = "none"
     }
 
-    async function handleSubmit() {
+    async function handleSubmit(event) {
+        event.preventDefault()
 
-        if((document.getElementById("review-text").value).length < 100 && (document.getElementById("button-handleSubmit").style.display === "block")){
-            document.getElementById("alert").innerHTML = "A critica precisa ter mais de 100 caracteres para ser publicada."
+        let errorMsg = '';
+
+        if((document.getElementById("review-text").value).length < 100){
+            errorMsg += "A crítica precisa ter mais de 100 caracteres. ";
         }
 
-        if (((document.getElementById("review-text").value).length > 100) && (document.getElementById("button-handleSubmit").style.display === "block")) {
-            alert("critica publicada")
+        if(selectedMovie === ''){
+            errorMsg += "O filme precisa ser selecionado. ";
         }
+
+        if(selectedReview === '') {
+            errorMsg += "A nota precisa ser selecionada. ";
+        }
+
+        if(errorMsg !== '') {
+            alert(errorMsg);
+            return
+        }
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString();
+
+        const data = {
+            "review": 1,
+            "pub_text": postText,
+            "user_id": 1,
+            "date": formattedDate,
+            "movie_id": selectedMovie.id,
+            "movie_title": selectedMovie.original_title,
+        }
+
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjgyNDA0Nzk2LCJpYXQiOjE2ODIzOTc1OTYsImp0aSI6IjFiYmFmM2ZiNTk4YzQ0ZDBiZTM4N2MyYTJhZWNiNWVkIiwidXNlcl9pZCI6MX0._AWfSIenAFD0YZeC611YSWQFL0EUeR5FFqziY_1Yqz8"
+        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+        api.post('/publicacoes/', data, {headers})
+            .then(response => {
+              console.log(response.data);
+            })
+            .catch(error => {
+              console.log(error);
+            });
     };
 
     async function seeBest() {
-        document.getElementById("review-text").style.height = "200px"
         document.getElementById("button-cancel").style.display = "block"
     }
 
     async function cancelPost() {
+        setSelectedMovie('')
+        setSelectedReview('')
+        setMovies([])
+
         document.getElementById("review-text").style.height = "20px"
         document.getElementById("review-text").value = ""
 
@@ -76,8 +125,29 @@ const Publication = () => {
         document.getElementById("publication-movie-content").style.display = "none"
         document.getElementById("align-post-review").style.display = "none"
         document.getElementById("button-handleSubmit").style.display = "none"
+        document.getElementById("review").style.display = "none"
+        document.getElementsByClassName("input-search-movie").value = ""
+        document.getElementById("button-add-movie").style.display = "block"
     }
 
+    function addMovieAndSeeBest() {
+        addMovie();
+        seeBest();
+    }
+
+    function handleMoviesSelect(event) {
+        const selectedMovie = event.target.value;
+        if (selectedMovie === "" || selectedMovie === '{"title":""}') {
+          setSelectedMovie(null);
+        } else {
+          setSelectedMovie(JSON.parse(selectedMovie));
+        }
+    }
+
+    function handle(event){
+        handleMovieSelect(event)
+        handleMoviesSelect(event)
+    }
 
     return (
         <>
@@ -96,22 +166,13 @@ const Publication = () => {
                         onChange={(e) => setPostText(e.target.value)}
                         placeholder="Adicionar uma Crítica sobre um filme"
                         id="review-text"
-                        onClick={seeBest}
                     />
                 </div>
 
-                <div className='score-context-menu'>
-                    <select id="score-menu">
-                        <option value="" disable selected hidden>Dê uma avaliação a este filme!</option>
-                        <option value="1">1 - Horrível </option>
-                        <option value="2">2 - Ruim</option>
-                        <option value="3">3 - Mediano</option>
-                        <option value="4">4 - Bom</option>
-                        <option value="5">5 - Excelente</option>
-                    </select>
-                </div>
-
-                <button onClick={addMovie} className="button-add-movie"><AiFillPlusCircle className="plus-icon" />Adicionar filme</button>
+                <button 
+                    onClick={addMovieAndSeeBest}  
+                    id="button-add-movie"
+                    className="button-add-movie"><AiFillPlusCircle className="plus-icon" />Adicionar filme</button>
                 <br />
 
                 <form onSubmit={handleSearchSubmit}>
@@ -136,28 +197,26 @@ const Publication = () => {
                             </div>
                             {movies.length > 0 ? (
                                 <div className="adding-movie">
-                                    <select className="select-movie" value={selectedMovie} onChange={handleMovieSelect}>
+                                    <select className="select-movie" value={JSON.stringify(selectedMovie)} onChange={handle}>
                                         <option value="">Selecione um filme</option>
                                         {movies.map((movie) => (
-                                            <option key={movie.id} value={movie.id}>
-                                                <div className="movie-option-title">{movie.title}</div>
+                                            <option className="movie-option-title" key={movie.id} value={JSON.stringify(movie)}>
+                                                {movie.title}
                                             </option>
                                         ))}
                                     </select>
-
                                     {selectedMovie && (
                                         <div className="selected-movie">
                                             <img
                                                 width={110}
                                                 height={170}
                                                 className="movie-poster"
-                                                src={`https://image.tmdb.org/t/p/w185${movies.find((movie) => movie?.id === Number(selectedMovie))?.poster_path}`}
-                                                alt={`Cartaz do filme ${movies.find((movie) => movie?.id === Number(selectedMovie))?.title}`}
+                                                src={`https://image.tmdb.org/t/p/w185${movies.find((movie) => movie?.id === Number(selectedMovie.id))?.poster_path}`}
+                                                alt={`Cartaz do filme ${movies.find((movie) => movie?.id === Number(selectedMovie.id))?.title}`}
                                             />
                                             <div className="info-movie-holt">
-                                                <p id="name-movie">{movies.find((movie) => movie?.id === Number(selectedMovie))?.overview}</p>
-                                                <p>Lançado em {movies.find((movie) => movie?.id === Number(selectedMovie))?.release_date.substring(0, 4)}</p>
-
+                                                <p id="name-movie">{movies.find((movie) => movie?.id === Number(selectedMovie.id))?.overview}</p>
+                                                <p>Lançado em {movies.find((movie) => movie?.id === Number(selectedMovie.id))?.release_date.substring(0, 4)}</p>
                                             </div>
                                         </div>
                                     )}
@@ -170,6 +229,12 @@ const Publication = () => {
                             <p id="alert">Você só pode publicar se escrever uma crítica e selecionar um filme</p>
                         </div>
                         <div className="post-review-conf">
+                            <select id="review" value={selectedReview} onChange={handleReviewChange}>
+                                <option value="">Selecione uma nota</option>
+                                {REVIEWS.map(review => (
+                                    <option key={review.id} value={review.value}>{review.value}</option>
+                                    ))}
+                            </select>
                             <button id="button-handleSubmit" type="button" onClick={handleSubmit}>Publicar Crítica</button>
                         </div>
                     </div>
@@ -180,8 +245,6 @@ const Publication = () => {
 }
 
 export default Publication;
-
-// Colocar uma linha escrita: filme "tal" selecionado, essa linha pode ser de alguma cor clara
 
 
 
