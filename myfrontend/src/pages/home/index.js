@@ -1,13 +1,12 @@
+import React from "react";
 import './styles.css'
-import api from '../../api';
 
+import Header from '../../components/header'
 
 const Home = () => {
-
-
-    return (
+    return(
         <>
-
+            <Header />
         </>
     )
 }
