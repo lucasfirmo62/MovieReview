@@ -9,4 +9,5 @@ router.register(r'publicacoes', PublicationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('usuarios/search/', UserViewSet.as_view({'get': 'search'}), name='user-search'),
 ]
