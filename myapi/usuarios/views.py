@@ -11,11 +11,17 @@ from .serializers import UserSerializer, PublicationSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
+
+class UserPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    queryset = User.objects.all()
     authentication_classes = [MyJWTAuthentication]
-    pagination_class = PageNumberPagination
+    pagination_class = UserPagination
+    queryset = User.objects.order_by('nickname')
 
     def get_authenticators(self):
         if self.request.method == 'POST':
