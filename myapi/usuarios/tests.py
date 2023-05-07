@@ -74,7 +74,6 @@ class SignalsTestCase(TestCase):
         response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
         token = response.data['access']
         response = client.get('/usuarios/', HTTP_AUTHORIZATION=f'Bearer {token}')
-        print(json.dumps(response.data, indent=4))
         
         self.assertContains(response, user1.full_name)
         self.assertContains(response, user2.full_name)
@@ -159,7 +158,6 @@ class PublicationTestCase(TestCase):
           
         response = self.client.get('/publicacoes/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print(json.dumps(response.data, indent=4))
         self.assertEqual(len(response.data), 2)
         
     def test_get_publication_detail(self):
@@ -189,4 +187,50 @@ class PublicationTestCase(TestCase):
         response = self.client.delete(f'/publicacoes/{self.publication.id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Publication.objects.count(), 0)
+        
+    def test_super_reviewer(self):
+        response = self.client.post('/publicacoes/', {
+            'review': 4,
+            'pub_text': 'Gostei bastante do filme!',
+            'user_id': self.user.id,
+            'movie_id': 3,
+            'movie_title': 'The Shawshank Redemption',
+            'movie_director': 'Frank Darabont'
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+
+        response = self.client.post('/publicacoes/', {
+            'review': 5,
+            'pub_text': 'Esse filme é incrível!',
+            'user_id': self.user.id,
+            'movie_id': 4,
+            'movie_title': 'The Godfather',
+            'movie_director': 'Francis Ford Coppola'
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.get(f'/usuarios/{self.user.id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['super_reviewer'], False)
+
+        response = self.client.post('/publicacoes/', {
+            'review': 3,
+            'pub_text': 'Não achei tão bom assim...',
+            'user_id': self.user.id,
+            'movie_id': 5,
+            'movie_title': 'The Dark Knight',
+            'movie_director': 'Christopher Nolan'
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+
+        response = self.client.post('/publicacoes/', {
+            'review': 4,
+            'pub_text': 'Muito bom, recomendo!',
+            'user_id': self.user.id,
+            'movie_id': 6,
+            'movie_title': 'Pulp Fiction',
+            'movie_director': 'Quentin Tarantino'
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.get(f'/usuarios/{self.user.id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        self.assertEqual(response.data['super_reviewer'], True)
+        
+        
         
