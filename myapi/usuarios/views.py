@@ -58,6 +58,15 @@ class UserViewSet(viewsets.ModelViewSet):
             
         return Response({'status': 'ok'})
     
+    @action(detail=False, methods=['get'])
+    def followers(self, request):
+        connections = Connection.objects.filter(usuario_beta=request.user)
+        
+        followers = [connection.usuario_alpha for connection in connections]
+        serializer = self.get_serializer(followers, many=True)
+        
+        return Response(serializer.data)
+    
 class LogoutView(APIView):
     authentication_classes = [MyJWTAuthentication]
 
