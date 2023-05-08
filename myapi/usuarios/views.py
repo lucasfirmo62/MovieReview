@@ -33,9 +33,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
         connection_exists = Connection.objects.filter(usuario_alpha=user, usuario_beta=user_to_follow).exists()
 
-        if not connection_exists:
-            connection = Connection(usuario_alpha=user, usuario_beta=user_to_follow)
-            connection.save()
+        if connection_exists:
+            return Response({'error': 'Você já segue este usuário'}, status=status.HTTP_400_BAD_REQUEST)
+    
+        connection = Connection(usuario_alpha=user, usuario_beta=user_to_follow)
+        connection.save()
         
         return Response({'status': 'ok'})
     
@@ -48,9 +50,11 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Você não pode deixar de seguir a si mesmo'}, status=status.HTTP_400_BAD_REQUEST)
 
         connection = Connection.objects.filter(usuario_alpha=user, usuario_beta=user_to_unfollow).first()
-        
-        if connection:
-            connection.delete()
+
+        if not connection:
+            return Response({'error': 'Você não segue este usuário'}, status=status.HTTP_400_BAD_REQUEST)
+
+        connection.delete()
             
         return Response({'status': 'ok'})
     

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from usuarios.models import User, Publication
+from usuarios.models import User, Publication, Connection
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -74,13 +74,53 @@ class SignalsTestCase(TestCase):
         response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
         token = response.data['access']
         response = client.get('/usuarios/', HTTP_AUTHORIZATION=f'Bearer {token}')
-        print(json.dumps(response.data, indent=4))
         
         self.assertContains(response, user1.full_name)
         self.assertContains(response, user2.full_name)
         
         response = client.get('/usuarios/')
         self.assertEqual(response.status_code, 401)
+        
+    def test_follow_and_unfollow(self):
+        client = APIClient()
+
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
+
+        response = client.post(f'/usuarios/{user2.pk}/follow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'ok'})
+
+        connection_exists = Connection.objects.filter(usuario_alpha=user1, usuario_beta=user2).exists()
+        self.assertTrue(connection_exists)
+
+        response = client.post(f'/usuarios/{user2.pk}/follow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {'error': 'Você já segue este usuário'})
+
+        response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        
+        response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.data, {'error': 'Você não segue este usuário'})
         
 class LogoutTestCase(TestCase):
     
@@ -159,7 +199,6 @@ class PublicationTestCase(TestCase):
           
         response = self.client.get('/publicacoes/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print(json.dumps(response.data, indent=4))
         self.assertEqual(len(response.data), 2)
         
     def test_get_publication_detail(self):
