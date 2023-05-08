@@ -122,6 +122,46 @@ class SignalsTestCase(TestCase):
         response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(response.data, {'error': 'Você não segue este usuário'})
         
+    def test_following_list(self):
+        client = APIClient()
+
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
+        
+        response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(len(response.data), 0)
+
+        response = client.post(f'/usuarios/{user2.pk}/follow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'ok'})
+        
+        response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(len(response.data), 1)
+        
+        response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        
+        response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(len(response.data), 0)
+        
 class LogoutTestCase(TestCase):
     
     def setUp(self):
