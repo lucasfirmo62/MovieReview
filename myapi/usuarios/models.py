@@ -85,6 +85,7 @@ class Publication(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     movie_id = models.IntegerField()
     movie_title = models.CharField(max_length=200)
+    imgur_link = models.URLField(blank=True)
 
 class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
