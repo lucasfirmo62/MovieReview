@@ -1,9 +1,13 @@
 from django.test import TestCase
+import requests
 from usuarios.models import User, Publication
 from rest_framework import status
 from rest_framework.test import APIClient
 
 import json
+
+from io import BytesIO
+from PIL import Image
 
 class SignalsTestCase(TestCase):
     
@@ -74,7 +78,6 @@ class SignalsTestCase(TestCase):
         response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
         token = response.data['access']
         response = client.get('/usuarios/', HTTP_AUTHORIZATION=f'Bearer {token}')
-        print(json.dumps(response.data, indent=4))
         
         self.assertContains(response, user1.full_name)
         self.assertContains(response, user2.full_name)
@@ -148,6 +151,30 @@ class PublicationTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Publication.objects.count(), 2)
         
+    def test_create_publication_with_image(self):
+        image = Image.new('RGB', (100, 100), (255, 255, 255))
+
+        image_file = BytesIO()
+        image.save(image_file, 'jpeg')
+        image_file.seek(0)
+
+        response = self.client.post('/publicacoes/', {
+            'review': 4,
+            'pub_text': 'Gostei bastante do filme!',
+            'user_id': self.user.id,
+            'movie_id': 2,
+            'movie_title': 'Avatar',
+            'movie_director': 'James Cameron',
+            'image': image_file,
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Publication.objects.count(), 2)
+
+        imgur_link = Publication.objects.latest('id').imgur_link
+        self.assertTrue(imgur_link)
+        self.assertTrue(requests.get(imgur_link).ok)
+        
     def test_get_publication_list(self):
         response = self.client.post('/publicacoes/', {
             'review': 4,
@@ -159,7 +186,6 @@ class PublicationTestCase(TestCase):
           
         response = self.client.get('/publicacoes/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print(json.dumps(response.data, indent=4))
         self.assertEqual(len(response.data), 2)
         
     def test_get_publication_detail(self):
