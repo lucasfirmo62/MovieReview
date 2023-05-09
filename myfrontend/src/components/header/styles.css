@@ -54,6 +54,28 @@ header .search-icon {
     cursor: pointer;
 }
 
+.contnet-config-search{
+    display: block;
+}
+
+.option-conf-search-back{
+    display: flex;
+    position: absolute;
+    margin-left: 0px;
+    padding: 8px;
+    padding-right: 15px;
+    width: 93%;
+    background-color: #00000059;
+    border-radius: 10px;
+}
+
+.option-conf-search{
+    display: flex;
+    position: absolute;
+    margin-left: -50px;
+}
+
+
 @media (max-width: 760px) {
 
     header {
@@ -90,6 +112,24 @@ header .search-icon {
 
     header .input-open {
         width: 100%;
+    }
+
+    .option-conf-search{
+        display: flex;
+        position: absolute;
+        margin-left: 0px;
+    }
+
+    .option-conf-search-back{
+        display: flex;
+        position: absolute;
+        margin-left: 0px;
+        padding: 8px;
+        padding-top: 1px;
+        padding-right: 15px;
+        width: 50%;
+        background-color: #00000000;
+        border-radius: 10px;
     }
 }
 
