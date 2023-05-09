@@ -54,25 +54,39 @@ header .search-icon {
     cursor: pointer;
 }
 
-.contnet-config-search{
+.contnet-config-search {
     display: block;
 }
 
-.option-conf-search-back{
+.option-conf-search-back {
     display: flex;
     position: absolute;
     margin-left: 0px;
     padding: 8px;
     padding-right: 15px;
-    width: 93%;
-    background-color: #00000059;
+    width: 92%;
     border-radius: 10px;
 }
 
-.option-conf-search{
+.option-conf-search {
     display: flex;
     position: absolute;
     margin-left: -50px;
+}
+
+.button-radio{
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.button-radio:hover{
+    background-color: rgb(119, 119, 119);
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.option-conf-search {
+    display: none;
 }
 
 
@@ -114,30 +128,25 @@ header .search-icon {
         width: 100%;
     }
 
-    .option-conf-search{
+    .option-conf-search {
         display: flex;
         position: absolute;
-        margin-left: 0px;
+        margin-left: -50px;
     }
 
-    .option-conf-search-back{
+    .option-conf-search {
+        display: none;
+    }
+
+    .option-conf-search-back {
         display: flex;
-        position: absolute;
+        position: relative;
         margin-left: 0px;
         padding: 8px;
         padding-top: 1px;
         padding-right: 15px;
         width: 50%;
-        background-color: #00000000;
+        background-color: #833c3c00;
         border-radius: 10px;
     }
 }
-
-
-
-
-
-
-
-
-

@@ -64,6 +64,34 @@ const Header = () => {
         };
     }, []);
 
+    const radioButtons = document.querySelectorAll('.option-conf-search');
+
+    function handleRadioButtonChange() {
+        let checkedId = null;
+
+        var checkedM = document.getElementById(`moviesL`);
+        checkedM.style.backgroundColor = "rgba(119, 119, 119, 0)";
+        var checkedU = document.getElementById(`usersL`);
+        checkedU.style.backgroundColor = "rgba(119, 119, 119, 0)";
+
+        radioButtons.forEach(radioButton => {
+            if (radioButton.checked) {
+                checkedId = radioButton.id;
+                return;
+            }
+        });
+
+        if (checkedId) {
+            const checkedElement = document.getElementById(`${checkedId}L`);
+            checkedElement.style.backgroundColor = "#D30069";
+            console.log('ID do radio button marcado:', checkedId);
+        }
+    }
+
+    radioButtons.forEach(radioButton => {
+        radioButton.addEventListener('change', handleRadioButtonChange);
+    });
+
     return (
         <>
             <header className={isSearchOpen ? 'header-open' : ''}>
@@ -92,8 +120,9 @@ const Header = () => {
                                     name="search"
                                 />
                                 <div className="option-conf-search-back">
-                                    <label>
+                                    <label className="button-radio" id="moviesL">
                                         <input
+                                            id="movies"
                                             type="radio"
                                             name="searchType"
                                             className="option-conf-search"
@@ -103,8 +132,9 @@ const Header = () => {
                                         />
                                         Filmes
                                     </label>
-                                    <label>
+                                    <label className="button-radio" id="usersL">
                                         <input
+                                            id="users"
                                             type="radio"
                                             name="searchType"
                                             className="option-conf-search"
