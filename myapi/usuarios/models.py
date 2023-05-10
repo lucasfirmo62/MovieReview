@@ -85,6 +85,20 @@ class Publication(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     movie_id = models.IntegerField()
     movie_title = models.CharField(max_length=200)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        min_publications = 5
+        
+        publications_count = Publication.objects.filter(user_id=self.user_id).count()
+        
+        if publications_count >= min_publications:
+            self.user_id.super_reviewer = True
+        else:
+            self.user_id.super_reviewer = False
+        
+        self.user_id.save(update_fields=['super_reviewer'])
 
 class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
