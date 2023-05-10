@@ -50,7 +50,7 @@ const Profile = () => {
                     <div>
                         <p className="name-user">{user.full_name}</p>
                         <p className="username-text">@{user.nickname}</p>
-                        <SuperCritico/>
+                        {user.super_reviewer && (<SuperCritico/>)}
                         <p className="bio-text">{user.bio_text}</p>
                         <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
                     </div>
