@@ -23,6 +23,19 @@ const Publication = () => {
     const [postText, setPostText] = useState('');
     const [selectedReview, setSelectedReview] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false);
+
+    useEffect(() => {
+        const minLoadingTime = 1100;
+        const timer = setTimeout(() => {
+            setMinLoadingTimePassed(true);
+        }, minLoadingTime);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
 
     function handleReviewChange(event) {
         setSelectedReview(event.target.value);
@@ -71,27 +84,27 @@ const Publication = () => {
 
         let errorMsg = '';
 
-        if((document.getElementById("review-text").value).length < 10){
+        if ((document.getElementById("review-text").value).length < 10) {
             errorMsg += "A crítica precisa ter mais de 10 caracteres. ";
         }
 
-        if(selectedMovie === ''){
+        if (selectedMovie === '') {
             errorMsg += "O filme precisa ser selecionado. ";
         }
 
-        if(selectedReview === '') {
+        if (selectedReview === '') {
             errorMsg += "A nota precisa ser selecionada. ";
         }
 
-        if(errorMsg !== '') {
+        if (errorMsg !== '') {
             alert(errorMsg);
             return
         }
 
         let id = localStorage.getItem("idUser")
-        id = id.substring(1,id.length-1)
+        id = id.substring(1, id.length - 1)
         let token = localStorage.getItem("tokenUser")
-        token = token.substring(1,token.length-1)
+        token = token.substring(1, token.length - 1)
 
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString();
@@ -106,7 +119,10 @@ const Publication = () => {
         }
 
         const formData = new FormData();
-        
+
+        setIsLoading(true);
+        setMinLoadingTimePassed(false);
+
         formData.append('image', selectedFile);
         formData.append('review', data.review);
         formData.append('pub_text', data.pub_text);
@@ -115,15 +131,18 @@ const Publication = () => {
         formData.append('movie_id', data.movie_id);
         formData.append('movie_title', data.movie_title);
 
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }; 
+        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' };
 
-        api.post('/publicacoes/', formData, {headers}) 
+        api.post('/publicacoes/', formData, { headers })
             .then(response => {
-              console.log(response.data);
-              window.location.reload()
+                console.log(response.data);
+                window.location.reload()
             })
             .catch(error => {
-              console.log(error);
+                console.log(error);
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
     };
 
@@ -157,13 +176,13 @@ const Publication = () => {
     function handleMoviesSelect(event) {
         const selectedMovie = event.target.value;
         if (selectedMovie === "" || selectedMovie === '{"title":""}') {
-          setSelectedMovie(null);
+            setSelectedMovie(null);
         } else {
-          setSelectedMovie(JSON.parse(selectedMovie));
+            setSelectedMovie(JSON.parse(selectedMovie));
         }
     }
 
-    function handle(event){
+    function handle(event) {
         handleMovieSelect(event)
         handleMoviesSelect(event)
     }
@@ -171,6 +190,11 @@ const Publication = () => {
     return (
         <>
             <div className="publication-content">
+                {(isLoading || !minLoadingTimePassed) && (
+                    <div className="loading-overlay">
+                        <div className="loading-indicator"></div>
+                    </div>
+                )}
                 <div className="publication-text-content">
                     <div className="content-conf-review-write">
                         <img
@@ -188,8 +212,8 @@ const Publication = () => {
                     />
                 </div>
 
-                <button 
-                    onClick={addMovieAndSeeBest}  
+                <button
+                    onClick={addMovieAndSeeBest}
                     id="button-add-movie"
                     className="button-add-movie"><AiFillPlusCircle className="plus-icon" />Adicionar filme</button>
                 <br />
@@ -253,7 +277,7 @@ const Publication = () => {
                                 <option value="">Selecione uma nota</option>
                                 {REVIEWS.map(review => (
                                     <option key={review.id} value={review.id}>{review.value}</option>
-                                    ))}
+                                ))}
                             </select>
                             <button id="button-handleSubmit" type="button" onClick={handleSubmit}>Publicar Crítica</button>
                         </div>
