@@ -62,6 +62,9 @@ class PublicationViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         image = request.data.get('image')
         
+        if image == 'null':
+            image = None
+        
         if not image:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)

@@ -105,9 +105,19 @@ const Publication = () => {
             "movie_title": selectedMovie.original_title,
         }
 
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+        const formData = new FormData();
+        
+        formData.append('image', selectedFile);
+        formData.append('review', data.review);
+        formData.append('pub_text', data.pub_text);
+        formData.append('user_id', data.user_id);
+        formData.append('date', data.date);
+        formData.append('movie_id', data.movie_id);
+        formData.append('movie_title', data.movie_title);
 
-        api.post('/publicacoes/', data, {headers})
+        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }; 
+
+        api.post('/publicacoes/', formData, {headers}) 
             .then(response => {
               console.log(response.data);
               window.location.reload()
