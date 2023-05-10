@@ -5,6 +5,8 @@ import { AiFillPlusCircle } from 'react-icons/ai';
 import axios from "axios";
 import api from '../../api';
 
+import ImageUpload from "../ImageUpload";
+
 const REVIEWS = [
     { id: 1, value: '1 - Horrível' },
     { id: 2, value: '2 - Ruim' },
@@ -20,6 +22,7 @@ const Publication = () => {
     const [selectedMovie, setSelectedMovie] = useState({});
     const [postText, setPostText] = useState('');
     const [selectedReview, setSelectedReview] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
 
     function handleReviewChange(event) {
         setSelectedReview(event.target.value);
@@ -119,6 +122,7 @@ const Publication = () => {
     }
 
     async function cancelPost() {
+        setSelectedFile(null);
         setSelectedMovie('')
         setSelectedReview('')
         setMovies([])
@@ -230,6 +234,7 @@ const Publication = () => {
                         </div>
                     </div>
                     <div id="align-post-review" className="align-post-review">
+                        <ImageUpload selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                         <div className="post-review-conf">
                             <p id="alert">Você só pode publicar se escrever uma crítica e selecionar um filme</p>
                         </div>
