@@ -4,6 +4,7 @@ import Menu from '../../components/menu'
 import api from "../../api";
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header'
+import SuperCritico from '../../components/SuperCritico'
 
 const Profile = () => {
 
@@ -49,6 +50,7 @@ const Profile = () => {
                     <div>
                         <p className="name-user">{user.full_name}</p>
                         <p className="username-text">@{user.nickname}</p>
+                        <SuperCritico/>
                         <p className="bio-text">{user.bio_text}</p>
                         <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
                     </div>
