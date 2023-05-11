@@ -4,8 +4,6 @@ from usuarios.models import User, Publication, FavoritesList
 from rest_framework import status
 from rest_framework.test import APIClient
 
-import json
-
 from io import BytesIO
 from PIL import Image
 
@@ -317,3 +315,18 @@ class FavoritesTestCase(TestCase):
         
         response = self.client.delete(f'/favoritos/{movie_id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, 404)
+        
+    def test_get_favorite_list(self):
+        response = self.client.get('/favoritos/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(len(response.data), 1)
+        
+        response = self.client.post('/favoritos/', {
+            "user_id": 1,
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+          
+        response = self.client.get('/favoritos/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
