@@ -6,8 +6,8 @@ from rest_framework import viewsets
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
-from .models import User, Publication
-from .serializers import UserSerializer, PublicationSerializer
+from .models import User, Publication, FavoritesList
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer
 
 from .authentication import MyJWTAuthentication
 
@@ -83,3 +83,41 @@ class PublicationViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class FavoritesViewSet(viewsets.ModelViewSet):
+    serializer_class = FavoritesListSerializer
+    authentication_classes = [MyJWTAuthentication]
+    queryset = FavoritesList.objects.all()
+
+    def create(self, request):
+        user = request.user
+        movie_id = request.data.get('movie_id')
+        poster_img = request.data.get('poster_img')
+        movie_title = request.data.get('movie_title')
+        
+        if FavoritesList.objects.filter(user_id=user, movie_id=movie_id).exists():
+            return Response({'error': 'Esse filme já foi adicionado à lista de favoritos.'})
+
+        favorite = FavoritesList.objects.create(
+            user_id=user,
+            movie_id=movie_id,
+            poster_img=poster_img,
+            movie_title=movie_title
+        )
+        
+        serializer = FavoritesListSerializer(favorite)
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def destroy_by_movie_id(self, request, movie_id=None):
+        user_id = request.user.id
+
+        favorites = FavoritesList.objects.filter(user_id=user_id, movie_id=movie_id)
+
+        if not favorites:
+            return Response({'error': 'Este filme não está na lista de favoritos.'}, status=status.HTTP_404_NOT_FOUND)
+
+        favorites.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
