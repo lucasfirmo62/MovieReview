@@ -6,6 +6,7 @@ import axios from "axios";
 import api from '../../api';
 
 import ImageUpload from "../ImageUpload";
+import { FaCheck } from 'react-icons/fa';
 
 const REVIEWS = [
     { id: 1, value: '1 - Horrível' },
@@ -24,18 +25,19 @@ const Publication = () => {
     const [selectedReview, setSelectedReview] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false);
+    const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(true);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    useEffect(() => {
-        const minLoadingTime = 1100;
-        const timer = setTimeout(() => {
-            setMinLoadingTimePassed(true);
-        }, minLoadingTime);
+    // useEffect(() => {
+    //     const minLoadingTime = 1100;
+    //     const timer = setTimeout(() => {
+    //         setMinLoadingTimePassed(true);
+    //     }, minLoadingTime);
 
-        return () => {
-            clearTimeout(timer);
-        };
-    }, []);
+    //     return () => {
+    //         clearTimeout(timer);
+    //     };
+    // }, []);
 
     function handleReviewChange(event) {
         setSelectedReview(event.target.value);
@@ -79,50 +81,53 @@ const Publication = () => {
         document.getElementById("button-add-movie").style.display = "none"
     }
 
-    async function handleSubmit(event) {
-        event.preventDefault()
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
 
+      async function handleSubmit(event) {
+        event.preventDefault();
+      
         let errorMsg = '';
-
+      
         if ((document.getElementById("review-text").value).length < 10) {
-            errorMsg += "A crítica precisa ter mais de 10 caracteres. ";
+          errorMsg += "A crítica precisa ter mais de 10 caracteres. ";
         }
-
+      
         if (selectedMovie === '') {
-            errorMsg += "O filme precisa ser selecionado. ";
+          errorMsg += "O filme precisa ser selecionado. ";
         }
-
+      
         if (selectedReview === '') {
-            errorMsg += "A nota precisa ser selecionada. ";
+          errorMsg += "A nota precisa ser selecionada. ";
         }
-
+      
         if (errorMsg !== '') {
-            alert(errorMsg);
-            return
+          alert(errorMsg);
+          return;
         }
-
-        let id = localStorage.getItem("idUser")
-        id = id.substring(1, id.length - 1)
-        let token = localStorage.getItem("tokenUser")
-        token = token.substring(1, token.length - 1)
-
+      
+        let id = localStorage.getItem("idUser");
+        id = id.substring(1, id.length - 1);
+        let token = localStorage.getItem("tokenUser");
+        token = token.substring(1, token.length - 1);
+      
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString();
-
+      
         const data = {
-            "review": selectedReview,
-            "pub_text": postText,
-            "user_id": parseInt(id),
-            "date": formattedDate,
-            "movie_id": selectedMovie.id,
-            "movie_title": selectedMovie.original_title,
-        }
-
+          "review": selectedReview,
+          "pub_text": postText,
+          "user_id": parseInt(id),
+          "date": formattedDate,
+          "movie_id": selectedMovie.id,
+          "movie_title": selectedMovie.original_title,
+        };
+      
         const formData = new FormData();
-
+      
         setIsLoading(true);
-        setMinLoadingTimePassed(false);
-
+      
         formData.append('image', selectedFile);
         formData.append('review', data.review);
         formData.append('pub_text', data.pub_text);
@@ -130,21 +135,34 @@ const Publication = () => {
         formData.append('date', data.date);
         formData.append('movie_id', data.movie_id);
         formData.append('movie_title', data.movie_title);
-
+      
         const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' };
+      
+        try {
+          const response = await api.post('/publicacoes/', formData, { headers });
+          console.log(response.data);
+      
+          setMinLoadingTimePassed(false);
+      
+          await delay(2000);
+      
+          setMinLoadingTimePassed(true);
+      
+          setIsLoading(false);
+          setShowConfirmation(true);
+          
+          await delay(2000);
+      
+          setShowConfirmation(false);
+        } catch (error) {
+            console.log(error);
+        } finally {
+        }
+          window.location.reload();
+      };
+      
 
-        api.post('/publicacoes/', formData, { headers })
-            .then(response => {
-                console.log(response.data);
-                window.location.reload()
-            })
-            .catch(error => {
-                console.log(error);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    };
+    console.log("minha vida", isLoading, minLoadingTimePassed, showConfirmation)
 
     async function seeBest() {
         document.getElementById("button-cancel").style.display = "block"
@@ -190,11 +208,19 @@ const Publication = () => {
     return (
         <>
             <div className="publication-content">
-                {(isLoading || !minLoadingTimePassed) && (
+
+                {(isLoading || !minLoadingTimePassed) ? (
                     <div className="loading-overlay">
                         <div className="loading-indicator"></div>
                     </div>
-                )}
+                ) : showConfirmation ? (
+                    <div className="confirmation-overlay">
+                        <div className="confirmation-icon">
+                            <FaCheck size={32} color="green" />
+                        </div>
+                    </div>
+                ) : null}
+
                 <div className="publication-text-content">
                     <div className="content-conf-review-write">
                         <img

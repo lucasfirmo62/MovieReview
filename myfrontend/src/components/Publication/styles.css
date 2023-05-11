@@ -39,16 +39,12 @@
     background-color: transparent;
     color: #fff;
     border: none;
-    /* remove a borda padrão */
     cursor: pointer;
-    /* muda o cursor do mouse para indicar que é clicável */
     outline: none;
-    /* remove o contorno em torno do botão quando ele é clicado */
 }
 
 .button-cancel:hover {
     background-color: transparent;
-    /* remove o efeito de hover na cor azul */
     color: rgb(153, 150, 150);
 }
 
@@ -186,6 +182,7 @@ select {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 100;
 }
 
 .publication-content .loading-indicator {
@@ -205,6 +202,19 @@ select {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
 }
 
 @media only screen and (max-width: 768px) {
@@ -234,8 +244,6 @@ select {
         justify-content: center;
         align-items: center;
         border-radius: 8px;
-        /* width: 100%; */
-        /* height: 100%; */
         padding: 30px;
     }
 
