@@ -109,6 +109,14 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+    def list(self, request):
+        user_id = request.user.id
+        
+        queryset = FavoritesList.objects.filter(user_id=user_id)
+        serializer = FavoritesListSerializer(queryset, many=True)
+        
+        return Response(serializer.data)
+    
     def destroy_by_movie_id(self, request, movie_id=None):
         user_id = request.user.id
 
