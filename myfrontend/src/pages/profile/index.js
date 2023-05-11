@@ -35,6 +35,10 @@ const Profile = () => {
         navigate("/edit-profile")
     }
 
+    async function goFavoritos(){
+        navigate("/favoritos")
+    }
+
 
     return (
         <>
@@ -57,6 +61,7 @@ const Profile = () => {
                     <p className="tab-profile">Followers</p>
                     <p className="tab-profile">Following</p>
                     <p className="tab-profile">Críticas</p>
+                    <p className="tab-profile" onClick={goFavoritos}>Favoritos</p>
                 </div>
             </div>
             <div className="right-content">

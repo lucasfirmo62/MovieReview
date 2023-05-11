@@ -1,0 +1,41 @@
+.content-page {
+    display: flex;
+  }
+  
+  .left-content {
+    display: block;
+  }
+  
+  .center-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+
+  }
+  
+  .title-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+   
+    background: linear-gradient(to top, #313131, #928e8e);
+  }
+  
+  .title-component {
+    font-size: 40px;
+    color: #ffffff;
+    text-shadow: 2px 2px 4px #000000;
+  }
+  
+  .favorite-content {
+    height: 300px;
+    overflow: auto;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: #313131;
+    display: flex;
+  }
+  
