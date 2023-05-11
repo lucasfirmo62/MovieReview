@@ -14,8 +14,16 @@ const Header = () => {
 
     const handleSearchIconClick = () => {
         setIsSearchOpen(!isSearchOpen);
+    
+        setTimeout(function () {
+            var checkedM = document.getElementById(`moviesL`);
+            if (checkedM) {
+                handleRadioButtonChange()
+                checkedM.style.backgroundColor = "#D30069";
+            }
+        }, 100);
     };
-
+    
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -112,7 +120,7 @@ const Header = () => {
                             onClick={handleSearchIconClick}
                         />
                         {isSearchOpen && (
-                            <div className="contnet-config-search">
+                            <>
                                 <input
                                     className={isSearchOpen ? 'input-open' : ''}
                                     type="text"
@@ -145,7 +153,7 @@ const Header = () => {
                                         Usuários
                                     </label>
                                 </div>
-                            </div>
+                            </>
                         )}
                     </form>
                 </div>
