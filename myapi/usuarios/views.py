@@ -96,7 +96,7 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         movie_title = request.data.get('movie_title')
         
         if FavoritesList.objects.filter(user_id=user, movie_id=movie_id).exists():
-            return Response({'error': 'Esse filme já foi adicionado à lista de favoritos.'})
+            return Response({'error': 'Esse filme já foi adicionado à lista de favoritos.'}, status=status.HTTP_400_BAD_REQUEST)
 
         favorite = FavoritesList.objects.create(
             user_id=user,
