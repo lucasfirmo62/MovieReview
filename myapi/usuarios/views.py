@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 
 from .models import User, Publication, Connection
 from .serializers import UserSerializer, PublicationSerializer
+from rest_framework.pagination import PageNumberPagination
 
 from .authentication import MyJWTAuthentication
 
@@ -80,8 +81,31 @@ class LogoutView(APIView):
             return Response({"success": "Logout feito com sucesso."}, status=204)
         except Exception as e:
             return Response({"Erro": str(e)}, status=400)
-    
+
+class PublicationPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class PublicationViewSet(viewsets.ModelViewSet):
     serializer_class = PublicationSerializer
     queryset = Publication.objects.all()
     authentication_classes = [MyJWTAuthentication]
+    pagination_class = PublicationPagination
+
+    def feed(self, request):
+        following = Connection.objects.filter(usuario_alpha=request.user).values_list('usuario_beta', flat=True)
+        
+        following = list(following) + [request.user.id]
+        
+        queryset = Publication.objects.filter(user_id__in=following).order_by('-date')
+        
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        
+        return Response(serializer.data)
