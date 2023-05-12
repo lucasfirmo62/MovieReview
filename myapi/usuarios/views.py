@@ -89,7 +89,7 @@ class PublicationPagination(PageNumberPagination):
 
 class PublicationViewSet(viewsets.ModelViewSet):
     serializer_class = PublicationSerializer
-    queryset = Publication.objects.all()
+    queryset = Publication.objects.all().order_by('-date')
     authentication_classes = [MyJWTAuthentication]
     pagination_class = PublicationPagination
 

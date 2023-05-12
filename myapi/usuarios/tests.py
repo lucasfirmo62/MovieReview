@@ -216,6 +216,18 @@ class PublicationTestCase(TestCase):
             movie_title='La la land',
         )
         
+        self.connection = Connection.objects.create(
+            usuario_alpha=self.user,
+            usuario_beta=User.objects.create_user(
+                email='user@example.com',
+                full_name='User Test',
+                nickname='usertest',
+                bio_text='Test bio',
+                birth_date='1999-01-01',
+                password='testpass'
+            )
+        )
+        
         response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
         self.token = response.data['access']
         
@@ -243,7 +255,7 @@ class PublicationTestCase(TestCase):
           
         response = self.client.get('/publicacoes/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data['results']), 2)
         
     def test_get_publication_detail(self):
         response = self.client.get(f'/publicacoes/{self.publication.id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
@@ -254,6 +266,37 @@ class PublicationTestCase(TestCase):
         self.assertEqual(response.data['user_id'], self.user.id)
         self.assertEqual(response.data['movie_id'], 1)
         self.assertEqual(response.data['movie_title'], 'La la land')
+        
+    def test_feed(self):
+        response = self.client.get('/feed/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 1)
+
+        user2 = User.objects.create_user(
+            email='test@example.com',
+            full_name='Test User',
+            nickname='testuser',
+            bio_text='Test bio',
+            birth_date='2000-01-01',
+            password='testpass'
+        )
+        
+        Publication.objects.create(
+            review=4,
+            pub_text='Novo filme!',
+            user_id=user2,
+            movie_id=2,
+            movie_title='Avengers',
+        )
+        
+        Connection.objects.create(
+            usuario_alpha=self.user,
+            usuario_beta=user2
+        )
+
+        response = self.client.get('/feed/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 2)
         
     def test_update_publication(self):
         response = self.client.put(f'/publicacoes/{self.publication.id}/', {
@@ -272,4 +315,3 @@ class PublicationTestCase(TestCase):
         response = self.client.delete(f'/publicacoes/{self.publication.id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Publication.objects.count(), 0)
-        

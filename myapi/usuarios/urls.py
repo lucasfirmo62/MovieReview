@@ -9,5 +9,5 @@ router.register(r'publicacoes', PublicationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('feed/', PublicationViewSet.as_view({ 'get': 'feed' }), name='pegar_feed'),
+    path('feed/', PublicationViewSet.as_view({ 'get': 'feed' }))
 ]
