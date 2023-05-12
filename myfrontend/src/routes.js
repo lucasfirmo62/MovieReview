@@ -13,6 +13,7 @@ import Search from './pages/search'
 import Home from './pages/home'
 import Movie from './pages/movie'
 import Favoritos from './pages/favoritos'
+import User from './pages/user'
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -59,6 +60,10 @@ export default function Router() {
                 <Route 
                     path="/favoritos" 
                     element={<PrivateRoute> <Favoritos /> </PrivateRoute>}
+                />
+                <Route
+                    path="/user/:id"
+                    element={<PrivateRoute> <User/> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>
