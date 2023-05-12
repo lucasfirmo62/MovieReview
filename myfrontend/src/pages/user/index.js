@@ -1,41 +1,45 @@
 import React, { useState, useEffect } from "react";
 import './styles.css'
-import Menu from '../../components/menu'
 import api from "../../api";
-import { useNavigate } from 'react-router-dom';
+import Menu from '../../components/menu'
 import Header from '../../components/header'
+import { useNavigate } from 'react-router-dom';
 import SuperCritico from '../../components/SuperCritico'
 
-const Profile = () => {
+const User = () => {
+
+    const url = window.location.href;
+    const id = url.split('user/')[1];
 
     const [user, setUser] = useState([]);
-    var loginItem;
 
     const navigate = useNavigate();
+
+    var loginItem;
 
     if (localStorage.getItem('tokenUser')) {
         loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
     }
 
-    var idUser = localStorage.getItem('idUser');
+    var idMyUser = localStorage.getItem('idUser');
 
     useEffect(() => {
         async function userUtility() {
-            await api.get(`/usuarios/${idUser}/`, {
+            await api.get(`/usuarios/${id}/`, {
                 headers: {
                     Authorization: `Bearer ${loginItem}`,
                     "Content-type": "application/json"
                 },
             })
                 .then(response => { setUser(response.data) })
+
         }
         userUtility()
-    }, [idUser, loginItem])
+    }, [idMyUser, loginItem])
 
     async function goEditProfile() {
         navigate("/edit-profile")
     }
-
 
     return (
         <>
@@ -56,7 +60,11 @@ const Profile = () => {
                                 null
                             }
                             <p className="bio-text">{user.bio_text}</p>
-                            <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
+                            {(idMyUser === id) ?
+                                <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
+                                :
+                                null
+                            }
                         </div>
                     </div>
                     <div className="tabs-profile">
@@ -73,4 +81,4 @@ const Profile = () => {
     )
 }
 
-export default Profile;
+export default User;
