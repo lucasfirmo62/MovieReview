@@ -25,5 +25,6 @@ class PublicationSerializer(serializers.ModelSerializer):
             'date',
             'movie_id',
             'movie_title',
+            'imgur_link',
         ]
 

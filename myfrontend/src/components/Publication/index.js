@@ -5,6 +5,9 @@ import { AiFillPlusCircle } from 'react-icons/ai';
 import axios from "axios";
 import api from '../../api';
 
+import ImageUpload from "../ImageUpload";
+import { FaCheck } from 'react-icons/fa';
+
 const REVIEWS = [
     { id: 1, value: '1 - Horrível' },
     { id: 2, value: '2 - Ruim' },
@@ -20,6 +23,21 @@ const Publication = () => {
     const [selectedMovie, setSelectedMovie] = useState({});
     const [postText, setPostText] = useState('');
     const [selectedReview, setSelectedReview] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(true);
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
+    // useEffect(() => {
+    //     const minLoadingTime = 1100;
+    //     const timer = setTimeout(() => {
+    //         setMinLoadingTimePassed(true);
+    //     }, minLoadingTime);
+
+    //     return () => {
+    //         clearTimeout(timer);
+    //     };
+    // }, []);
 
     function handleReviewChange(event) {
         setSelectedReview(event.target.value);
@@ -63,62 +81,95 @@ const Publication = () => {
         document.getElementById("button-add-movie").style.display = "none"
     }
 
-    async function handleSubmit(event) {
-        event.preventDefault()
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
 
+      async function handleSubmit(event) {
+        event.preventDefault();
+      
         let errorMsg = '';
-
-        if((document.getElementById("review-text").value).length < 10){
-            errorMsg += "A crítica precisa ter mais de 10 caracteres. ";
+      
+        if ((document.getElementById("review-text").value).length < 10) {
+          errorMsg += "A crítica precisa ter mais de 10 caracteres. ";
         }
-
-        if(selectedMovie === ''){
-            errorMsg += "O filme precisa ser selecionado. ";
+      
+        if (selectedMovie === '') {
+          errorMsg += "O filme precisa ser selecionado. ";
         }
-
-        if(selectedReview === '') {
-            errorMsg += "A nota precisa ser selecionada. ";
+      
+        if (selectedReview === '') {
+          errorMsg += "A nota precisa ser selecionada. ";
         }
-
-        if(errorMsg !== '') {
-            alert(errorMsg);
-            return
+      
+        if (errorMsg !== '') {
+          alert(errorMsg);
+          return;
         }
-
-        let id = localStorage.getItem("idUser")
-        id = id.substring(1,id.length-1)
-        let token = localStorage.getItem("tokenUser")
-        token = token.substring(1,token.length-1)
-
+      
+        let id = localStorage.getItem("idUser");
+        id = id.substring(1, id.length - 1);
+        let token = localStorage.getItem("tokenUser");
+        token = token.substring(1, token.length - 1);
+      
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleDateString();
-
+      
         const data = {
-            "review": selectedReview,
-            "pub_text": postText,
-            "user_id": parseInt(id),
-            "date": formattedDate,
-            "movie_id": selectedMovie.id,
-            "movie_title": selectedMovie.original_title,
+          "review": selectedReview,
+          "pub_text": postText,
+          "user_id": parseInt(id),
+          "date": formattedDate,
+          "movie_id": selectedMovie.id,
+          "movie_title": selectedMovie.original_title,
+        };
+      
+        const formData = new FormData();
+      
+        setIsLoading(true);
+      
+        formData.append('image', selectedFile);
+        formData.append('review', data.review);
+        formData.append('pub_text', data.pub_text);
+        formData.append('user_id', data.user_id);
+        formData.append('date', data.date);
+        formData.append('movie_id', data.movie_id);
+        formData.append('movie_title', data.movie_title);
+      
+        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' };
+      
+        try {
+          const response = await api.post('/publicacoes/', formData, { headers });
+          console.log(response.data);
+      
+          setMinLoadingTimePassed(false);
+      
+          await delay(2000);
+      
+          setMinLoadingTimePassed(true);
+      
+          setIsLoading(false);
+          setShowConfirmation(true);
+          
+          await delay(2000);
+      
+          setShowConfirmation(false);
+        } catch (error) {
+            console.log(error);
+        } finally {
         }
+          window.location.reload();
+      };
+      
 
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
-        api.post('/publicacoes/', data, {headers})
-            .then(response => {
-              console.log(response.data);
-              window.location.reload()
-            })
-            .catch(error => {
-              console.log(error);
-            });
-    };
+    console.log("minha vida", isLoading, minLoadingTimePassed, showConfirmation)
 
     async function seeBest() {
         document.getElementById("button-cancel").style.display = "block"
     }
 
     async function cancelPost() {
+        setSelectedFile(null);
         setSelectedMovie('')
         setSelectedReview('')
         setMovies([])
@@ -143,13 +194,13 @@ const Publication = () => {
     function handleMoviesSelect(event) {
         const selectedMovie = event.target.value;
         if (selectedMovie === "" || selectedMovie === '{"title":""}') {
-          setSelectedMovie(null);
+            setSelectedMovie(null);
         } else {
-          setSelectedMovie(JSON.parse(selectedMovie));
+            setSelectedMovie(JSON.parse(selectedMovie));
         }
     }
 
-    function handle(event){
+    function handle(event) {
         handleMovieSelect(event)
         handleMoviesSelect(event)
     }
@@ -157,6 +208,19 @@ const Publication = () => {
     return (
         <>
             <div className="publication-content">
+
+                {(isLoading || !minLoadingTimePassed) ? (
+                    <div className="loading-overlay">
+                        <div className="loading-indicator"></div>
+                    </div>
+                ) : showConfirmation ? (
+                    <div className="confirmation-overlay">
+                        <div className="confirmation-icon">
+                            <FaCheck size={32} color="green" />
+                        </div>
+                    </div>
+                ) : null}
+
                 <div className="publication-text-content">
                     <div className="content-conf-review-write">
                         <img
@@ -174,8 +238,8 @@ const Publication = () => {
                     />
                 </div>
 
-                <button 
-                    onClick={addMovieAndSeeBest}  
+                <button
+                    onClick={addMovieAndSeeBest}
                     id="button-add-movie"
                     className="button-add-movie"><AiFillPlusCircle className="plus-icon" />Adicionar filme</button>
                 <br />
@@ -230,6 +294,7 @@ const Publication = () => {
                         </div>
                     </div>
                     <div id="align-post-review" className="align-post-review">
+                        <ImageUpload selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
                         <div className="post-review-conf">
                             <p id="alert">Você só pode publicar se escrever uma crítica e selecionar um filme</p>
                         </div>
@@ -238,7 +303,7 @@ const Publication = () => {
                                 <option value="">Selecione uma nota</option>
                                 {REVIEWS.map(review => (
                                     <option key={review.id} value={review.id}>{review.value}</option>
-                                    ))}
+                                ))}
                             </select>
                             <button id="button-handleSubmit" type="button" onClick={handleSubmit}>Publicar Crítica</button>
                         </div>
