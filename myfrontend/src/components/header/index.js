@@ -14,14 +14,6 @@ const Header = () => {
 
     const handleSearchIconClick = () => {
         setIsSearchOpen(!isSearchOpen);
-    
-        setTimeout(function () {
-            var checkedM = document.getElementById(`moviesL`);
-            if (checkedM) {
-                handleRadioButtonChange()
-                checkedM.style.backgroundColor = "#D30069";
-            }
-        }, 100);
     };
     
     function handleSubmit(event) {
@@ -91,7 +83,9 @@ const Header = () => {
 
         if (checkedId) {
             const checkedElement = document.getElementById(`${checkedId}L`);
-            checkedElement.style.backgroundColor = "#D30069";
+            var name = checkedElement.getAttribute('name')
+            console.log(name)
+            document.getElementById("select-bar-search").innerHTML = name;
             console.log('ID do radio button marcado:', checkedId);
         }
     }
@@ -99,6 +93,25 @@ const Header = () => {
     radioButtons.forEach(radioButton => {
         radioButton.addEventListener('change', handleRadioButtonChange);
     });
+
+    async function selectSearch(){
+        var filterOptions = document.getElementById('option-conf-search-back');
+        filterOptions.style.display = "block";
+        setTimeout(function () {
+            var checkedM = document.getElementById(`moviesL`);
+            if (checkedM) {
+                handleRadioButtonChange()
+            }
+        }, 100);
+    }
+
+    async function closeOptions(){
+        var filterOptions = document.getElementById('option-conf-search-back');
+        filterOptions.style.display = "block";
+        if(filterOptions.style.display === "block"){
+            filterOptions.style.display = 'none';
+        }
+    }
 
     return (
         <>
@@ -127,8 +140,11 @@ const Header = () => {
                                     placeholder="Pesquisar filmes"
                                     name="search"
                                 />
-                                <div className="option-conf-search-back">
-                                    <label className="button-radio" id="moviesL">
+                                <div id="select-bar-search" className="select-bar-search" onClick={selectSearch}>
+                                    Filmes
+                                </div>
+                                <div id="option-conf-search-back" className="option-conf-search-back">
+                                    <label name="Filmes" className="button-radio" id="moviesL" onClick={closeOptions}>
                                         <input
                                             id="movies"
                                             type="radio"
@@ -140,7 +156,7 @@ const Header = () => {
                                         />
                                         Filmes
                                     </label>
-                                    <label className="button-radio" id="usersL">
+                                    <label name="Usuários" className="button-radio" id="usersL" onClick={closeOptions}>
                                         <input
                                             id="users"
                                             type="radio"
