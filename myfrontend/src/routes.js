@@ -12,7 +12,6 @@ import EditProfile from './pages/edit-profile'
 import Search from './pages/search'
 import Home from './pages/home'
 import Movie from './pages/movie'
-import Favoritos from './pages/favoritos'
 import User from './pages/user'
 
 const PrivateRoute = ({ children }) => {
@@ -57,10 +56,7 @@ export default function Router() {
                     path="/edit-profile" 
                     element={<PrivateRoute> <EditProfile /> </PrivateRoute>}
                 />
-                <Route 
-                    path="/favoritos" 
-                    element={<PrivateRoute> <Favoritos /> </PrivateRoute>}
-                />
+                
                 <Route
                     path="/user/:id"
                     element={<PrivateRoute> <User/> </PrivateRoute>}

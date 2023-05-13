@@ -131,7 +131,7 @@ const Movie = () => {
                                 </li>
                             ))}
                         </ul>
-                        <button id="favoritar-button" class="favoritar-button" onclick="toggleFavoritar()">Favoritar</button>
+                        <button id="favoritar-button" className="favoritar-button" onClick="toggleFavoritar()">Favoritar</button>
                     </div>
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>
