@@ -120,5 +120,6 @@ class WatchList(models.Model):
 
 class FavoritesList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    movie_id = models.CharField(max_length=300)
-
+    movie_id = models.CharField(max_length=300, blank=False)
+    poster_img = models.URLField(blank=False, default='')
+    movie_title = models.CharField(max_length=200, blank=False, default='')

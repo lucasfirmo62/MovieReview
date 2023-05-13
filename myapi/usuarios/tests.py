@@ -1,6 +1,6 @@
 from django.test import TestCase
 import requests
-from usuarios.models import User, Publication
+from usuarios.models import User, Publication, FavoritesList
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -303,5 +303,60 @@ class PublicationTestCase(TestCase):
         
         self.assertEqual(response.data['super_reviewer'], True)
         
+class FavoritesTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.token = response.data['access']
         
+        response = self.client.post('/favoritos/', {
+            "user_id": 1,
+            "movie_id": 238,
+            "poster_img": "https://image.tmdb.org/t/p/w500/qjiskwlV1qQzRCjpV0cL9pEMF9a.jpg",
+            "movie_title": "The Godfather"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
         
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(FavoritesList.objects.count(), 1)
+
+    def test_add_favorite(self):
+        response = self.client.post('/favoritos/', {
+            "user_id": 1,
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(FavoritesList.objects.count(), 2)
+        
+        response = self.client.post('/favoritos/', {
+            "user_id": 1,
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(FavoritesList.objects.count(), 2)
+        
+    def test_delete_favorite(self):
+        
+        self.assertEqual(FavoritesList.objects.count(), 1)
+
+        movie_id = 238
+        response = self.client.delete(f'/favoritos/{movie_id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(FavoritesList.objects.count(), 0)
+        
+        response = self.client.delete(f'/favoritos/{movie_id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 404)
