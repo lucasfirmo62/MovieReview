@@ -58,7 +58,7 @@
 textarea {
     width: 100%;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 8px;
     border: 1px solid gray;
     margin-bottom: 10px;
 }
@@ -115,11 +115,11 @@ select {
 
 @media only screen and (max-width: 660px){
     .home-left-content{
-        display: block;
+        display: none;
     }
     
     .home-right-content{
-        display: block;
+        display: none;
 
     }
     
