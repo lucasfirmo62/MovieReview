@@ -85,6 +85,49 @@ class SignalsTestCase(TestCase):
         response = client.get('/usuarios/')
         self.assertEqual(response.status_code, 401)
         
+    def test_pesquisa_usuarios(self):
+        client = APIClient()
+    
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        user3 = User.objects.create_user(
+            email='icetrae@example.com',
+            full_name=' Trae Young',
+            nickname='jararaca2',
+            bio_text='Terror de Nova york',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
+        
+        response = client.get(f'/usuarios/search/?nickname=jararaca', HTTP_AUTHORIZATION=f'Bearer {token}')
+        
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(response.status_code, 200)
+    
+        response = client.get(f'/usuarios/search/?nickname=Papai', HTTP_AUTHORIZATION=f'Bearer {token}')
+        
+        self.assertEqual(len(response.data['results']), 1)    
+        self.assertEqual(response.status_code, 200)
+        
 class LogoutTestCase(TestCase):
     
     def setUp(self):

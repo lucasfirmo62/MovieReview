@@ -10,5 +10,6 @@ router.register(r'publicacoes', PublicationViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('favoritos/', FavoritesViewSet.as_view({'post': 'create'}), name='criar_favorito'),
-    path('favoritos/<int:movie_id>/', FavoritesViewSet.as_view({'delete': 'destroy_by_movie_id'}))
+    path('favoritos/<int:movie_id>/', FavoritesViewSet.as_view({'delete': 'destroy_by_movie_id'})),
+    path('usuarios/search/', UserViewSet.as_view({'get': 'search'}), name='user-search'),
 ]
