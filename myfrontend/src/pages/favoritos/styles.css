@@ -38,4 +38,57 @@
     background: #313131;
     display: flex;
   }
+
+  .favoriteMovie-component{
+    padding: 1%;
+    height: 145px;
+    background: #6e6e6e;
+    width:95%;   
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+  }
+
+  .moviePicture{
+    margin-left: 5px;
+    background-image: url('https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Super_Mario_Bros._box.png/260px-Super_Mario_Bros._box.png');
+    background-size: cover;
+    padding: 1%;
+    height: 95%;
+    border-radius: 8px;
+    width:11%;
+  }
+
+  .movieInfo{
+    flex-grow: 1;
+    padding: 0 10px;
+    width: 200px;
+  }
+  .movieTitle {
+    font-weight: bold;
+    color: rgb(42, 42, 42);
+    text-shadow: 1px 1px 2px rgba(83, 83, 83, 0.5);
+    cursor: pointer;
+    font-size: 260%;
+  }
+
+  .movieDesc{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+  }
   
+.favoriteButton{
+  top: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.unfavoriteButton {
+  background-color: #313131;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}

@@ -20,7 +20,16 @@ const Favoritos = () => {
                 <big className = "title-component">Meus Filmes Favoritos</big>                
             </div>
             <div className = "favorite-content">
-                  - Conteúdo Aqui -
+                  <div className="favoriteMovie-component">
+                    <div className="moviePicture">                      
+                    </div>
+                    <div className="movieInfo">
+                          <p className="movieTitle">Nome do Filme</p>
+                    </div>
+                    <div class="favoriteButton">
+                      <button class="unfavoriteButton">Desfavoritar</button>
+                    </div>
+                  </div>
             </div>
         </div>
       </div>
