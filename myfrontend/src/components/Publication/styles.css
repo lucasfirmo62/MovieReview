@@ -25,7 +25,7 @@
     border-radius: 16px;
 }
 
-.content-conf-review-write{
+.content-conf-review-write {
     display: block;
 }
 
@@ -34,18 +34,18 @@
 }
 
 .button-cancel {
-  display: none;
-  font-weight: bold;
-  background-color: transparent;
-  color: #fff;
-  border: none; /* remove a borda padrão */
-  cursor: pointer; /* muda o cursor do mouse para indicar que é clicável */
-  outline: none; /* remove o contorno em torno do botão quando ele é clicado */
+    display: none;
+    font-weight: bold;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    outline: none;
 }
 
 .button-cancel:hover {
-  background-color: transparent; /* remove o efeito de hover na cor azul */
-  color: rgb(153, 150, 150);
+    background-color: transparent;
+    color: rgb(153, 150, 150);
 }
 
 .button-add-movie {
@@ -172,6 +172,51 @@ select {
     display: none;
 }
 
+.publication-content .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.publication-content .loading-indicator {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #ff0381;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
 @media only screen and (max-width: 768px) {
     .publication-content {
         width: 100%;
@@ -199,8 +244,6 @@ select {
         justify-content: center;
         align-items: center;
         border-radius: 8px;
-        /* width: 100%; */
-        /* height: 100%; */
         padding: 30px;
     }
 
@@ -229,9 +272,3 @@ select {
     }
 
 }
-
-
-
-
-
-
