@@ -49,7 +49,7 @@ const Publication = () => {
         } finally {
             setIsSearching(false);
         }
-    }, 4000);
+    }, 3000);
 
     const handleSearchChange = (event) => {
         setIsSearching(true);
@@ -145,8 +145,7 @@ const Publication = () => {
             setShowConfirmation(false);
         } catch (error) {
             console.log(error);
-        } finally {
-        }
+        } 
         window.location.reload();
     };
 
