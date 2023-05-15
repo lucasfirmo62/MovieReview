@@ -6,10 +6,19 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header'
 import SuperCritico from '../../components/SuperCritico'
 
+import CardFollower from "../../components/CardFollower";
+
+import { MdArrowBack } from 'react-icons/md';
+
 const Profile = () => {
 
     const [user, setUser] = useState([]);
     var loginItem;
+    const [selectedTab, setSelectedTab] = useState('profile');
+
+    const handleTabClick = (tab) => {
+        setSelectedTab(tab);
+    };
 
     const navigate = useNavigate();
 
@@ -45,25 +54,61 @@ const Profile = () => {
                     <Menu />
                 </div>
                 <div className="content-box-profile">
-                    <div className="profile-info">
-                        <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
-                        <div>
-                            <p className="name-user">{user.full_name}</p>
-                            <p className="username-text">@{user.nickname}</p>
-                            {(user.super_reviewer === true) ?
-                                <SuperCritico />
-                                :
-                                null
-                            }
-                            <p className="bio-text">{user.bio_text}</p>
-                            <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
+                    {selectedTab === 'profile' && (
+                        <div className="profile-info">
+                            <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
+                            <div>
+                                <p className="name-user">{user.full_name}</p>
+                                <p className="username-text">@{user.nickname}</p>
+                                {user.super_reviewer ? <SuperCritico /> : null}
+                                <p className="bio-text">{user.bio_text}</p>
+                                <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
+                            </div>
                         </div>
+                    )}
+
+                    {(selectedTab === 'followers' || selectedTab === 'following') && (
+                        <div className="followers-info">
+                            <button className="back-btn" onClick={() => handleTabClick('profile')}>
+                                <MdArrowBack size={32} className="back-icon" />
+                            </button>
+                            <h1>{user.nickname}</h1>
+                        </div>
+                    )}
+
+                    <div className={`tabs-profile ${selectedTab === 'followers' || selectedTab === 'following' ? 'tabs-profile colored-tabs' : 'tabs-profile'}`}>
+                        <p className={`tab-profile ${selectedTab === 'followers' ? 'active' : ''}`} onClick={() => handleTabClick('followers')}>Seguidores</p>
+                        <p className={`tab-profile ${selectedTab === 'following' ? 'active' : ''}`} onClick={() => handleTabClick('following')}>Seguindo</p>
+                        {selectedTab !== 'followers' && selectedTab !== 'following' && (
+                            <p className={`tab-profile ${selectedTab === 'profile' ? 'active' : ''}`} onClick={() => handleTabClick('profile')}>Críticas</p>
+                        )}
                     </div>
-                    <div className="tabs-profile">
-                        <p className="tab-profile">Followers</p>
-                        <p className="tab-profile">Following</p>
-                        <p className="tab-profile">Críticas</p>
-                    </div>
+
+                    {selectedTab === 'followers' && (
+                        <div className="followers-info-content">
+                            <CardFollower
+                                id="1"
+                                nickname="teste"
+                            />
+                            <CardFollower
+                                id="2"
+                                nickname="teste1"
+                            />
+                            <CardFollower
+                                id="3"
+                                nickname="teste2"
+                            />
+                            <CardFollower
+                                id="4"
+                                nickname="teste3"
+                            />
+                        </div>
+                    )}
+                    {selectedTab === 'following' && (
+                        <div className="following-info-content">
+
+                        </div>
+                    )}
                 </div>
                 <div className="right-content">
 

@@ -1,0 +1,17 @@
+.card-follower-content .card {
+    display: flex;
+    margin: 8px;
+    padding: 8px;
+    gap: 16px;
+}
+
+.card-follower-content:hover {
+    background-color: #4b4949;
+    cursor: pointer;
+}
+
+.card-follower-content .card img {
+    max-width: 90px;
+    max-height: 110px;
+    border-radius: 8px;
+}
