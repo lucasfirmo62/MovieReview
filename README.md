@@ -19,6 +19,12 @@ Para instalar as dependências listadas no arquivo requirements.txt:
 
 Depois disso, é necessário executar o comando `python manage.py makemigrations` para criar as migrações do banco de dados e, em seguida, o comando `python manage.py migrate` para aplicar essas migrações ao banco de dados.
 
+Crie um arquivo .env na raíz do projeto e adicione o id e o secret do cliente IMGUR:
+
+`IMGUR_CLIENT_ID=f16556a543b91b9`
+
+`IMGUR_CLIENT_SECRET=d7ea2c62ff008947fd20caec7c1cf6ddaa0b73db`
+
 Para executar o backend:
 
 `python manage.py runserver`
