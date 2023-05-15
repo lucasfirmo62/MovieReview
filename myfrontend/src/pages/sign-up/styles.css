@@ -7,8 +7,29 @@
     max-width: 730px;
 }
 
+.initial-linker {
+    color: #808080;    
+}
+
+.initial-linker:hover {
+    color: #e90074;    
+}
+
+.img-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.initial-logo {
+    width: 64px;
+    height: 64px;
+}
+
 .content-box{
-    background-color: white;
+    color: #fff;
+    background-color: #313131;
     padding: 100px;
     padding-top: 2px;
     border-radius: 16px;
@@ -141,10 +162,11 @@
     }
 
     .content-box{
-        background-color: white;
         padding: 10px;
         padding-top: 2px;
         border-radius: 16px;
+        margin-top: 20%;
+        background-color: transparent;
     }
 
     .title-page{
@@ -169,10 +191,23 @@
     }
 
     .content-input-half{
-        width: 87%;
+        width: 91.8%;
         height: 27px;
         font-size: 16px;
         padding-top: 4px;
         padding-bottom: 4px;
     }
+
+    .initial-linker {
+        color: #000;    
+    }
+
+    .button-simple{
+        width: 70%;
+    }
+    
 }
+
+
+
+
