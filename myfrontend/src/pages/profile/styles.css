@@ -133,7 +133,15 @@
 
     .content-all{
         display: block;
-        margin-top: -100px;
+        padding-bottom: 30%;
+    }
+
+    .right-content {
+        display: none;
+    }
+
+    .left-content {
+        display: none;
     }
 
     .container{
@@ -165,6 +173,14 @@
         padding: 5px;
     }
 
+    .followers-info {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 80%;
+        gap: 32px;
+        padding: 16px;
+    }
     
     .tabs-profile{
         flex-direction: row;

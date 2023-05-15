@@ -28,6 +28,26 @@ const Profile = () => {
 
     var idUser = localStorage.getItem('idUser');
 
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [])
+
     useEffect(() => {
         async function userUtility() {
             await api.get(`/usuarios/${idUser}/`, {
@@ -50,9 +70,11 @@ const Profile = () => {
         <>
             <Header />
             <div className="content-all">
-                <div className="left-content">
+                {windowSize.width > 680 ? (<div className="left-content">
                     <Menu />
-                </div>
+                </div>) :
+                    (<Menu />
+                )}
                 <div className="content-box-profile">
                     {selectedTab === 'profile' && (
                         <div className="profile-info">
@@ -106,7 +128,22 @@ const Profile = () => {
                     )}
                     {selectedTab === 'following' && (
                         <div className="following-info-content">
-
+                             <CardFollower
+                                id="1"
+                                nickname="teste"
+                            />
+                            <CardFollower
+                                id="2"
+                                nickname="teste1"
+                            />
+                            <CardFollower
+                                id="3"
+                                nickname="teste2"
+                            />
+                            <CardFollower
+                                id="4"
+                                nickname="teste3"
+                            />
                         </div>
                     )}
                 </div>

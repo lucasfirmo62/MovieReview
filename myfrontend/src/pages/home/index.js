@@ -8,13 +8,35 @@ import Header from "../../components/header";
 import Menu from "../../components/menu";
 
 const Home = () => {
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [])
+
     return (
         <>
             <Header />
             <div className="content-home">
-                <div className="home-left-content">
+                {windowSize.width > 680 ? (<div className="home-left-content">
                     <Menu />
-                </div>
+                </div>) :
+                    (<Menu />
+                )}
                 <div className="content-box-home">
                     <Publication />
                 </div>

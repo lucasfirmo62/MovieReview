@@ -65,9 +65,9 @@
 
 @media only screen and (max-width: 1000px){
 
-    .content-all{
+    /* .content-all{
         display: block;
-    }
+    } */
 
     .container{
         background-color: #909090;
@@ -85,12 +85,11 @@
     }
 
     .left-content{
-        display: block;
+        display: none;
     }
     
     .right-content{
-        display: block;
-
+        display: none;
     }
     
     .content-box-profile{
