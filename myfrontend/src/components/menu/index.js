@@ -54,7 +54,7 @@ const Menu = () => {
                 <div className="menu-contrast">
                     <div className="inside-menu" onClick={goHome}><AiFillHome className="icon"/><p>Home</p></div>
                     <div className="inside-menu" onClick={goProfile}><CgProfile className="icon"/><p>Perfil</p></div>
-                    <div className="inside-menu" onClick={handleLogout}><BiLogOut className="icon"/><p>Sair</p></div>
+                    <div style={{color: '#e90074'}} className="inside-menu" onClick={handleLogout}><BiLogOut className="icon"/><p>Sair</p></div>
                 </div>
             </div>
         </>

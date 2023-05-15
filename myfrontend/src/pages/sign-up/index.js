@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import api from '../../api.js';
 
 import { useNavigate } from 'react-router-dom';
+import logotype from '../../assets/logotype.png';
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -188,7 +189,10 @@ const SignUp = () => {
 
                 <div className="container">
                     <div className="content-box">
-                        <p className="title-page">Cadastre-se</p>
+                        <div className="img-block">
+                            <img src={logotype} className="initial-logo"/>
+                            <p className="title-page">Cadastre-se</p>
+                        </div>
 
                         <div className="space-input">
                             <input className="content-input" id="name" placeholder="Nome completo" type="text" onChange={verifyName} />
@@ -197,7 +201,6 @@ const SignUp = () => {
 
                         <div className="space-input">
                             <input className="content-input" id="username" placeholder="Username" type="text" onChange={verifyNickname} />
-                            {/* <p id="alert-username" className="alert-username">Esse Username já foi cadastrado</p> */}
                             <p id="alert-username" className="alert-username">O Username não pode ter mais de 60 caracteres</p>
                         </div>
 
@@ -235,7 +238,7 @@ const SignUp = () => {
                         </div>
 
                         <div className="space-input">
-                            <p>Já tem uma conta?</p><Link to="/login">Entrar aqui!</Link>
+                            <p>Já tem uma conta? <Link className="initial-linker" to="/login">Entrar aqui!</Link></p>
                         </div>
 
                     </div>
