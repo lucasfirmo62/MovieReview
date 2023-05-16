@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from "react";
-import './styles.css'
 import Menu from '../../components/menu'
 import api from "../../api";
-import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header'
-import SuperCritico from '../../components/SuperCritico'
 
 import CardFollower from "../../components/CardFollower";
 
 import { MdArrowBack } from 'react-icons/md';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Profile = () => {
+const Following = ({ nickname }) => {
+    const [user, setUser] = useState([])
+    const [following, setFollowing] = useState([]);
 
-    const [user, setUser] = useState([]);
+    const navigate = useNavigate();
 
-    var loginItem;
+    useEffect(() => {
+        const handlePopstate = () => {
+            navigate.push('/profile');
+        };
+
+        window.addEventListener('popstate', handlePopstate);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopstate);
+        };
+    }, [navigate]);
+
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
@@ -37,7 +47,7 @@ const Profile = () => {
         };
     }, [])
 
-    const navigate = useNavigate();
+    var loginItem;
 
     if (localStorage.getItem('tokenUser')) {
         loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
@@ -59,19 +69,10 @@ const Profile = () => {
         userUtility()
     }, [idUser, loginItem])
 
-    async function goEditProfile() {
-        navigate("/edit-profile")
-    }
-
-    // async function goFavoritos() {
-    // navigate("/favoritos")
-    // }
-
     return (
         <>
             <Header />
             <div className="content-all">
-
                 {windowSize.width < 680
                     ?
                     (
@@ -81,45 +82,47 @@ const Profile = () => {
                     <div className="left-content">
                         <Menu />
                     </div>}
+
                 <div className="content-box-profile">
-                    <div className="profile-info">
-                        <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
-                        <div>
-                            <p className="name-user">{user.full_name}</p>
-                            <p className="username-text">@{user.nickname}</p>
-                            {user.super_reviewer ? <SuperCritico /> : null}
-                            <p className="bio-text">{user.bio_text}</p>
-                            <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
-                        </div>
+                    <div className="followers-info">
+
+                        <Link
+                            className="back-btn"
+                            to={`/profile`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <MdArrowBack size={32} className="back-icon" />
+                        </Link>
+
+                        <h1>{user.nickname}</h1>
                     </div>
 
-                    <div className={'tabs-profile'}>
+                    <div className="tabs-profile">
                         <Link
                             to={`/followers`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
-                            <p className={'tab-profile'}>Seguidores</p>
+                            <p className='tab-profile'>Seguidores</p>
                         </Link>
+
                         <Link
                             to={`/following`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
-                            <p className={'tab-profile'}>Seguindo</p>
-                        </Link>
-                        <Link
-                            to={`/profile`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className={'tab-profile'}>Críticas</p>
+                            <p className='tab-profile'>Seguindo</p>
                         </Link>
                     </div>
+                    <div className="followers-info-content">
+
+                    </div>
                 </div>
+
                 <div className="right-content">
 
                 </div>
-            </div>
+            </div >
         </>
     )
 }
 
-export default Profile;
+export default Following;

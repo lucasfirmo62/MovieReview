@@ -35,3 +35,13 @@
     color: white;
     transition: 0.2s;
 }
+
+.card-follower-item {
+    text-decoration: none;
+    color: #fff;
+}
+
+.card-follower-item:hover {
+    text-decoration: underline;
+    text-decoration-color: #ffffff;
+}
