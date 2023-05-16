@@ -84,7 +84,10 @@ const Profile = () => {
                         <p className={`tab-profile ${selectedTab === 'followers' ? 'active' : ''}`} onClick={() => handleTabClick('followers')}>Seguidores</p>
                         <p className={`tab-profile ${selectedTab === 'following' ? 'active' : ''}`} onClick={() => handleTabClick('following')}>Seguindo</p>
                         {selectedTab !== 'followers' && selectedTab !== 'following' && (
-                            <p className={`tab-profile ${selectedTab === 'profile' ? 'active' : ''}`} onClick={() => handleTabClick('profile')}>Críticas</p>
+                            <>
+                                <p className={`tab-profile ${selectedTab === 'profile' ? 'active' : ''}`} onClick={() => handleTabClick('profile')}>Críticas</p>
+                                <p onClick={goFavoritos}>Favoritos</p>
+                            </>
                         )}
                     </div>
 
