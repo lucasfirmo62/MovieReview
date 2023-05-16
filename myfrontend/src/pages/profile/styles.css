@@ -53,6 +53,19 @@
     padding: 20px;
 }
 
+.tabs-profile.colored-tabs p.tab-profile.active {
+    background-color: #444444;
+}
+
+.colored-tabs {
+    text-align: center;
+    border-bottom: 1px solid gray;
+}
+
+.colored-tabs p {
+    width: 40%;
+}
+
 .tabs-profile p{
     padding-left: 20px;
     padding-right: 20px;
@@ -76,6 +89,45 @@
     color: rgba(255, 255, 255, 0.623);
 }
 
+.super-critic{
+    font-size: 12px;
+    display: flex;
+}
+
+.critic-name{
+    font-size: 19px;
+    margin-top: -7px;
+}
+
+.verified{
+    font-size: 19px;
+    color: #d4a60e;
+    margin-top: -7px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.back-btn {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    width: max-content;
+    height: max-content;
+    cursor: pointer;
+}
+
+.followers-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: 32px;
+    padding: 16px;
+}
+
+.followers-info h1 {
+    margin: 0;
+}
 
 @media only screen and (max-width: 660px){
 
@@ -97,15 +149,6 @@
         border-radius: 100%;
         width: 110px;
         padding: 20px;
-    }
-
-    .left-content{
-        display: block;
-    }
-    
-    .right-content{
-        display: block;
-
     }
     
     .content-box-profile{

@@ -12,6 +12,8 @@ import EditProfile from './pages/edit-profile'
 import Search from './pages/search'
 import Home from './pages/home'
 import Movie from './pages/movie'
+import User from './pages/user'
+import Favoritos from './pages/favoritos'
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -54,6 +56,14 @@ export default function Router() {
                 <Route 
                     path="/edit-profile" 
                     element={<PrivateRoute> <EditProfile /> </PrivateRoute>}
+                />
+                <Route
+                    path="/user/:id"
+                    element={<PrivateRoute> <User/> </PrivateRoute>}
+                />
+                <Route 
+                    path="/favoritos" 
+                    element={<PrivateRoute> <Favoritos /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>

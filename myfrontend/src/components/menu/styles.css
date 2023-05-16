@@ -45,6 +45,7 @@
         align-items: center;
         position: fixed;
         display: none;
+        z-index: 2;
     }
     
     .menu-contrast {
@@ -55,6 +56,7 @@
         width: 100%;
         padding-bottom: 100px;
         padding-left: 0%;
+        z-index: 2;
     }
 
     .inside-menu {
