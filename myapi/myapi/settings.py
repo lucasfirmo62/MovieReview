@@ -62,7 +62,7 @@ AUTH_USER_MODEL = 'usuarios.User'
 
 AUTHENTICATION_BACKENDS = [
     'usuarios.authentication.EmailBackend', 
-    'django.contrib.auth.backends.ModelBackend'
+    # 'django.contrib.auth.backends.ModelBackend'
 ]
 
 MIDDLEWARE = [
@@ -79,7 +79,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'usuarios.authentication.MyJWTAuthentication'
     ],
 }
 
