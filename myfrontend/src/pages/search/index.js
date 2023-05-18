@@ -23,10 +23,14 @@ const Search = () => {
   const params = new URLSearchParams(search);
 
   const query = params.get("query");
+  const user = params.get("user");
 
   const [beforeQuery, setBeforeQuery] = useState("");
+  const [beforeUser, setBeforeUser] = useState("");
+
 
   const [movies, setMovies] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -57,31 +61,59 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      let response;
-
-      if (isFilterWork) {
+    if (query === null) {
+      const fetchData = async () => {
+        let response
         response = await axios.get(
-          `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR&with_genres=${genres}&with_text_query=${query}&year=${year}&sort_by=${sortby}&page=${currentPage}`
+          "https://api.npoint.io/7b41acb3e335ebeb1f70"
         );
-      } else {
-        if (query !== beforeQuery) {
-          setCurrentPage(1);
-        }
-
-        response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&query=${query}&page=${currentPage}&language=pt-BR`
-        );
+        setUsers(response.data);
+        const results = response.data.results;
+        setTotalPages(response.data.total_pages);
       }
 
-      const results = response.data.results;
-      setMovies(results);
-      setTotalPages(response.data.total_pages);
-      setBeforeQuery(query);
-    }
+      fetchData();
 
-    fetchData();
-  }, [isFilterWork, query, currentPage, genres, year, sortby, beforeQuery]);
+    } else if (user === null) {
+      async function fetchData() {
+        let response;
+
+        if (isFilterWork) {
+          response = await axios.get(
+            `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR&with_genres=${genres}&with_text_query=${query}&year=${year}&sort_by=${sortby}&page=${currentPage}`
+          );
+        } else {
+          if (query !== beforeQuery) {
+            setCurrentPage(1);
+          }
+
+          response = await axios.get(
+            `https://api.themoviedb.org/3/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&query=${query}&page=${currentPage}&language=pt-BR`
+          );
+        }
+
+        const results = response.data.results;
+        setMovies(results);
+        setTotalPages(response.data.total_pages);
+        setBeforeQuery(query);
+      }
+
+      fetchData();
+    }
+  }, [
+    isFilterWork,
+    query,
+    currentPage,
+    genres,
+    year,
+    sortby,
+    beforeQuery,
+    user,
+  ]);
+
+  console.log(users)
+  console.log(movies)
+
 
   function filterMovies(year, genres, rating) {
     setYear(year);
@@ -118,61 +150,106 @@ const Search = () => {
     <>
       <Header />
 
-      <div className="search-container ">
+      <div className="search-container">
         <div className="search-content">
           <div className="search-results">
-            {movies.length > 0 ? (
-              <h2>Resultados da busca por "{query}"</h2>
-            ) : (
-              <h2>Não foram encontrados resultados por "{query}"</h2>
-            )}
-            <ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
-              {movies.map((movie) => (
-                <li key={movie.id}>
-                  <Link
-                    className="movie-item"
-                    to={`/movie/${movie.id}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <img
-                      src={
-                        movie.poster_path
-                          ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
-                          : posternotfound
-                      }
-                      alt={movie.title}
-                    />
-                    <div className="movie-details">
-                      <h3>{movie.title}</h3>
-                      <p>({new Date(movie.release_date).getFullYear()})</p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {user ? (
+              <>
+                {users.length > 0 ? (
+                  <h2>Resultados da busca por "{user}"</h2>
+                ) : (
+                  <h2>Não foram encontrados resultados por "{user}"</h2>
+                )}
 
-            {movies.length > 0 ? (
-              <Pagination
-                totalPages={totalPages < 5 ? totalPages : 5}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
-              />
+                <ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
+                  {users.map((userData) => (
+                    <li>
+                      <Link
+                        className="movie-item"
+                        to={`/`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <img
+                          src={userData.img}
+                          alt={userData.username}
+                        />
+                        <div className="movie-details">
+                          <h3>{userData.username}</h3>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
+                {users.length > 0 && (
+                  <Pagination
+                    totalPages={totalPages < 5 ? totalPages : 5}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </>
             ) : (
-              true
+              <>
+                {movies.length > 0 ? (
+                  <h2>Resultados da busca por "{query}"</h2>
+                ) : (
+                  <h2>Não foram encontrados resultados por "{query}"</h2>
+                )}
+
+                <ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
+                  {movies.map((movie) => (
+                    <li key={movie.id}>
+                      <Link
+                        className="movie-item"
+                        to={`/movie/${movie.id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <img
+                          src={
+                            movie.poster_path
+                              ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`
+                              : posternotfound
+                          }
+                          alt={movie.title}
+                        />
+                        <div className="movie-details">
+                          <h3>{movie.title}</h3>
+                          <p>({new Date(movie.release_date).getFullYear()})</p>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
+                {movies.length > 0 && (
+                  <Pagination
+                    totalPages={totalPages < 5 ? totalPages : 5}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </>
             )}
           </div>
 
-          <div>
-            {showImage && (
-              <div className="filter-toggle" onClick={toggleFilter}>
-                <FaFilter /> Filtro
-              </div>
-            )}
+          {user ? (
+            null
+          ) : (
+            <div>
+              {showImage && (
+                <div className="filter-toggle" onClick={toggleFilter}>
+                  <FaFilter /> Filtro
+                </div>
+              )}
 
-            {(!showImage || (showImage && showFilter)) && (
-              <MovieFilter filterMovies={filterMovies} />
-            )}
-          </div>
+              {(!showImage || (showImage && showFilter)) && (
+                <MovieFilter filterMovies={filterMovies} />
+              )}
+            </div>
+          )}
+
+
         </div>
       </div>
     </>
