@@ -85,12 +85,11 @@
     }
 
     .left-content{
-        display: block;
+        display: none;
     }
     
     .right-content{
-        display: block;
-
+        display: none;
     }
     
     .content-box-profile{
