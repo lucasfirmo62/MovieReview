@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://vertuz.pythonanywhere.com/',
+  baseURL: 'http://localhost:8000/',
 })
 
 api.interceptors.request.use(
@@ -21,11 +21,11 @@ api.interceptors.request.use(
 
     if (access && refresh) {
       try {
-        await axios.post('https://vertuz.pythonanywhere.com/api/token/verify/', { token: access }, { headers });
+        await axios.post('http://localhost:8000/api/token/verify/', { token: access }, { headers });
       } catch (error) {
         if (error.response.status === 401) {
           try {
-            const response = await axios.post('https://vertuz.pythonanywhere.com/api/token/refresh/', { refresh: refresh }, { headers });
+            const response = await axios.post('http://localhost:8000/api/token/refresh/', { refresh: refresh }, { headers });
             const newAccess = response.data.access;
 
             localStorage.setItem('tokenUser', JSON.stringify(newAccess));
