@@ -5,6 +5,7 @@ import Menu from '../../components/menu'
 import Header from '../../components/header'
 import { useNavigate } from 'react-router-dom';
 import SuperCritico from '../../components/SuperCritico'
+import FollowUnfollow from "../../components/Follow-Unfollow";
 
 import { Link } from "react-router-dom";
 
@@ -87,6 +88,7 @@ const User = () => {
                                 :
                                 null
                             }
+                            <FollowUnfollow/>
                             <p className="bio-text">{user.bio_text}</p>
                             {(idMyUser === id) ?
                                 <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
