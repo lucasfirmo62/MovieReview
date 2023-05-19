@@ -34,6 +34,8 @@ const User = () => {
     const id = url.split('user/')[1];
 
     const [user, setUser] = useState([]);
+    const [following, setFollowing] = useState([]);
+    const [followers, setFollowers] = useState([]);
 
     const navigate = useNavigate();
 
@@ -55,6 +57,23 @@ const User = () => {
             })
                 .then(response => { setUser(response.data) })
 
+            const response = await api.get(`/usuarios/following/`, {
+                headers: {
+                    Authorization: `Bearer ${loginItem}`,
+                    "Content-type": "application/json"
+                },
+            })
+
+            setFollowing(response.data)
+
+            const responseFollowing = await api.get(`/usuarios/following/`, {
+                headers: {
+                    Authorization: `Bearer ${loginItem}`,
+                    "Content-type": "application/json"
+                },
+            })
+
+            setFollowers(response.data)
         }
         userUtility()
     }, [idMyUser, loginItem])
@@ -88,7 +107,12 @@ const User = () => {
                                 :
                                 null
                             }
-                            <FollowUnfollow/>
+                            {following.length > 0 && idMyUser != id && (<FollowUnfollow
+                                isFollower={following.some(
+                                    (followingUser) => followingUser.id === user.id
+                                )}
+                                id={user.id}
+                            />)}
                             <p className="bio-text">{user.bio_text}</p>
                             {(idMyUser === id) ?
                                 <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
@@ -102,19 +126,13 @@ const User = () => {
                             to={`/followers`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
-                            <p className={'tab-profile'}>Seguidores</p>
+                            <p className={'tab-profile'}>{followers.length} Seguidores</p>
                         </Link>
                         <Link
                             to={`/following`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
-                            <p className={'tab-profile'}>Seguindo</p>
-                        </Link>
-                        <Link
-                            to={`/profile`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className={'tab-profile'}>Críticas</p>
+                            <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
                     </div>
                 </div>
