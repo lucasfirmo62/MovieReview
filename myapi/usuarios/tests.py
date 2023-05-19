@@ -162,12 +162,12 @@ class SignalsTestCase(TestCase):
         
         response = client.get(f'/usuarios/search/?nickname=jararaca', HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(len(response.data['results']['results']), 2)
         self.assertEqual(response.status_code, 200)
     
         response = client.get(f'/usuarios/search/?nickname=Papai', HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        self.assertEqual(len(response.data['results']), 1)    
+        self.assertEqual(len(response.data['results']['results']), 1)  
         self.assertEqual(response.status_code, 200)
         
     def test_followers_list(self):

@@ -52,9 +52,17 @@ class UserViewSet(viewsets.ModelViewSet):
         
         page = self.paginate_queryset(queryset)
         
+        total_itens = queryset.count()
+        page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            tamanho_pagina = self.paginator.page_size
+            num_paginas = total_itens // tamanho_pagina + (1 if total_itens % tamanho_pagina > 0 else 0)
+            response_data = {
+                'results': serializer.data,
+                'num_paginas': num_paginas
+            }
+            return self.get_paginated_response(response_data)
         
         serializer = self.get_serializer(queryset, many=True)
 

@@ -14,6 +14,10 @@ import { FaFilter } from "react-icons/fa";
 
 import posternotfound from "../../assets/posternotfound.png";
 
+import api from "../../api";
+
+import userImage from '../../assets/user-default.jpg';
+
 const Search = () => {
   const [showImage, setShowImage] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
@@ -27,7 +31,6 @@ const Search = () => {
 
   const [beforeQuery, setBeforeQuery] = useState("");
   const [beforeUser, setBeforeUser] = useState("");
-
 
   const [movies, setMovies] = useState([]);
   const [users, setUsers] = useState([]);
@@ -60,21 +63,28 @@ const Search = () => {
     };
   }, []);
 
+  let loginItem;
+  if (localStorage.getItem('tokenUser')) {
+    loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
+  }
+
   useEffect(() => {
     if (query === null) {
       const fetchData = async () => {
-        let response
-        response = await axios.get(
-          "https://api.npoint.io/7b41acb3e335ebeb1f70"
-        );
-        setUsers(response.data);
-        const results = response.data.results;
-        setTotalPages(response.data.total_pages);
+        const headers = {
+          Authorization: `Bearer ${loginItem}`,
+          "Content-type": "application/json"
+        }
+        
+        const response = await api.get(`/usuarios/search/?nickname=${user}&page=${currentPage}`, { headers });
+  
+        setUsers(response.data.results.results);
+  
+        setTotalPages(response.data.results.num_paginas);
       }
 
       fetchData();
-
-    } else if (user === null) {
+    }else if (user === null) {
       async function fetchData() {
         let response;
 
@@ -110,10 +120,6 @@ const Search = () => {
     beforeQuery,
     user,
   ]);
-
-  console.log(users)
-  console.log(movies)
-
 
   function filterMovies(year, genres, rating) {
     setYear(year);
@@ -161,29 +167,30 @@ const Search = () => {
                   <h2>Não foram encontrados resultados por "{user}"</h2>
                 )}
 
-                <ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
+                {users.length > 0 && (<ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
                   {users.map((userData) => (
-                    <li>
+                    <li key={userData.id}>
                       <Link
                         className="movie-item"
-                        to={`/`}
+                        to={`/user/${userData.id}`}
                         style={{ textDecoration: "none" }}
                       >
                         <img
-                          src={userData.img}
-                          alt={userData.username}
+                          src={userImage}
+                          alt={userData.nickname}
                         />
                         <div className="movie-details">
-                          <h3>{userData.username}</h3>
+                          <h3>{userData.nickname}</h3>
                         </div>
                       </Link>
                     </li>
                   ))}
-                </ul>
+                </ul>)}
 
+                
                 {users.length > 0 && (
                   <Pagination
-                    totalPages={totalPages < 5 ? totalPages : 5}
+                    totalPages={totalPages}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
                   />
@@ -224,7 +231,7 @@ const Search = () => {
 
                 {movies.length > 0 && (
                   <Pagination
-                    totalPages={totalPages < 5 ? totalPages : 5}
+                    totalPages={totalPages}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
                   />
