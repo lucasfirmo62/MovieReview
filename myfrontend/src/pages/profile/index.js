@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 const Profile = () => {
 
     const [user, setUser] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
 
     var loginItem;
     const [windowSize, setWindowSize] = useState({
@@ -55,6 +57,17 @@ const Profile = () => {
 
             await api.get(`/usuarios/${idUser}/`, { headers })
                 .then(response => { setUser(response.data) })
+            
+            const followersResponse = await api.get(`/usuarios/followers/`, {
+                    headers,
+            });
+
+            const followingResponse = await api.get(`/usuarios/following/`, {
+                headers,
+            });
+          
+            setFollowers(followersResponse.data);
+            setFollowing(followingResponse.data);
         }
 
         userUtility()
@@ -99,13 +112,13 @@ const Profile = () => {
                             to={`/followers`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
-                            <p className={'tab-profile'}>Seguidores</p>
+                            <p className={'tab-profile'}>{followers.length} Seguidores</p>
                         </Link>
                         <Link
                             to={`/following`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
-                            <p className={'tab-profile'}>Seguindo</p>
+                            <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
                         <Link
                             to={`/profile`}

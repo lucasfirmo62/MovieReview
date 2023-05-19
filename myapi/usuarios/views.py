@@ -90,7 +90,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def unfollow(self, request, pk=None):
         user_to_unfollow = self.get_object()
         user = request.user
-                
+
         if user == user_to_unfollow:
             return Response({'error': 'Você não pode deixar de seguir a si mesmo'}, status=status.HTTP_400_BAD_REQUEST)
 
