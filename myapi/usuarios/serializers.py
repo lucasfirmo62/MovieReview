@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import User, Publication
+from .models import User, Publication, FavoritesList
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'id',
             'full_name',
             'nickname',
             'bio_text',
@@ -25,5 +26,10 @@ class PublicationSerializer(serializers.ModelSerializer):
             'date',
             'movie_id',
             'movie_title',
+            'imgur_link',
         ]
 
+class FavoritesListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavoritesList
+        fields = '__all__'

@@ -1,0 +1,28 @@
+.followers-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: 32px;
+    padding: 16px;
+}
+
+.followers-info h1 {
+    margin: 0;
+}
+
+.back-btn {
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    width: max-content;
+    height: max-content;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.back-btn:hover {
+    border-radius: 50%;
+    background-color: #4b4949;
+}
+

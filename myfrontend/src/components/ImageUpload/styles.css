@@ -1,0 +1,101 @@
+.image-upload-container .image-upload-dropzone {
+    width: 80%;
+    height: 70px;
+    max-height: 140px;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    border-radius: 16px;
+    margin: auto;
+    align-items: center;
+    margin-top: 8px;
+    border: 2px dashed #ccc;
+  }
+  
+.image-upload-dropzone:hover,
+.image-upload-dropzone:focus,
+.image-upload-dropzone:active {
+    border-color: #007bff;
+}
+
+.image-upload-dropzone.drag-over {
+    border-color: #403f3f;
+  }
+
+.image-upload-container .preview-image-container .preview-image {
+    max-width: 100px;
+    width: auto;
+    height: 64px;
+    border-radius: 4px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.image-upload-container .image-upload-input {
+    color: transparent;
+}
+
+.image-upload-container .image-upload-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.image-upload-container .image-upload-input::before {
+    content: 'Adicionar Imagem';
+    display: inline-block;
+    background-color: gray;
+    color: #fff;
+    padding: 0.5em 1em;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    position: relative;
+    z-index: 1;
+}
+
+.image-upload-container .preview-image-container {
+    display: flex;
+    align-content: center;
+}
+
+.image-upload-container .preview-image-container .clear-image-button {
+    margin: 16px;
+    padding: 4px;
+    background-color: red;
+    height: max-content;
+}
+
+.image-upload-container .image-upload-prompt {
+    display: flex;
+    align-items: center;
+    margin: 16px;
+    gap: 8px;
+}
+
+@media (max-width: 1165px) {
+    .image-upload-container .image-upload-prompt span {
+      display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .image-upload-container .preview-image-container {
+        align-items: center;
+    }
+
+    .image-upload-container .preview-image-container .clear-image-button {
+        margin: 8px;
+        height: max-content;
+        max-width: 24px;
+    }
+
+    .image-upload-container .preview-image-container {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
