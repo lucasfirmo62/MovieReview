@@ -343,6 +343,6 @@
   }
   
   .favoritado::before {
-    content: "\2605"; /* Código Unicode para uma estrela */
+    content: "\2605"; 
     margin-right: 5px;
   }

@@ -80,10 +80,8 @@ const Movie = () => {
     }
 
     function toggleFavoritar() {
-        
-        //var button = document.getElementById("favoritar-button");
 
-      }
+    }
 
     return (
         <>
@@ -114,9 +112,6 @@ const Movie = () => {
                         <div id='button-trailer' onClick={trailerShow} className='button-trailer'><p><BsFillPlayFill /> Assistir Trailer</p></div>
                     </div>
                     <div className="movie-details">
-                        
-                     
-
                         <div
                             className='title-details'
                         >
