@@ -1,6 +1,9 @@
 from django.test import TestCase
+
 import requests
-from usuarios.models import User, Publication, FavoritesList
+
+from usuarios.models import User, Publication, FavoritesList, Connection
+
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -83,6 +86,47 @@ class SignalsTestCase(TestCase):
         response = client.get('/usuarios/')
         self.assertEqual(response.status_code, 401)
         
+    def test_follow_and_unfollow(self):
+        client = APIClient()
+    
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
+
+        response = client.post(f'/usuarios/{user2.pk}/follow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'ok'})
+
+        connection_exists = Connection.objects.filter(usuario_alpha=user1, usuario_beta=user2).exists()
+        self.assertTrue(connection_exists)
+
+        response = client.post(f'/usuarios/{user2.pk}/follow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {'error': 'Você já segue este usuário'})
+
+        response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        
+        response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.data, {'error': 'Você não segue este usuário'})
+
     def test_pesquisa_usuarios(self):
         client = APIClient()
     
@@ -118,13 +162,96 @@ class SignalsTestCase(TestCase):
         
         response = client.get(f'/usuarios/search/?nickname=jararaca', HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        self.assertEqual(len(response.data['results']), 2)
+        self.assertEqual(len(response.data['results']['results']), 2)
         self.assertEqual(response.status_code, 200)
     
         response = client.get(f'/usuarios/search/?nickname=Papai', HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        self.assertEqual(len(response.data['results']), 1)    
+        self.assertEqual(len(response.data['results']['results']), 1)  
         self.assertEqual(response.status_code, 200)
+        
+    def test_followers_list(self):
+        client = APIClient()
+
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        response = self.client.post('/api/token/', {'email': user2.email, 'password': '123mudar'})
+        token_follower = response.data['access']
+
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token_following = response.data['access']
+
+        response = client.get(f'/usuarios/followers/', HTTP_AUTHORIZATION=f'Bearer {token_follower}')
+        self.assertEqual(len(response.data), 0)
+
+        response = client.post(f'/usuarios/{user2.pk}/follow/', HTTP_AUTHORIZATION=f'Bearer {token_following}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'ok'})
+
+        response = client.get(f'/usuarios/followers/', HTTP_AUTHORIZATION=f'Bearer {token_follower}')
+        self.assertEqual(len(response.data), 1)
+
+        response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token_following}')
+        self.assertEqual(response.status_code, 200)
+
+        response = client.get(f'/usuarios/followers/', HTTP_AUTHORIZATION=f'Bearer {token_follower}')
+        self.assertEqual(len(response.data), 0)
+        
+    def test_following_list(self):
+        client = APIClient()
+
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
+        
+        response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(len(response.data), 0)
+
+        response = client.post(f'/usuarios/{user2.pk}/follow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'ok'})
+        
+        response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(len(response.data), 1)
+        
+        response = client.post(f'/usuarios/{user2.pk}/unfollow/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.status_code, 200)
+        
+        response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(len(response.data), 0)
         
 class LogoutTestCase(TestCase):
     

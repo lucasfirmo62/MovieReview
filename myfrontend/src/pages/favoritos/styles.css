@@ -112,7 +112,7 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .left-content {
+  .content-page .left-content {
     display: none;
   }
 

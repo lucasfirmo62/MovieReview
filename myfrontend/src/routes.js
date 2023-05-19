@@ -5,15 +5,17 @@ import {
     Navigate
 } from 'react-router-dom';
 
-import SignUp from './pages/sign-up'
-import Login from './pages/login'
-import Profile from './pages/profile'
-import EditProfile from './pages/edit-profile'
-import Search from './pages/search'
-import Home from './pages/home'
-import Movie from './pages/movie'
-import User from './pages/user'
-import Favoritos from './pages/favoritos'
+import SignUp from './pages/sign-up';
+import Login from './pages/login';
+import Profile from './pages/profile';
+import EditProfile from './pages/edit-profile';
+import Search from './pages/search';
+import Home from './pages/home';
+import Movie from './pages/movie';
+import User from './pages/user';
+import Favoritos from './pages/favoritos';
+import Followers from './pages/followers';
+import Following from './pages/following';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -64,6 +66,14 @@ export default function Router() {
                 <Route 
                     path="/favoritos" 
                     element={<PrivateRoute> <Favoritos /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/followers" 
+                    element={<PrivateRoute> <Followers /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/following" 
+                    element={<PrivateRoute> <Following /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>

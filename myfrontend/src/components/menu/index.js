@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import './styles.css'
 import { AiFillHome } from 'react-icons/ai';
 import { BsFillBookmarkStarFill } from 'react-icons/bs';
@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 
 const Menu = () => {
-
     const navigate = useNavigate();
 
     async function goHome(){
