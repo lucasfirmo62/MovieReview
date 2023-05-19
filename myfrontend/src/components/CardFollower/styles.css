@@ -1,0 +1,47 @@
+.card-follower-content .card {
+    display: flex;
+    margin: 8px;
+    padding: 8px;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-follower-content:hover {
+    background-color: #4b4949;
+    cursor: pointer;
+}
+
+.card-follower-content .card img {
+    max-width: 90px;
+    max-height: 110px;
+    border-radius: 8px;
+}
+
+.card-follower-content .select-follow-unfollow{
+    margin-left: auto;
+    max-width: 80px;
+    max-height: 30px;
+    background-color: #D30069;;
+    color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.card-follower-content .select-follow-unfollow:hover{
+    background-color: #db1578;;
+    color: white;
+    transition: 0.2s;
+}
+
+.card-follower-item {
+    text-decoration: none;
+    color: #fff;
+}
+
+.card-follower-item:hover {
+    text-decoration: underline;
+    text-decoration-color: #ffffff;
+}
