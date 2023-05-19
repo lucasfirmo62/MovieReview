@@ -1,16 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './styles.css';
 
 import { Link } from 'react-router-dom';
 
-function CardFollower(props) {
-  const follow = true;
+import api from '../../api';
 
-  async function unfollowFollow(){
-   
+function CardFollower(props) {
+  const [isFollowing, setIsFollowing] = useState(props.isFollower)
+
+  useEffect(() => {
+    console.log(isFollowing)
+  },[])
+
+  async function unfollow(){
+    let token = localStorage.getItem('tokenUser')
+  
+    token = token.substring(1,token.length-1)
+    
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+    try {
+      const response = await api.post(`/usuarios/${props.id}/unfollow/`, null, {headers})
+    
+      setIsFollowing(false)
+    } catch (error) {
+      console.log(error)
+    } 
   }
 
-  // introduzir o link para a página do usuário e introduzir o botão de seguir e deixar de seguir
+  async function follow(){
+    let token = localStorage.getItem('tokenUser')
+  
+    token = token.substring(1,token.length-1)  
+
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+    try {
+      const response = await api.post(`/usuarios/${props.id}/follow/`, null, {headers})
+
+      setIsFollowing(true)
+    } catch (error) {
+      console.log(error)
+    } 
+  }
 
   return (
     <div className="card-follower-content">
@@ -25,10 +57,10 @@ function CardFollower(props) {
             </Link>
           </div>
           <button className="select-follow-unfollow">
-                {(follow) ?
-                <div id="follow-status">Desseguir</div>
+                {(isFollowing) ?
+                <div id="follow-status" onClick={() => unfollow()}>Desseguir</div>
                 :
-                <div id="follow-status">Seguir</div>
+                <div id="follow-status" onClick={() => follow()}>Seguir</div>
                 }
           </button>
         </div>

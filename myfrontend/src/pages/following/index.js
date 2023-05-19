@@ -1,138 +1,138 @@
 import React, { useState, useEffect } from "react";
-import Menu from '../../components/menu'
+import Menu from "../../components/menu";
 import api from "../../api";
-import Header from '../../components/header'
+import Header from "../../components/header";
 
 import CardFollower from "../../components/CardFollower";
 
-import { MdArrowBack } from 'react-icons/md';
+import { MdArrowBack } from "react-icons/md";
 
 import { Link, useNavigate } from "react-router-dom";
 
-const Following = ({ nickname }) => {
-    const [user, setUser] = useState([])
-    const [following, setFollowing] = useState([]);
+const Following = () => {
+  const [user, setUser] = useState([]);
+  const [following, setFollowing] = useState([]);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const handlePopstate = () => {
-            navigate.push('/profile');
-        };
+  useEffect(() => {
+    const handlePopstate = () => {
+      navigate.push("/profile");
+    };
 
-        window.addEventListener('popstate', handlePopstate);
+    window.addEventListener("popstate", handlePopstate);
 
-        return () => {
-            window.removeEventListener('popstate', handlePopstate);
-        };
-    }, [navigate]);
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  }, [navigate]);
 
-    const [windowSize, setWindowSize] = useState({
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
         width: window.innerWidth,
-        height: window.innerHeight
-    });
+        height: window.innerHeight,
+      });
+    };
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight
-            });
-        };
+    window.addEventListener("resize", handleResize);
 
-        window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [])
+  var loginItem;
 
-    var loginItem;
+  if (localStorage.getItem("tokenUser")) {
+    loginItem = localStorage
+      .getItem("tokenUser")
+      .substring(1, localStorage.getItem("tokenUser").length - 1);
+  }
 
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
+  var idUser = localStorage.getItem("idUser");
+
+  useEffect(() => {
+    async function userUtility() {
+      const headers = {
+        Authorization: `Bearer ${loginItem}`,
+        "Content-type": "application/json",
+      };
+
+      await api.get(`/usuarios/${idUser}/`, { headers }).then((response) => {
+        setUser(response.data);
+      });
+
+      await api.get(`/usuarios/following/`, { headers }).then((response) => {
+        setFollowing(response.data);
+      });
     }
 
-    var idUser = localStorage.getItem('idUser');
+    userUtility();
+  }, [idUser, loginItem]);
 
-    useEffect(() => {
-        async function userUtility() {
-            const headers = {
-                Authorization: `Bearer ${loginItem}`,
-                "Content-type": "application/json"
-            };
+  return (
+    <>
+      <Header />
+      <div className="content-all">
+        {windowSize.width < 680 ? (
+          <Menu />
+        ) : (
+          <div className="left-content">
+            <Menu />
+          </div>
+        )}
 
-            await api.get(`/usuarios/${idUser}/`, { headers })
-                .then(response => { setUser(response.data) })
+        <div className="content-box-profile">
+          <div className="followers-info">
+            <Link
+              className="back-btn"
+              to={`/profile`}
+              style={{ textDecoration: "none", color: "#fff" }}
+            >
+              <MdArrowBack size={32} className="back-icon" />
+            </Link>
 
-            await api.get(`/usuarios/following/`, { headers })
-                .then(response => { setFollowing(response.data) })
-        }
+            <h1>{user.nickname}</h1>
+          </div>
 
-        userUtility()
-    }, [idUser, loginItem])
+          <div className="tabs-profile">
+            <Link
+              to={`/followers`}
+              style={{ textDecoration: "none", color: "#fff" }}
+            >
+              <p className="tab-profile">Seguidores</p>
+            </Link>
 
-    return (
-        <>
-            <Header />
-            <div className="content-all">
-                {windowSize.width < 680
-                    ?
-                    (
-                        <Menu />
-                    )
-                    :
-                    <div className="left-content">
-                        <Menu />
-                    </div>}
+            <Link
+              to={`/following`}
+              style={{ textDecoration: "none", color: "#fff" }}
+            >
+              <p className="tab-profile">Seguindo</p>
+            </Link>
+          </div>
+          <div className="followers-info-content">
+            {following.map((followingUser) => (
+              <div key={followingUser.id}>
+                <CardFollower
+                  isFollower={true}
+                  id={followingUser.id}
+                  nickname={followingUser.nickname}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
 
-                <div className="content-box-profile">
-                    <div className="followers-info">
-
-                        <Link
-                            className="back-btn"
-                            to={`/profile`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <MdArrowBack size={32} className="back-icon" />
-                        </Link>
-
-                        <h1>{user.nickname}</h1>
-                    </div>
-
-                    <div className="tabs-profile">
-                        <Link
-                            to={`/followers`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className='tab-profile'>Seguidores</p>
-                        </Link>
-
-                        <Link
-                            to={`/following`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className='tab-profile'>Seguindo</p>
-                        </Link>
-                    </div>
-                    <div className="followers-info-content">
-                        {following.map((following) => (
-                            <div key={following.id}>
-                                <CardFollower
-                                    id={following.id}
-                                    nickname={following.nickname}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="right-content">
-
-                </div>
-            </div >
-        </>
-    )
-}
+        <div className="right-content"></div>
+      </div>
+    </>
+  );
+};
 
 export default Following;

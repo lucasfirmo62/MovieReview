@@ -12,7 +12,6 @@ const Favoritos = () => {
     auxFavoriteList(updatedList);
   };
 
-
   return (
     <>
       <Header />
