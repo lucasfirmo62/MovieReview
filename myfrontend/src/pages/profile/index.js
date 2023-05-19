@@ -126,6 +126,12 @@ const Profile = () => {
                         >
                             <p className={'tab-profile'}>Críticas</p>
                         </Link>
+                        <Link
+                            to={`/favoritos`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Favoritos</p>
+                        </Link>
                     </div>
                 </div>
                 <div className="right-content">

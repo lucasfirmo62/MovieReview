@@ -119,6 +119,11 @@
         display: none;
     }
 
+    .content-all{
+        display: block;
+        /* padding-bottom: 30%; */
+    }
+    
     .left-content {
         display: none;
     }
@@ -166,6 +171,7 @@
         justify-content: center;
         align-items: center;
         padding: 10px;
+        flex-wrap: wrap;
     }
 
     .tabs-profile p {
