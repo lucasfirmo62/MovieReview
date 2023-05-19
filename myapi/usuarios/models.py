@@ -85,6 +85,21 @@ class Publication(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     movie_id = models.IntegerField()
     movie_title = models.CharField(max_length=200)
+    imgur_link = models.URLField(blank=True)
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        
+        min_publications = 5
+        
+        publications_count = Publication.objects.filter(user_id=self.user_id).count()
+        
+        if publications_count >= min_publications:
+            self.user_id.super_reviewer = True
+        else:
+            self.user_id.super_reviewer = False
+        
+        self.user_id.save(update_fields=['super_reviewer'])
 
 class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
@@ -105,5 +120,6 @@ class WatchList(models.Model):
 
 class FavoritesList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    movie_id = models.CharField(max_length=300)
-
+    movie_id = models.CharField(max_length=300, blank=False)
+    poster_img = models.URLField(blank=False, default='')
+    movie_title = models.CharField(max_length=200, blank=False, default='')

@@ -4,6 +4,8 @@ import api from '../../api'
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+import logotype from '../../assets/logotype.png';
+
 const Login = () => {
 
     const navigate = useNavigate();
@@ -65,7 +67,10 @@ const Login = () => {
                     <div className="content-box">
                         <form onSubmit={handleSubmit}>
 
-                            <p className="title-page">Entrar</p>
+                            <div className="img-block">
+                                <img src={logotype} className="initial-logo"/>
+                                <p className="title-page">Entrar</p>
+                            </div>
 
                             <div className="space-input">
                                 <input
@@ -98,7 +103,7 @@ const Login = () => {
                             </div>
 
                             <div className="space-input">
-                                <p>Não tem uma conta? <Link to="/sign-up">Se cadastre aqui!</Link></p>
+                                <p>Não tem uma conta? <Link className="initial-linker" to="/sign-up">Cadastre-se aqui!</Link></p>
                             </div>
 
                         </form>
