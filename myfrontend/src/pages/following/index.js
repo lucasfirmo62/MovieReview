@@ -64,6 +64,9 @@ const Following = ({ nickname }) => {
 
             await api.get(`/usuarios/${idUser}/`, { headers })
                 .then(response => { setUser(response.data) })
+
+            await api.get(`/usuarios/following/`, { headers })
+                .then(response => { setFollowing(response.data) })
         }
 
         userUtility()
@@ -113,18 +116,14 @@ const Following = ({ nickname }) => {
                         </Link>
                     </div>
                     <div className="followers-info-content">
-                        <CardFollower
-                            id={1}
-                            nickname={"teste1"}
-                        />
-                        <CardFollower
-                            id={2}
-                            nickname={"teste2"}
-                        />
-                        <CardFollower
-                            id={3}
-                            nickname={"teste3"}
-                        />
+                        {following.map((following) => (
+                            <div key={following.id}>
+                                <CardFollower
+                                    id={following.id}
+                                    nickname={following.nickname}
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
 
