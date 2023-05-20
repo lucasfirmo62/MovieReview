@@ -5,14 +5,15 @@ import api from "../../api";
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header'
 import SuperCritico from '../../components/SuperCritico'
-
 import CardFollower from "../../components/CardFollower";
-
+import axios from 'axios';
 import { MdArrowBack } from 'react-icons/md';
+import ViewPublication from "../../components/ViewPublication";
 
 const Profile = () => {
 
     const [user, setUser] = useState([]);
+    const [publications, setPublications] = useState([]);
     var loginItem;
     const [selectedTab, setSelectedTab] = useState('profile');
 
@@ -27,6 +28,16 @@ const Profile = () => {
     }
 
     var idUser = localStorage.getItem('idUser');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get('');
+            setPublications(response.data.publications);
+        };
+
+        fetchData();
+    }, []);
+
 
     useEffect(() => {
         async function userUtility() {
@@ -48,7 +59,6 @@ const Profile = () => {
     async function goFavoritos() {
         navigate("/favoritos")
     }
-
 
     return (
         <>
@@ -113,6 +123,17 @@ const Profile = () => {
 
                         </div>
                     )}
+                    {publications.map((publication) => (
+                        <ViewPublication
+                            userName={publication.userName}
+                            idPost={publication.idPost}
+                            idMovie={publication.idMovie}
+                            rating={publication.rating}
+                            critic={publication.critic}
+                            image={publication?.image}
+                            date={publication.date}
+                        />
+                    ))}
                 </div>
                 <div className="right-content">
 
