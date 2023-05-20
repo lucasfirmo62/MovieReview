@@ -31,7 +31,7 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get('');
+            const response = await axios.get('https://api.npoint.io/0bea111fb814cbf49770');
             setPublications(response.data.publications);
         };
 
