@@ -16,6 +16,7 @@
     width: 50%;
     background-color: #313131;
     color: white;
+    margin-top: 100px;
 }
 
 .profile-info{
@@ -128,6 +129,8 @@
 .followers-info h1 {
     margin: 0;
 }
+
+
 
 @media only screen and (max-width: 660px){
 

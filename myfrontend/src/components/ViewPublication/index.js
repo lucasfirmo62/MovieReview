@@ -2,12 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import './styles.css';
 import axios from 'axios';
 import { MdArrowForwardIos } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 
-const ViewPublication = ({ userName, idPost, idMovie, rating, critic, image, date }) => {
+const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, image, date }) => {
     const [movie, setMovie] = useState([]);
     const criticRef = useRef(null);
     const criticLimitedRef = useRef(null);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -118,6 +121,31 @@ const ViewPublication = ({ userName, idPost, idMovie, rating, critic, image, dat
     }
 
 
+    async function handleTitle(){
+        navigate(`/movie/${idMovie}`);
+    }
+
+    async function handleProfile(){
+        navigate(`/user/${userID}`);
+    }
+
+    const widthInside = window.innerWidth;
+
+    if(preview && full){
+        if(widthInside <= 680){
+            preview.style.marginLeft = "-65px"
+            full.style.marginLeft = "-65px"
+        }
+        else if(widthInside >= 680){
+            preview.style.marginLeft = "0px"
+            full.style.marginLeft = "0px"
+        }
+
+    }
+
+    
+
+
 
     return (
         <>
@@ -131,8 +159,8 @@ const ViewPublication = ({ userName, idPost, idMovie, rating, critic, image, dat
                         />
                     </div>
                     <div>
-                        <div className="user-indice">De <div className="user-insert">{userName}</div><div className="date-release">{datePublication}</div></div>
-                        <div className="movie-indice">Sobre <div className="movie-insert"
+                        <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{userName}</div><div className="date-release">{datePublication}</div></div>
+                        <div className="movie-indice">Sobre <div className="movie-insert" onClick={handleTitle}
                             onMouseEnter={() => handleMouseEnter(idPost)} onMouseLeave={() => handleMouseLeave(idPost)}>
                             {movie?.title} de {(movie?.release_date) ? movie?.release_date.substr(0, 4) : movie?.release_date}
                         </div>
@@ -165,7 +193,7 @@ const ViewPublication = ({ userName, idPost, idMovie, rating, critic, image, dat
                                 <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
                             </div>
                         }
-                        <img className="image-review" src={image} />
+                        <img id="image-review" className="image-review" src={image} />
                     </div>
                 </div>
             </div>

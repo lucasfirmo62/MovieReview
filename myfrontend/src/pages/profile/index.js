@@ -64,8 +64,8 @@ const Profile = () => {
         <>
             <Header />
             <div className="content-all">
-                <div className="left-content">
                     <Menu />
+                <div className="left-content">
                 </div>
                 <div className="content-box-profile">
                     {selectedTab === 'profile' && (
@@ -126,6 +126,7 @@ const Profile = () => {
                     {publications.map((publication) => (
                         <ViewPublication
                             userName={publication.userName}
+                            userID={publication.userID}
                             idPost={publication.idPost}
                             idMovie={publication.idMovie}
                             rating={publication.rating}
