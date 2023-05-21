@@ -52,9 +52,17 @@ class UserViewSet(viewsets.ModelViewSet):
         
         page = self.paginate_queryset(queryset)
         
+        total_itens = queryset.count()
+        page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+            tamanho_pagina = self.paginator.page_size
+            num_paginas = total_itens // tamanho_pagina + (1 if total_itens % tamanho_pagina > 0 else 0)
+            response_data = {
+                'results': serializer.data,
+                'num_paginas': num_paginas
+            }
+            return self.get_paginated_response(response_data)
         
         serializer = self.get_serializer(queryset, many=True)
 
@@ -82,7 +90,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def unfollow(self, request, pk=None):
         user_to_unfollow = self.get_object()
         user = request.user
-                
+
         if user == user_to_unfollow:
             return Response({'error': 'Você não pode deixar de seguir a si mesmo'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -95,6 +103,15 @@ class UserViewSet(viewsets.ModelViewSet):
             
         return Response({'status': 'ok'})
     
+    @action(detail=False, methods=['get'])
+    def following(self, request):
+        connections = Connection.objects.filter(usuario_alpha=request.user)
+
+        following = [connection.usuario_beta for connection in connections]
+        serializer = self.get_serializer(following, many=True)
+
+        return Response(serializer.data)
+
     @action(detail=False, methods=['get'])
     def followers(self, request):
         connections = Connection.objects.filter(usuario_beta=request.user)

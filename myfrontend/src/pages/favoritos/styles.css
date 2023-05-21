@@ -11,22 +11,30 @@
   flex-direction: column;
   justify-content: center;
   width: 50%;
-
+  min-height: 210px;
 }
 
 .title-content {
+  flex: auto;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100px;
+  background-color: #313131;
+}
 
-  background: linear-gradient(to top, #313131, #928e8e);
+.movie-favorite-item {
+  text-decoration: none;
+}
+
+.movie-favorite-item:hover {
+  text-decoration: underline;
+  text-decoration-color: #313131;
 }
 
 .title-component {
   font-size: 40px;
   color: #ffffff;
-  text-shadow: 2px 2px 4px #000000;
 }
 
 .favorite-content {
@@ -52,7 +60,6 @@
 
 .moviePicture {
   margin-left: 5px;
-  background-image: url('https://upload.wikimedia.org/wikipedia/pt/thumb/0/03/Super_Mario_Bros._box.png/260px-Super_Mario_Bros._box.png');
   background-size: cover;
   padding: 1%;
   height: 95%;
@@ -71,7 +78,6 @@
 .movieTitle {
   font-weight: bold;
   color: rgb(42, 42, 42);
-  text-shadow: 1px 1px 2px rgba(83, 83, 83, 0.5);
   cursor: pointer;
   font-size: 24px;
 }
@@ -106,7 +112,7 @@
 }
 
 @media only screen and (max-width: 1024px) {
-  .left-content {
+  .content-page .left-content {
     display: none;
   }
 
@@ -114,6 +120,10 @@
     width: 100%;
     margin: auto;
     font-size: 14px;
+  }
+
+  .title-component {
+    font-size: 24px;
   }
 
   .movieInfo {

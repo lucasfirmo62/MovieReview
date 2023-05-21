@@ -5,21 +5,43 @@ import api from "../../api";
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header'
 import SuperCritico from '../../components/SuperCritico'
-import CardFollower from "../../components/CardFollower";
-import axios from 'axios';
-import { MdArrowBack } from 'react-icons/md';
 import ViewPublication from "../../components/ViewPublication";
+import axios from 'axios';
+import CardFollower from "../../components/CardFollower";
+
+import { MdArrowBack } from 'react-icons/md';
+
+import { Link } from "react-router-dom";
+
 
 const Profile = () => {
 
-    const [user, setUser] = useState([]);
     const [publications, setPublications] = useState([]);
-    var loginItem;
-    const [selectedTab, setSelectedTab] = useState('profile');
 
-    const handleTabClick = (tab) => {
-        setSelectedTab(tab);
-    };
+    const [user, setUser] = useState([]);
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
+
+    var loginItem;
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [])
 
     const navigate = useNavigate();
 
@@ -30,6 +52,35 @@ const Profile = () => {
     var idUser = localStorage.getItem('idUser');
 
     useEffect(() => {
+        async function userUtility() {
+            const headers = {
+                Authorization: `Bearer ${loginItem}`,
+                "Content-type": "application/json"
+            };
+
+            await api.get(`/usuarios/${idUser}/`, { headers })
+                .then(response => { setUser(response.data) })
+
+            const followersResponse = await api.get(`/usuarios/followers/`, {
+                headers,
+            });
+
+            const followingResponse = await api.get(`/usuarios/following/`, {
+                headers,
+            });
+
+            setFollowers(followersResponse.data);
+            setFollowing(followingResponse.data);
+        }
+
+        userUtility()
+    }, [idUser, loginItem])
+
+    async function goEditProfile() {
+        navigate("/edit-profile")
+    }
+
+    useEffect(() => {
         const fetchData = async () => {
             const response = await axios.get('https://api.npoint.io/0bea111fb814cbf49770');
             setPublications(response.data.publications);
@@ -38,91 +89,62 @@ const Profile = () => {
         fetchData();
     }, []);
 
-
-    useEffect(() => {
-        async function userUtility() {
-            await api.get(`/usuarios/${idUser}/`, {
-                headers: {
-                    Authorization: `Bearer ${loginItem}`,
-                    "Content-type": "application/json"
-                },
-            })
-                .then(response => { setUser(response.data) })
-        }
-        userUtility()
-    }, [idUser, loginItem])
-
-    async function goEditProfile() {
-        navigate("/edit-profile")
-    }
-
-    async function goFavoritos() {
-        navigate("/favoritos")
-    }
+    // async function goFavoritos() {
+    // navigate("/favoritos")
+    // }
 
     return (
         <>
             <Header />
             <div className="content-all">
-                    <Menu />
-                <div className="left-content">
-                </div>
+
+                {windowSize.width < 680
+                    ?
+                    (
+                        <Menu />
+                    )
+                    :
+                    <div className="left-content">
+                        <Menu />
+                    </div>}
                 <div className="content-box-profile">
-                    {selectedTab === 'profile' && (
-                        <div className="profile-info">
-                            <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
-                            <div>
-                                <p className="name-user">{user.full_name}</p>
-                                <p className="username-text">@{user.nickname}</p>
-                                {user.super_reviewer ? <SuperCritico /> : null}
-                                <p className="bio-text">{user.bio_text}</p>
-                                <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
-                            </div>
+                    <div className="profile-info">
+                        <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
+                        <div>
+                            <p className="name-user">{user.full_name}</p>
+                            <p className="username-text">@{user.nickname}</p>
+                            {user.super_reviewer ? <SuperCritico /> : null}
+                            <p className="bio-text">{user.bio_text}</p>
+                            <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
                         </div>
-                    )}
-
-                    {(selectedTab === 'followers' || selectedTab === 'following') && (
-                        <div className="followers-info">
-                            <button className="back-btn" onClick={() => handleTabClick('profile')}>
-                                <MdArrowBack size={32} className="back-icon" />
-                            </button>
-                            <h1>{user.nickname}</h1>
-                        </div>
-                    )}
-
-                    <div className={`tabs-profile ${selectedTab === 'followers' || selectedTab === 'following' ? 'tabs-profile colored-tabs' : 'tabs-profile'}`}>
-                        <p className={`tab-profile ${selectedTab === 'followers' ? 'active' : ''}`} onClick={() => handleTabClick('followers')}>Seguidores</p>
-                        <p className={`tab-profile ${selectedTab === 'following' ? 'active' : ''}`} onClick={() => handleTabClick('following')}>Seguindo</p>
-                        {selectedTab !== 'followers' && selectedTab !== 'following' && (
-                            <p className={`tab-profile ${selectedTab === 'profile' ? 'active' : ''}`} onClick={() => handleTabClick('profile')}>Críticas</p>
-                        )}
                     </div>
 
-                    {selectedTab === 'followers' && (
-                        <div className="followers-info-content">
-                            <CardFollower
-                                id="1"
-                                nickname="teste"
-                            />
-                            <CardFollower
-                                id="2"
-                                nickname="teste1"
-                            />
-                            <CardFollower
-                                id="3"
-                                nickname="teste2"
-                            />
-                            <CardFollower
-                                id="4"
-                                nickname="teste3"
-                            />
-                        </div>
-                    )}
-                    {selectedTab === 'following' && (
-                        <div className="following-info-content">
-
-                        </div>
-                    )}
+                    <div className={'tabs-profile'}>
+                        <Link
+                            to={`/followers`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>{followers.length} Seguidores</p>
+                        </Link>
+                        <Link
+                            to={`/following`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>{following.length} Seguindo</p>
+                        </Link>
+                        <Link
+                            to={`/profile`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Críticas</p>
+                        </Link>
+                        <Link
+                            to={`/favoritos`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Favoritos</p>
+                        </Link>
+                    </div>
                     {publications.map((publication) => (
                         <ViewPublication
                             userName={publication.userName}
