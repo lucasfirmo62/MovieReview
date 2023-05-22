@@ -77,10 +77,6 @@ const Profile = () => {
         navigate("/edit-profile")
     }
 
-    // async function goFavoritos() {
-    // navigate("/favoritos")
-    // }
-
     return (
         <>
             <Header />

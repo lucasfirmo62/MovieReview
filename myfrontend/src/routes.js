@@ -59,6 +59,7 @@ export default function Router() {
                     path="/edit-profile" 
                     element={<PrivateRoute> <EditProfile /> </PrivateRoute>}
                 />
+                
                 <Route
                     path="/user/:id"
                     element={<PrivateRoute> <User/> </PrivateRoute>}
