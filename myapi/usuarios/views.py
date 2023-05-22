@@ -244,3 +244,12 @@ class FavoritesViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+    @action(detail=True, methods=['get'])
+    def is_movie_favorite(self, request, pk=None, movie_id=None):
+        user_id = request.user.id
+        
+        if FavoritesList.objects.filter(user_id=user_id, movie_id=movie_id).exists():
+            return Response({'is_favorite': True})
+        else:
+            return Response({'is_favorite': False}) 
+    

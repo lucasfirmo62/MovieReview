@@ -12,5 +12,6 @@ urlpatterns = [
     path('feed/', PublicationViewSet.as_view({ 'get': 'feed' })),
     path('favoritos/', FavoritesViewSet.as_view({'post': 'create', 'get': 'list'}), name='criar_favorito'),
     path('favoritos/<int:movie_id>/', FavoritesViewSet.as_view({'delete': 'destroy_by_movie_id'})),
+    path('favoritos/<int:movie_id>/is_movie_favorite/', FavoritesViewSet.as_view({'get': 'is_movie_favorite'})),
     path('usuarios/search/', UserViewSet.as_view({'get': 'search'}), name='user-search'),
 ]
