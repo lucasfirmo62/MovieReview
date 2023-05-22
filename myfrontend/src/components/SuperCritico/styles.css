@@ -1,0 +1,17 @@
+.super-critic{
+    font-size: 12px;
+    display: flex;
+}
+
+.critic-name{
+    font-size: 19px;
+    margin-top: -7px;
+}
+
+.verified{
+    font-size: 19px;
+    color: #d4a60e;
+    margin-top: -7px;
+    padding-left: 5px;
+    padding-right: 5px;
+}

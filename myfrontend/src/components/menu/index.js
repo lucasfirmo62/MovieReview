@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import './styles.css'
 import { AiFillHome } from 'react-icons/ai';
 import { BsFillBookmarkStarFill } from 'react-icons/bs';
@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api';
 
 const Menu = () => {
-
     const navigate = useNavigate();
 
     async function goHome(){
@@ -54,7 +53,7 @@ const Menu = () => {
                 <div className="menu-contrast">
                     <div className="inside-menu" onClick={goHome}><AiFillHome className="icon"/><p>Home</p></div>
                     <div className="inside-menu" onClick={goProfile}><CgProfile className="icon"/><p>Perfil</p></div>
-                    <div className="inside-menu" onClick={handleLogout}><BiLogOut className="icon"/><p>Sair</p></div>
+                    <div style={{color: '#e90074'}} className="inside-menu" onClick={handleLogout}><BiLogOut className="icon"/><p>Sair</p></div>
                 </div>
             </div>
         </>

@@ -1,25 +1,15 @@
 import React, { useState, useEffect } from "react";
 import './styles.css'
-import Menu from '../../components/menu'
 import api from "../../api";
-import { useNavigate } from 'react-router-dom';
+import Menu from '../../components/menu'
 import Header from '../../components/header'
+import { useNavigate } from 'react-router-dom';
 import SuperCritico from '../../components/SuperCritico'
-
-import CardFollower from "../../components/CardFollower";
-
-import { MdArrowBack } from 'react-icons/md';
+import FollowUnfollow from "../../components/Follow-Unfollow";
 
 import { Link } from "react-router-dom";
 
-
-const Profile = () => {
-
-    const [user, setUser] = useState([]);
-    const [followers, setFollowers] = useState([]);
-    const [following, setFollowing] = useState([]);
-
-    var loginItem;
+const User = () => {
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
@@ -40,38 +30,53 @@ const Profile = () => {
         };
     }, [])
 
+    const url = window.location.href;
+    const id = url.split('user/')[1];
+
+    const [user, setUser] = useState([]);
+    const [following, setFollowing] = useState([]);
+    const [followers, setFollowers] = useState([]);
+
     const navigate = useNavigate();
+
+    var loginItem;
 
     if (localStorage.getItem('tokenUser')) {
         loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
     }
 
-    var idUser = localStorage.getItem('idUser');
+    var idMyUser = localStorage.getItem('idUser');
 
     useEffect(() => {
         async function userUtility() {
-            const headers = {
-                Authorization: `Bearer ${loginItem}`,
-                "Content-type": "application/json"
-            };
-
-            await api.get(`/usuarios/${idUser}/`, { headers })
+            await api.get(`/usuarios/${id}/`, {
+                headers: {
+                    Authorization: `Bearer ${loginItem}`,
+                    "Content-type": "application/json"
+                },
+            })
                 .then(response => { setUser(response.data) })
-            
-            const followersResponse = await api.get(`/usuarios/followers/`, {
-                    headers,
-            });
 
-            const followingResponse = await api.get(`/usuarios/following/`, {
-                headers,
-            });
-          
-            setFollowers(followersResponse.data);
-            setFollowing(followingResponse.data);
+            const response = await api.get(`/usuarios/following/`, {
+                headers: {
+                    Authorization: `Bearer ${loginItem}`,
+                    "Content-type": "application/json"
+                },
+            })
+
+            setFollowing(response.data)
+
+            const responseFollowing = await api.get(`/usuarios/following/`, {
+                headers: {
+                    Authorization: `Bearer ${loginItem}`,
+                    "Content-type": "application/json"
+                },
+            })
+
+            setFollowers(response.data)
         }
-
         userUtility()
-    }, [idUser, loginItem])
+    }, [idMyUser, loginItem])
 
     async function goEditProfile() {
         navigate("/edit-profile")
@@ -81,7 +86,6 @@ const Profile = () => {
         <>
             <Header />
             <div className="content-all">
-
                 {windowSize.width < 680
                     ?
                     (
@@ -91,18 +95,32 @@ const Profile = () => {
                     <div className="left-content">
                         <Menu />
                     </div>}
+
                 <div className="content-box-profile">
                     <div className="profile-info">
                         <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
                         <div>
                             <p className="name-user">{user.full_name}</p>
                             <p className="username-text">@{user.nickname}</p>
-                            {user.super_reviewer ? <SuperCritico /> : null}
+                            {(user.super_reviewer === true) ?
+                                <SuperCritico />
+                                :
+                                null
+                            }
+                            {following.length > 0 && idMyUser != id && (<FollowUnfollow
+                                isFollower={following.some(
+                                    (followingUser) => followingUser.id === user.id
+                                )}
+                                id={user.id}
+                            />)}
                             <p className="bio-text">{user.bio_text}</p>
-                            <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
+                            {(idMyUser === id) ?
+                                <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
+                                :
+                                null
+                            }
                         </div>
                     </div>
-
                     <div className={'tabs-profile'}>
                         <Link
                             to={`/followers`}
@@ -116,18 +134,6 @@ const Profile = () => {
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
-                        <Link
-                            to={`/favoritos`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className={'tab-profile'}>Favoritos</p>
-                        </Link>
-                        <Link
-                            to={`/favoritos`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className={'tab-profile'}>Favoritos</p>
-                        </Link>
                     </div>
                 </div>
                 <div className="right-content">
@@ -138,4 +144,4 @@ const Profile = () => {
     )
 }
 
-export default Profile;
+export default User;

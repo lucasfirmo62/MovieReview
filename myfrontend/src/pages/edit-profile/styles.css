@@ -67,7 +67,6 @@
 
     .content-all{
         display: block;
-        margin-top: -100px;
     }
 
     .container{
@@ -86,12 +85,11 @@
     }
 
     .left-content{
-        display: block;
+        display: none;
     }
     
     .right-content{
-        display: block;
-
+        display: none;
     }
     
     .content-box-profile{
