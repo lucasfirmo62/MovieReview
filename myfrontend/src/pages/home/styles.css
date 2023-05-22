@@ -1,7 +1,6 @@
 
 .content-home{
     display: flex;
-    height: 100vh;
 }
 
 .home-left-content{
@@ -82,6 +81,13 @@ select {
 
 .movie-option-poster {
     margin-right: 1
+}
+
+@media only screen and (max-width: 1200px){
+    .content-box-home{
+        padding-bottom: 100px;
+    }
+
 }
 
 @media only screen and (max-width: 1000px){

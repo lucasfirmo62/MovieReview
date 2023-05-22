@@ -5,7 +5,8 @@ import api from "../../api";
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header'
 import SuperCritico from '../../components/SuperCritico'
-
+import ViewPublication from "../../components/ViewPublication";
+import axios from 'axios';
 import CardFollower from "../../components/CardFollower";
 
 import { MdArrowBack } from 'react-icons/md';
@@ -14,6 +15,8 @@ import { Link } from "react-router-dom";
 
 
 const Profile = () => {
+
+    const [publications, setPublications] = useState([]);
 
     const [user, setUser] = useState([]);
     const [followers, setFollowers] = useState([]);
@@ -77,6 +80,19 @@ const Profile = () => {
         navigate("/edit-profile")
     }
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await axios.get('https://api.npoint.io/0bea111fb814cbf49770');
+            setPublications(response.data.publications);
+        };
+
+        fetchData();
+    }, []);
+
+    // async function goFavoritos() {
+    // navigate("/favoritos")
+    // }
+
     return (
         <>
             <Header />
@@ -117,18 +133,24 @@ const Profile = () => {
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
                         <Link
-                            to={`/profile`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className={'tab-profile'}>Críticas</p>
-                        </Link>
-                        <Link
                             to={`/favoritos`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>Favoritos</p>
                         </Link>
                     </div>
+                    {publications.map((publication) => (
+                        <ViewPublication
+                            userName={publication.userName}
+                            userID={publication.userID}
+                            idPost={publication.idPost}
+                            idMovie={publication.idMovie}
+                            rating={publication.rating}
+                            critic={publication.critic}
+                            image={publication?.image}
+                            date={publication.date}
+                        />
+                    ))}
                 </div>
                 <div className="right-content">
 
