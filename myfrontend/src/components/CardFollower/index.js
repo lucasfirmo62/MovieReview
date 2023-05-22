@@ -56,9 +56,9 @@ function CardFollower(props) {
               <p className="card-name">{props.nickname}</p>
             </Link>
           </div>
-          <button className="select-follow-unfollow">
+          <button onClick={isFollowing ? () => unfollow() : () => follow()} className="select-follow-unfollow">
                 {(isFollowing) ?
-                <div id="follow-status" onClick={() => unfollow()}>Desseguir</div>
+                <div id="follow-status">Desseguir</div>
                 :
                 <div id="follow-status" onClick={() => follow()}>Seguir</div>
                 }
