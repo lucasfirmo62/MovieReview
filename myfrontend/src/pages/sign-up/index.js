@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import "./styles.css";
-import { Link } from "react-router-dom";
-
+import api from "../../api.js"
+import { useNavigate } from "react-router-dom";
 const SignUp = () => {
+  const navigate = useNavigate();
+
+  //Declaração das expressões regulares
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const data_nascimentoRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19[0-9]{2}|2000)$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/;
+
   const [values, setValues] = useState({
     nome_completo: "",
     nome_de_usuario: "",
@@ -52,7 +59,7 @@ const SignUp = () => {
       name: "data_nascimento",
       type: "text",
       errorMessage: "Insira uma data de nascimento válida",
-      placeholder: "Data de Nascimento",
+      placeholder: "dd/mm/aaaa",
       label: "Data de Nascimento"
     },
     {
@@ -60,7 +67,7 @@ const SignUp = () => {
       name: "senha",
       type: "password",
       errorMessage:
-        "Sua senha precisa conter de 8 à 20 caracteres, e deve conter no mínimo um caractere especial, também como um caractere maiúsculo e um minúsculo",
+        "Sua senha precisa conter de 8 a 20 caracteres, e deve conter no mínimo um caractere especial, também como um caractere maiúsculo e um minúsculo",
       placeholder: "Senha",
       label: "Senha"
     },
@@ -74,6 +81,8 @@ const SignUp = () => {
     }
   ];
 
+  const [submitted, setSubmitted] = useState(false);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setValues((prevValues) => ({
@@ -82,9 +91,86 @@ const SignUp = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Validação do formulário
+    let isValid = true;
+
+    const updatedValues = {};
+
+    // Valida nome completo
+    if (values.nome_completo.trim() === "") {
+      isValid = false;
+      updatedValues.nome_completo = "";
+    }
+
+    // Valida nome de usuário
+    if (values.nome_de_usuario.trim() === "") {
+      isValid = false;
+      updatedValues.nome_de_usuario = "";
+    }
+
+    // Valida a bio
+    if (values.bio.trim().length < 10 || values.bio.trim().length > 220) {
+      isValid = false;
+      updatedValues.bio = "";
+    }
+
+    // Valida o email
+    if (values.email.trim() === "" || !emailRegex.test(values.email)) {
+      isValid = false;
+      updatedValues.email = "";
+    }
+
+    // Valida a data de nascimento
+    if (values.data_nascimento.trim() === "" || !data_nascimentoRegex.test(values.data_nascimento)) {
+      isValid = false;
+      updatedValues.data_nascimento = "";
+    }
+
+    // Valida o campo de senha
+    if (values.senha.trim() === "" || !passwordRegex.test(values.senha)) {
+      isValid = false;
+      updatedValues.senha = "";
+    }
+    //Validação se as senhas são iguais
+    if (
+      values.confirmar_senha.trim() === "" ||
+      values.confirmar_senha !== values.senha
+    ) {
+      isValid = false;
+      updatedValues.confirmar_senha = "";
+    }
+
+    if (isValid) {
+      //colocar as informações
+      //console.log(values)
+      const data = {
+        "full_name": values.nome_completo,
+        "nickname": values.nome_de_usuario,
+        "bio_text": values.bio,
+        "birth_date": values.data_nascimento,
+        "email": values.email,
+        "password": values.senha,
+        "super_reviewer": false
+      }
+      console.log(data)
+      await api.post('/usuarios/', data, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    navigate('/login');
+
+    } else {
+      setSubmitted(true);
+      setValues((prevValues) => ({
+        ...prevValues,
+        ...updatedValues
+      }));
+    }
   };
 
   return (
@@ -105,9 +191,16 @@ const SignUp = () => {
                 onChange={handleChange}
                 placeholder={input.placeholder}
               />
-              {values[input.name] === "" && (
-                <p className="alert-message">{input.errorMessage}</p>
-              )}
+              {submitted &&
+                values[input.name].trim() === "" && (
+                  <p className="alert-message">{input.errorMessage}</p>
+                )}
+              {submitted &&
+                input.name === "email" &&
+                (!emailRegex.test(values[input.name]) ||
+                  values[input.name].trim() === "") && (
+                  <p className="alert-message">{input.errorMessage}</p>
+                )}
             </div>
           ))}
           <button className="button-simple" type="submit">
