@@ -471,6 +471,12 @@ class PublicationTestCase(TestCase):
         
         self.assertEqual(response.data['super_reviewer'], True)
         
+    def test_get_publications_by_user(self):
+        response = self.client.get('/pubusuario/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 1)
+        
 class FavoritesTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()

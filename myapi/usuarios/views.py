@@ -198,6 +198,20 @@ class PublicationViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def get_publications_by_user(self, request, user_id=None):
+        user = User.objects.get(pk=user_id)
+        publications = Publication.objects.filter(user_id=user).order_by('-date')
+
+        page = self.paginate_queryset(publications)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(publications, many=True)
+        
+        return Response(serializer.data)
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesListSerializer
