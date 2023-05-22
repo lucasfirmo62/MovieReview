@@ -121,10 +121,10 @@ const Profile = () => {
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
                         <Link
-                            to={`/profile`}
+                            to={`/favoritos`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
-                            <p className={'tab-profile'}>Críticas</p>
+                            <p className={'tab-profile'}>Favoritos</p>
                         </Link>
                         <Link
                             to={`/favoritos`}
