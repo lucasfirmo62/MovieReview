@@ -1,213 +1,91 @@
-.container{
+.container {
     background-color: #909090;
     padding-left: 25%;
     padding-right: 25%;
     padding-top: 5%;
     padding-bottom: 5%;
     max-width: 730px;
-}
-
-.initial-linker {
-    color: #808080;    
-}
-
-.initial-linker:hover {
-    color: #e90074;    
-}
-
-.img-block {
+  }
+  
+  .initial-linker {
+    color: #808080;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
+  .initial-linker:hover {
+    color: #e90074;
+  }
+  
+  .img-block {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 24px;
-}
-
-.initial-logo {
+  }
+  
+  .initial-logo {
     width: 64px;
     height: 64px;
-}
-
-.content-box{
+  }
+  
+  .content-box {
     color: #fff;
     background-color: #313131;
-    padding: 100px;
-    padding-top: 2px;
+    padding: 40px;
     border-radius: 16px;
-}
-
-.title-page{
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .title-page {
     font-size: 40px;
     font-weight: bold;
-}
-
-.content-input{
+    margin-bottom: 20px;
+  }
+  
+  .input-row {
+    margin-bottom: 20px;
+  }
+  
+  .input-label {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  
+  .input-field {
     width: 100%;
-    height: 27px;
-    font-size: 19px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
-
-.input-several{
-    display: flex;
-    padding:10px;
-}
-
-.password-side{
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-.content-input-half{
+    height: 40px;
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .alert-message {
+    font-size: 14px;
+    color: red;
+    margin-top: 5px;
+  }
+  
+  .button-simple {
     width: 100%;
-    height: 27px;
-    font-size: 19px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
-
-.space-input{
-    padding: 15px;
-}
-
-.button-simple{
-    width: 100%;
-    background-color: #D30069;
+    background-color: #d30069;
     color: white;
-    text-align-last: center;
+    text-align: center;
     border-radius: 10px;
     font-size: 16px;
-    padding: 1px;
+    padding: 10px;
     cursor: pointer;
     font-weight: bold;
     border: none;
-}
-
-.button-simple:hover{
+    margin-top: 20px;
+  }
+  
+  .button-simple:hover {
     background-color: #e90074;
-}
-
-.alert-name{
-    font-size: 11px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    height: 1px;
-    text-align-last: left;
-}
-
-.alert-username{
-    font-size: 11px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    height: 1px;
-    text-align-last: left;
-}
-
-.alert-email{
-    font-size: 11px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    height: 1px;
-    text-align-last: left;
-}
-
-.alert-date{
-    font-size: 11px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    height: 1px;
-    text-align-last: left;
-}
-
-.alert-password{
-    font-size: 11px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    height: 1px;
-    text-align-last: left;
-}
-
-.alert-bio{
-    font-size: 11px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    height: 1px;
-    text-align-last: left;
-}
-
-.alert-password-caracters{
-    font-size: 11px;
-    color: red;
-    font-weight: bold;
-    display: none;
-    height: 1px;
-    text-align-last: left;
-}
-
-@media only screen and (max-width: 1100px){
-
-    .container{
-        background-color: #909090;
-        padding-left: 8%;
-        padding-right: 8%;
-        padding-top: 5%;
-        padding-bottom: 5%;
-        max-width: 730px;
-    }
-
-    .content-box{
-        padding: 10px;
-        padding-top: 2px;
-        border-radius: 16px;
-        margin-top: 20%;
-        background-color: transparent;
-    }
-
-    .title-page{
-        font-size: 23px;
-        font-weight: bold;
-    }
-
-    .input-several{
-        display:block;
-    }
-    
-    .password-side{
-        padding: 10px;
-    }
-
-    .content-input{
-        width: 90%;
-        height: 27px;
-        font-size: 16px;
-        padding-top: 4px;
-        padding-bottom: 4px;
-    }
-
-    .content-input-half{
-        width: 91.8%;
-        height: 27px;
-        font-size: 16px;
-        padding-top: 4px;
-        padding-bottom: 4px;
-    }
-
-    .initial-linker {
-        color: #000;    
-    }
-
-    .button-simple{
-        width: 70%;
-    }
-    
-}
-
-
-
-
+  }
+  
