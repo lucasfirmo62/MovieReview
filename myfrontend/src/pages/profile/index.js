@@ -60,15 +60,15 @@ const Profile = () => {
 
             await api.get(`/usuarios/${idUser}/`, { headers })
                 .then(response => { setUser(response.data) })
-
+            
             const followersResponse = await api.get(`/usuarios/followers/`, {
-                headers,
+                    headers,
             });
 
             const followingResponse = await api.get(`/usuarios/following/`, {
                 headers,
             });
-
+          
             setFollowers(followersResponse.data);
             setFollowing(followingResponse.data);
         }
@@ -131,12 +131,6 @@ const Profile = () => {
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
-                        </Link>
-                        <Link
-                            to={`/profile`}
-                            style={{ textDecoration: "none", color: "#fff" }}
-                        >
-                            <p className={'tab-profile'}>Críticas</p>
                         </Link>
                         <Link
                             to={`/favoritos`}

@@ -79,6 +79,10 @@ const Movie = () => {
         document.getElementById("trailer").src = "https://www.youtube.com/embed/undefined";
     }
 
+    function toggleFavoritar() {
+
+    }
+
     return (
         <>
             <Header />
@@ -91,6 +95,9 @@ const Movie = () => {
                     backgroundPosition: 'center'
                 }}
             >
+            
+
+
                 <div className='movie-details-content'>
                     <div>
                         <img
@@ -120,6 +127,7 @@ const Movie = () => {
                                 </li>
                             ))}
                         </ul>
+                        <button id="favoritar-button" className="favoritar-button" onClick={toggleFavoritar()}>Favoritar</button>
                     </div>
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>

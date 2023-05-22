@@ -327,3 +327,22 @@
         max-height: 577px;
       }
 }
+
+.favoritar-button {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .favoritado {
+    background-color: #ffc107;
+    color: #ffffff;
+  }
+  
+  .favoritado::before {
+    content: "\2605"; 
+    margin-right: 5px;
+  }
