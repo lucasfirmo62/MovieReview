@@ -4,7 +4,6 @@ import axios from 'axios';
 import { MdArrowForwardIos } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-
 const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, image, date }) => {
     const [movie, setMovie] = useState([]);
     const criticRef = useRef(null);
@@ -178,7 +177,7 @@ const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, im
                             <div id={`star-read-more-${idPost}`} className={`star-read-more-${idPost}`}>
                                 <div className="rating-content">
                                     <div className="star-critic">
-                                        <div className="star">{"★".repeat(rating)}</div>
+                                        <div className="pub-star">{"★".repeat(rating)}</div>
                                         <div className="no-star">{"★".repeat((5 - rating))}</div>
                                     </div>
                                     <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
@@ -187,7 +186,7 @@ const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, im
                             :
                             <div className="rating-content">
                                 <div className="star-critic">
-                                    <div className="star">{"★".repeat(rating)}</div>
+                                    <div className="pub-star">{"★".repeat(rating)}</div>
                                     <div className="no-star">{"★".repeat((5 - rating))}</div>
                                 </div>
                                 <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
