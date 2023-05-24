@@ -7,9 +7,11 @@ import CardFollower from "../../components/CardFollower";
 
 import { MdArrowBack } from "react-icons/md";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const Following = () => {
+  const { id } = useParams();
+
   const [user, setUser] = useState([]);
   const [following, setFollowing] = useState([]);
 
@@ -103,17 +105,17 @@ const Following = () => {
 
           <div className="tabs-profile">
             <Link
-              to={`/followers`}
+              to={`/followers/${id}`}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <p className="tab-profile">Seguidores</p>
             </Link>
 
             <Link
-              to={`/following`}
+              to={`/following/${id}`}
               style={{ textDecoration: "none", color: "#fff" }}
             >
-              <p className="tab-profile">Seguindo</p>
+              <p style={{backgroundColor: '#4b4949'}} className="tab-profile">Seguindo</p>
             </Link>
           </div>
           <div className="followers-info-content">

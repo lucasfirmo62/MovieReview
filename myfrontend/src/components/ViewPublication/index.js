@@ -1,20 +1,35 @@
 import React, { useState, useEffect, useRef } from "react";
 import './styles.css';
 import axios from 'axios';
-import { MdArrowForwardIos } from 'react-icons/md';
+import { FiMoreHorizontal } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
-const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, image, date }) => {
+import api from "../../api";
+
+const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date }) => {
     const [movie, setMovie] = useState([]);
     const criticRef = useRef(null);
     const criticLimitedRef = useRef(null);
     const navigate = useNavigate();
+    const [user, setUser] = useState({})
 
+    let loginItem;
+    if (localStorage.getItem('tokenUser')) {
+        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await axios.get(`https://api.themoviedb.org/3/movie/${idMovie}?api_key=93296066cafd1a70fac5ed2532fda74f&language=pt-BR`);
+            const headers = {
+                Authorization: `Bearer ${loginItem}`,
+                "Content-type": "application/json"
+            };
+
+            const response = await axios.get(`https://api.themoviedb.org/3/movie/${idMovie}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
             setMovie(response.data);
+
+            const response_user = await api.get(`usuarios/${userID}/`, { headers })
+            setUser(response_user.data)
         };
 
         fetchData();
@@ -51,36 +66,38 @@ const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, im
     var datePublication;
     const time = date.substr([11])
 
+    const hour = parseInt(time);
+
+    const hourRt = hour - 3;
+
     if (isToday) {
-        datePublication = `- Hoje às ${time[0] + time[1]}:${time[3] + time[4]}`
+        datePublication = `- Hoje às ${hourRt}:${time[3] + time[4]}`
     }
 
     if (isYesterday) {
-        datePublication = `- Ontem às ${time[0] + time[1]}:${time[3] + time[4]}`
+        datePublication = `- Ontem às ${hourRt}:${time[3] + time[4]}`
     }
 
     if (isOlderThanYesterday) {
         const weekdays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
         const dayOfWeek = weekdays[providedDate.getDay()];
-        datePublication = `- ${dayOfWeek} às ${time[0] + time[1]}:${time[3] + time[4]}`
-        console.log(dayOfWeek);
+        datePublication = `- ${dayOfWeek} às ${hourRt}:${time[3] + time[4]}`
     }
     if (isOlderThanOneWeek) {
         const formattedDate = providedDate.toLocaleDateString();
         const formattedTime = providedDate.toLocaleTimeString();
-        datePublication = `- ${formattedDate} às ${time[0] + time[1]}:${time[3] + time[4]}`
+        datePublication = `- ${formattedDate} às ${hourRt}:${time[3] + time[4]}`
     }
 
 
-    var preview = document.getElementById(`${idPost}-preview`);
-    var full = document.getElementById(`${idPost}-full`);
+    var full = document.getElementById(`review-full`);
     var moreStar = document.getElementById(`star-read-more-${idPost}`);
     var imgTitleHover = document.getElementById(`img-title-hover-${idPost}`);
+    var optPub = document.getElementById(`option-publication-${idPost}`)
 
 
-    if (preview && full) {
-        preview.style.display = 'block'
-        full.style.display = 'none'
+    if (full) {
+        full.style.display = 'block'
     }
 
     if (moreStar) {
@@ -99,19 +116,32 @@ const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, im
         imgTitleHover.style.borderRadius = '8px';
     }
 
-    async function reviewAll() {
-        preview.style.display = 'none'
-        full.style.display = 'block'
-
-        var more = document.getElementById(`${idPost}-more`);
-        more.style.display = 'none'
-
-        moreStar.style.display = 'block'
+    if(optPub){
+        if(window.innerWidth < 660){
+            optPub.style.position = 'absolute'
+            optPub.style.marginLeft = '80%'
+            optPub.style.marginTop = '30px'
+            optPub.style.backgroundColor = '#494949'
+            optPub.style.borderRadius = '8px'
+            optPub.style.padding = '5px'
+            optPub.style.display = 'none'
+        }else{
+            optPub.style.position = 'absolute'
+            optPub.style.marginLeft = '43%'
+            optPub.style.marginTop = '30px'
+            optPub.style.backgroundColor = '#494949'
+            optPub.style.borderRadius = '8px'
+            optPub.style.padding = '5px'
+            optPub.style.display = 'none'
+        }
     }
 
     function handleMouseEnter(idPost) {
         var imgHover = document.getElementById(`img-title-hover-${idPost}`);
+
+        imgHover.src = `https://image.tmdb.org/t/p/w185${movie?.poster_path}`
         imgHover.style.display = 'block';
+
     }
 
     function handleMouseLeave(idPost) {
@@ -119,31 +149,29 @@ const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, im
         imgHover.style.display = 'none';
     }
 
+    async function openOption(){
+        if(optPub.style.display === 'block'){
+            optPub.style.display = 'none'
+        }else{
+            optPub.style.display = 'block'
+        }
+    }
 
-    async function handleTitle(){
+    async function handleTitle() {
         navigate(`/movie/${idMovie}`);
     }
 
-    async function handleProfile(){
+    async function handleProfile() {
         navigate(`/user/${userID}`);
     }
 
-    const widthInside = window.innerWidth;
-
-    if(preview && full){
-        if(widthInside <= 680){
-            preview.style.marginLeft = "-65px"
-            full.style.marginLeft = "-65px"
-        }
-        else if(widthInside >= 680){
-            preview.style.marginLeft = "0px"
-            full.style.marginLeft = "0px"
-        }
-
+    async function editPub(){
+        optPub.style.display = 'none'
     }
 
-    
-
+    async function deletPub(){
+        optPub.style.display = 'none'
+    }
 
 
     return (
@@ -158,32 +186,14 @@ const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, im
                         />
                     </div>
                     <div>
-                        <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{userName}</div><div className="date-release">{datePublication}</div></div>
+                        <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{user.nickname}</div><div className="date-release">{datePublication}</div></div>
                         <div className="movie-indice">Sobre <div className="movie-insert" onClick={handleTitle}
                             onMouseEnter={() => handleMouseEnter(idPost)} onMouseLeave={() => handleMouseLeave(idPost)}>
                             {movie?.title} de {(movie?.release_date) ? movie?.release_date.substr(0, 4) : movie?.release_date}
                         </div>
                         </div>
-                        <img id={`img-title-hover-${idPost}`} className={`img-title-hover-${idPost}`} src={`https://image.tmdb.org/t/p/w185${movie?.poster_path}`} />
-                        <div id={`${idPost}-preview`} className={`${idPost}-preview`} ref={(criticRef.length >= 600) ? criticRef : criticLimitedRef}></div>
-                        <div id={`${idPost}-full`} className={`${idPost}-full`} ref={criticRef}></div>
-                        <div></div>
-                        {(critic.length >= 600) ?
-                            <div id={`${idPost}-more`} className="read-more" onClick={reviewAll}>Ler crítica completa<MdArrowForwardIos className="arrow-display" /></div>
-                            :
-                            null
-                        }
-                        {(critic.length >= 600) ?
-                            <div id={`star-read-more-${idPost}`} className={`star-read-more-${idPost}`}>
-                                <div className="rating-content">
-                                    <div className="star-critic">
-                                        <div className="pub-star">{"★".repeat(rating)}</div>
-                                        <div className="no-star">{"★".repeat((5 - rating))}</div>
-                                    </div>
-                                    <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
-                                </div>
-                            </div>
-                            :
+                        <img id={`img-title-hover-${idPost}`} className={`img-title-hover-${idPost}`} />
+                        <div id={`review-full`} className={`review-full`} ref={criticRef}></div>
                             <div className="rating-content">
                                 <div className="star-critic">
                                     <div className="pub-star">{"★".repeat(rating)}</div>
@@ -191,8 +201,12 @@ const ViewPublication = ({ userName, userID, idPost, idMovie, rating, critic, im
                                 </div>
                                 <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
                             </div>
-                        }
                         <img id="image-review" className="image-review" src={image} />
+                    </div>
+                    <FiMoreHorizontal className="del-publication" onClick={openOption}/>
+                    <div id={`option-publication-${idPost}`} className={`option-publication-${idPost}`}>
+                        <div className="options-publication-inside" onClick={editPub}>Editar</div>
+                        <div className="options-publication-inside" onClick={deletPub}>Excluir</div>
                     </div>
                 </div>
             </div>
