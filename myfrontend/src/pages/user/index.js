@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import './styles.css'
 import api from "../../api";
 import Menu from '../../components/menu'
@@ -6,6 +6,8 @@ import Header from '../../components/header'
 import { useNavigate } from 'react-router-dom';
 import SuperCritico from '../../components/SuperCritico'
 import FollowUnfollow from "../../components/Follow-Unfollow";
+
+import ViewPublication from "../../components/ViewPublication";
 
 import { Link } from "react-router-dom";
 
@@ -36,9 +38,13 @@ const User = () => {
     const [user, setUser] = useState([]);
     const [following, setFollowing] = useState([]);
     const [followers, setFollowers] = useState([]);
+    const [publications, setPublications] = useState([]);
     const [myfollowing, setMyFollowing] = useState([]);
     const [myfollowers, setMyFollowers] = useState([]);
     const [isFollowingLoaded, setIsFollowingLoaded] = useState(false);
+    
+    const [page, setPage] = useState(1);
+    const isFirstPageRef = useRef(false);
 
     const navigate = useNavigate();
 
@@ -125,6 +131,42 @@ const User = () => {
         navigate("/edit-profile")
     }
 
+    const fetchFeed = async () => {
+        if (page === 1) {
+            isFirstPageRef.current = true;
+        }
+
+        const headers = {
+            Authorization: `Bearer ${loginItem}`,
+            "Content-type": "application/json"
+        };
+
+        const response = await api.get(`/pubusuario/${id}/?page=${page}`, { headers });
+        console.log("pao doce", response.data.results)
+        setPublications(prevPublications => [...prevPublications, ...response.data.results]);
+    };
+
+    useEffect(() => {
+        if (isFirstPageRef.current === false || page !== 1) {
+            fetchFeed();
+        }
+    }, [page]);
+
+    const handleScroll = () => {
+        const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+
+        if (scrollTop + clientHeight >= scrollHeight - 20) {
+            setPage(page + 1);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
         <>
             <Header />
@@ -182,6 +224,17 @@ const User = () => {
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
                     </div>
+                    {publications.map((publication) => (
+                        <ViewPublication
+                            userID={publication.user_id}
+                            idPost={publication?.date?.slice(20) + publication?.movie_id}
+                            idMovie={publication.movie_id}
+                            rating={publication.review}
+                            critic={publication.pub_text}
+                            image={publication?.imgur_link}
+                            date={publication.date}
+                        />
+                    ))}
                 </div>
                 <div className="right-content">
 

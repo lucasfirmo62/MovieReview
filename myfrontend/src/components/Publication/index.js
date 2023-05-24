@@ -214,6 +214,7 @@ const Publication = () => {
                         onChange={(e) => setPostText(e.target.value)}
                         placeholder="Escrever uma Crítica"
                         id="review-text"
+                        maxLength={400}
                     />
                 </div>
 

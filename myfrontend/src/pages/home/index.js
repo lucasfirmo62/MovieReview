@@ -41,20 +41,6 @@ const Home = () => {
         loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
     }
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const headers = {
-    //             Authorization: `Bearer ${loginItem}`,
-    //             "Content-type": "application/json"
-    //         };
-
-    //         const response = await api.get(`feed/?page=${page}`, {headers});
-    //         setPublications(response.data.results);
-    //     };
-
-    //     fetchData();
-    // }, []);
-
     const fetchFeed = async () => {
         if (page === 1) {
             isFirstPageRef.current = true;
