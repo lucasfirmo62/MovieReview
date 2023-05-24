@@ -89,10 +89,6 @@ const Profile = () => {
         fetchData();
     }, []);
 
-    // async function goFavoritos() {
-    // navigate("/favoritos")
-    // }
-
     return (
         <>
             <Header />
@@ -121,13 +117,13 @@ const Profile = () => {
 
                     <div className={'tabs-profile'}>
                         <Link
-                            to={`/followers`}
+                            to={`/followers/${idUser}`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{followers.length} Seguidores</p>
                         </Link>
                         <Link
-                            to={`/following`}
+                            to={`/following/${idUser}`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>

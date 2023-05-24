@@ -122,6 +122,20 @@ class UserViewSet(viewsets.ModelViewSet):
         
         return Response(serializer.data)
     
+    @action(detail=False, methods=['get'])
+    def following_by_id(self, request, user_id):
+        connections = Connection.objects.filter(usuario_alpha=user_id)
+        following = [connection.usuario_beta for connection in connections]
+        serializer = self.get_serializer(following, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def followers_by_id(self, request, user_id):
+        connections = Connection.objects.filter(usuario_beta=user_id)
+        followers = [connection.usuario_alpha for connection in connections]
+        serializer = self.get_serializer(followers, many=True)
+        return Response(serializer.data)
+    
 class LogoutView(APIView):
     authentication_classes = [MyJWTAuthentication]
 
@@ -137,7 +151,7 @@ class LogoutView(APIView):
             return Response({"Erro": str(e)}, status=400)
 
 class PublicationPagination(PageNumberPagination):
-    page_size = 20
+    page_size = 5
     page_size_query_param = 'page_size'
     max_page_size = 100
 

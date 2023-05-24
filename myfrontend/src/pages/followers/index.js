@@ -8,9 +8,12 @@ import CardFollower from "../../components/CardFollower";
 
 import { MdArrowBack } from "react-icons/md";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const Followers = () => {
+
+  const { id } = useParams();
+
   const [user, setUser] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
@@ -68,7 +71,7 @@ const Followers = () => {
 
       try {
         const userResponse = await api.get(`/usuarios/${idUser}/`, { headers });
-        const followersResponse = await api.get(`/usuarios/followers/`, {
+        const followersResponse = await api.get(`/followers/${id}/`, {
           headers,
         });
         const followingResponse = await api.get(`/usuarios/following/`, {
@@ -113,14 +116,14 @@ const Followers = () => {
 
           <div className="tabs-profile">
             <Link
-              to={`/followers`}
+              to={`/followers/${id}`}
               style={{ textDecoration: "none", color: "#fff" }}
             >
-              <p className="tab-profile">Seguidores</p>
+              <p style={{backgroundColor: '#4b4949'}} className="tab-profile">Seguidores</p>
             </Link>
 
             <Link
-              to={`/following`}
+              to={`/following/${id}`}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <p className="tab-profile">Seguindo</p>

@@ -60,7 +60,7 @@ function CardFollower(props) {
                 {(isFollowing) ?
                 <div id="follow-status">Desseguir</div>
                 :
-                <div id="follow-status" onClick={() => follow()}>Seguir</div>
+                <div id="follow-status">Seguir</div>
                 }
           </button>
         </div>

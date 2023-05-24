@@ -36,6 +36,9 @@ const User = () => {
     const [user, setUser] = useState([]);
     const [following, setFollowing] = useState([]);
     const [followers, setFollowers] = useState([]);
+    const [myfollowing, setMyFollowing] = useState([]);
+    const [myfollowers, setMyFollowers] = useState([]);
+    const [isFollowingLoaded, setIsFollowingLoaded] = useState(false);
 
     const navigate = useNavigate();
 
@@ -57,27 +60,67 @@ const User = () => {
             })
                 .then(response => { setUser(response.data) })
 
-            const response = await api.get(`/usuarios/following/`, {
-                headers: {
-                    Authorization: `Bearer ${loginItem}`,
-                    "Content-type": "application/json"
-                },
-            })
+            try {
+                const responseFollowing = await api.get(`/following/${id}/`, {
+                    headers: {
+                        Authorization: `Bearer ${loginItem}`,
+                        "Content-type": "application/json"
+                    },
+                })
 
-            setFollowing(response.data)
+                setFollowing(responseFollowing.data)
+            } catch (error) {
+                console.log(error)
+            }
 
-            const responseFollowing = await api.get(`/usuarios/following/`, {
-                headers: {
-                    Authorization: `Bearer ${loginItem}`,
-                    "Content-type": "application/json"
-                },
-            })
+            try {
+                const responseFollowers = await api.get(`/followers/${id}/`, {
+                    headers: {
+                        Authorization: `Bearer ${loginItem}`,
+                        "Content-type": "application/json"
+                    },
+                })
 
-            setFollowers(response.data)
+                setFollowers(responseFollowers.data)
+
+            } catch (error) {
+                console.log(error)
+            }
+
+            try {
+                const responseFollowing = await api.get(`/following/${idMyUser}/`, {
+                    headers: {
+                        Authorization: `Bearer ${loginItem}`,
+                        "Content-type": "application/json"
+                    },
+                })
+
+                setMyFollowing(responseFollowing.data)
+            } catch (error) {
+                console.log(error)
+            }
+
+            try {
+                const responseFollowers = await api.get(`/followers/${idMyUser}/`, {
+                    headers: {
+                        Authorization: `Bearer ${loginItem}`,
+                        "Content-type": "application/json"
+                    },
+                })
+
+                setMyFollowers(responseFollowers.data)
+
+            } catch (error) {
+                console.log(error)
+            }
+
+            setIsFollowingLoaded(true)
         }
+        
         userUtility()
-    }, [idMyUser, loginItem])
 
+    }, [idMyUser, loginItem])
+    
     async function goEditProfile() {
         navigate("/edit-profile")
     }
@@ -107,12 +150,16 @@ const User = () => {
                                 :
                                 null
                             }
-                            {following.length > 0 && idMyUser != id && (<FollowUnfollow
-                                isFollower={following.some(
-                                    (followingUser) => followingUser.id === user.id
-                                )}
-                                id={user.id}
-                            />)}
+                            {(isFollowingLoaded && idMyUser != id) && (
+                                <>
+                                <FollowUnfollow
+                                    isFollower={myfollowing.some(
+                                        (followingUser) => followingUser.id === Number(id)
+                                    )}
+                                    id={user.id}
+                                />
+                                </>
+                            )}
                             <p className="bio-text">{user.bio_text}</p>
                             {(idMyUser === id) ?
                                 <p className="edit-profile" onClick={goEditProfile}>Editar Perfil</p>
@@ -123,13 +170,13 @@ const User = () => {
                     </div>
                     <div className={'tabs-profile'}>
                         <Link
-                            to={`/followers`}
+                            to={`/followers/${id}`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{followers.length} Seguidores</p>
                         </Link>
                         <Link
-                            to={`/following`}
+                            to={`/following/${id}`}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>

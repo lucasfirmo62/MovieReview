@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import axios from 'axios';
 import styles from './styles.css';
@@ -8,8 +8,12 @@ import Header from "../../components/header";
 import Menu from "../../components/menu";
 import ViewPublication from "../../components/ViewPublication";
 
+import api from "../../api";
+
 const Home = () => {
     const [publications, setPublications] = useState([]);
+    const [page, setPage] = useState(1);
+    const isFirstPageRef = useRef(false);
 
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
@@ -31,13 +35,59 @@ const Home = () => {
         };
     }, [])
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get('https://api.npoint.io/f505aab832e19325c051');
-            setPublications(response.data.publications);
+    let loginItem;
+
+    if (localStorage.getItem('tokenUser')) {
+        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
+    }
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const headers = {
+    //             Authorization: `Bearer ${loginItem}`,
+    //             "Content-type": "application/json"
+    //         };
+
+    //         const response = await api.get(`feed/?page=${page}`, {headers});
+    //         setPublications(response.data.results);
+    //     };
+
+    //     fetchData();
+    // }, []);
+
+    const fetchFeed = async () => {
+        if (page === 1) {
+            isFirstPageRef.current = true;
+        }
+
+        const headers = {
+            Authorization: `Bearer ${loginItem}`,
+            "Content-type": "application/json"
         };
 
-        fetchData();
+        const response = await api.get(`feed/?page=${page}`, { headers });
+        setPublications(prevPublications => [...prevPublications, ...response.data.results]);
+    };
+
+    useEffect(() => {
+        if (isFirstPageRef.current === false || page !== 1) {
+            fetchFeed();
+        }
+    }, [page]);
+
+    const handleScroll = () => {
+        const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+
+        if (scrollTop + clientHeight >= scrollHeight - 0) {
+            setPage(page + 1);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
     return (
@@ -58,13 +108,12 @@ const Home = () => {
                     <Publication />
                     {publications.map((publication) => (
                         <ViewPublication
-                            userName={publication.userName}
-                            userID={publication.userID}
-                            idPost={publication.idPost}
-                            idMovie={publication.idMovie}
-                            rating={publication.rating}
-                            critic={publication.critic}
-                            image={publication?.image}
+                            userID={publication.user_id}
+                            idPost={publication?.date?.slice(20) + publication?.movie_id}
+                            idMovie={publication.movie_id}
+                            rating={publication.review}
+                            critic={publication.pub_text}
+                            image={publication?.imgur_link}
                             date={publication.date}
                         />
                     ))}
