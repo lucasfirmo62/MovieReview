@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import api from "../../api";
 
-const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date }) => {
+const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date, myPub }) => {
     const [movie, setMovie] = useState([]);
     const criticRef = useRef(null);
     const criticLimitedRef = useRef(null);
@@ -116,8 +116,8 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date 
         imgTitleHover.style.borderRadius = '8px';
     }
 
-    if(optPub){
-        if(window.innerWidth < 660){
+    if (optPub) {
+        if (window.innerWidth < 660) {
             optPub.style.position = 'absolute'
             optPub.style.marginLeft = '80%'
             optPub.style.marginTop = '30px'
@@ -125,7 +125,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date 
             optPub.style.borderRadius = '8px'
             optPub.style.padding = '5px'
             optPub.style.display = 'none'
-        }else{
+        } else {
             optPub.style.position = 'absolute'
             optPub.style.marginLeft = '43%'
             optPub.style.marginTop = '30px'
@@ -149,10 +149,10 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date 
         imgHover.style.display = 'none';
     }
 
-    async function openOption(){
-        if(optPub.style.display === 'block'){
+    async function openOption() {
+        if (optPub.style.display === 'block') {
             optPub.style.display = 'none'
-        }else{
+        } else {
             optPub.style.display = 'block'
         }
     }
@@ -165,13 +165,14 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date 
         navigate(`/user/${userID}`);
     }
 
-    async function editPub(){
+    async function editPub() {
         optPub.style.display = 'none'
     }
 
-    async function deletPub(){
+    async function deletPub() {
         optPub.style.display = 'none'
     }
+
 
 
     return (
@@ -194,20 +195,26 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date 
                         </div>
                         <img id={`img-title-hover-${idPost}`} className={`img-title-hover-${idPost}`} />
                         <div id={`review-full`} className={`review-full`} ref={criticRef}></div>
-                            <div className="rating-content">
-                                <div className="star-critic">
-                                    <div className="pub-star">{"★".repeat(rating)}</div>
-                                    <div className="no-star">{"★".repeat((5 - rating))}</div>
-                                </div>
-                                <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
+                        <div className="rating-content">
+                            <div className="star-critic">
+                                <div className="pub-star">{"★".repeat(rating)}</div>
+                                <div className="no-star">{"★".repeat((5 - rating))}</div>
                             </div>
+                            <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
+                        </div>
                         <img id="image-review" className="image-review" src={image} />
                     </div>
-                    <FiMoreHorizontal className="del-publication" onClick={openOption}/>
-                    <div id={`option-publication-${idPost}`} className={`option-publication-${idPost}`}>
-                        <div className="options-publication-inside" onClick={editPub}>Editar</div>
-                        <div className="options-publication-inside" onClick={deletPub}>Excluir</div>
-                    </div>
+                    {(myPub === true) ?
+                        <>
+                            <FiMoreHorizontal className="del-publication" onClick={openOption} />
+                            <div id={`option-publication-${idPost}`} className={`option-publication-${idPost}`}>
+                                <div className="options-publication-inside" onClick={editPub}>Editar</div>
+                                <div className="options-publication-inside" onClick={deletPub}>Excluir</div>
+                            </div>
+                        </>
+                        :
+                        null
+                    }
                 </div>
             </div>
         </>

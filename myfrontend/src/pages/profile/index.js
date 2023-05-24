@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import './styles.css'
 import Menu from '../../components/menu'
 import api from "../../api";
@@ -17,10 +17,11 @@ import { Link } from "react-router-dom";
 const Profile = () => {
 
     const [publications, setPublications] = useState([]);
-
+    const [page, setPage] = useState(1);
     const [user, setUser] = useState([]);
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
+    const isFirstPageRef = useRef(false);
 
     var loginItem;
     const [windowSize, setWindowSize] = useState({
@@ -80,14 +81,42 @@ const Profile = () => {
         navigate("/edit-profile")
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await axios.get('https://api.npoint.io/0bea111fb814cbf49770');
-            setPublications(response.data.publications);
+
+    const fetchProfilePost = async () => {
+        if (page === 1) {
+            isFirstPageRef.current = true;
+        }
+
+        const headers = {
+            Authorization: `Bearer ${loginItem}`,
+            "Content-type": "application/json"
         };
 
-        fetchData();
+        const response = await api.get(`pubusuario/${idUser}/?page=${page}`, { headers });
+        setPublications(prevPublications => [...prevPublications, ...response.data.results]);
+    };
+
+    useEffect(() => {
+        if (isFirstPageRef.current === false || page !== 1) {
+            fetchProfilePost();
+        }
+    }, [page]);
+
+    const handleScroll = () => {
+        const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+
+        if (scrollTop + clientHeight >= scrollHeight - 0) {
+            setPage(page + 1);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
+
 
     return (
         <>
@@ -137,14 +166,14 @@ const Profile = () => {
                     </div>
                     {publications.map((publication) => (
                         <ViewPublication
-                            userName={publication.userName}
-                            userID={publication.userID}
-                            idPost={publication.idPost}
-                            idMovie={publication.idMovie}
-                            rating={publication.rating}
-                            critic={publication.critic}
-                            image={publication?.image}
+                            userID={publication.user_id}
+                            idPost={publication?.date?.slice(20) + publication?.movie_id}
+                            idMovie={publication.movie_id}
+                            rating={publication.review}
+                            critic={publication.pub_text}
+                            image={publication?.imgur_link}
                             date={publication.date}
+                            myPub={(publication.user_id === parseInt(idUser)) ? true : false}
                         />
                     ))}
                 </div>
