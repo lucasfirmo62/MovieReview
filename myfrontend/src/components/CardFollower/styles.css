@@ -18,6 +18,11 @@
     border-radius: 8px;
 }
 
+.card-follower-content .card-details {
+    width: 100%;
+    justify-content: flex-start;
+}
+
 .card-follower-content .select-follow-unfollow{
     margin-left: auto;
     max-width: 80px;
