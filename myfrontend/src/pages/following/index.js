@@ -7,7 +7,7 @@ import CardFollower from "../../components/CardFollower";
 
 import { MdArrowBack } from "react-icons/md";
 
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
 
 const Following = () => {
   const { id } = useParams();
@@ -15,19 +15,11 @@ const Following = () => {
   const [user, setUser] = useState([]);
   const [following, setFollowing] = useState([]);
 
+  const location = useLocation();
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handlePopstate = () => {
-      navigate.push("/profile");
-    };
-
-    window.addEventListener("popstate", handlePopstate);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopstate);
-    };
-  }, [navigate]);
+  const backButtonRoute = location.state?.prevPath;
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -66,11 +58,11 @@ const Following = () => {
         "Content-type": "application/json",
       };
 
-      await api.get(`/usuarios/${idUser}/`, { headers }).then((response) => {
+      await api.get(`/usuarios/${id}/`, { headers }).then((response) => {
         setUser(response.data);
       });
 
-      await api.get(`/usuarios/following/`, { headers }).then((response) => {
+      await api.get(`/following/${id}/`, { headers }).then((response) => {
         setFollowing(response.data);
       });
     }
@@ -94,7 +86,7 @@ const Following = () => {
           <div className="followers-info">
             <Link
               className="back-btn"
-              to={`/profile`}
+              to={backButtonRoute}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <MdArrowBack size={32} className="back-icon" />
@@ -106,6 +98,9 @@ const Following = () => {
           <div className="tabs-profile">
             <Link
               to={`/followers/${id}`}
+              state={{
+                prevPath: backButtonRoute
+              }}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <p className="tab-profile">Seguidores</p>
@@ -113,6 +108,9 @@ const Following = () => {
 
             <Link
               to={`/following/${id}`}
+              state={{
+                prevPath: backButtonRoute
+              }}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <p style={{backgroundColor: '#4b4949'}} className="tab-profile">Seguindo</p>

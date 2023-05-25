@@ -9,9 +9,11 @@ import FollowUnfollow from "../../components/Follow-Unfollow";
 
 import ViewPublication from "../../components/ViewPublication";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const User = () => {
+    const location = useLocation();
+
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
@@ -212,13 +214,23 @@ const User = () => {
                     </div>
                     <div className={'tabs-profile'}>
                         <Link
-                            to={`/followers/${id}`}
+                            to={{
+                                pathname: `/followers/${id}`,
+                            }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{followers.length} Seguidores</p>
                         </Link>
                         <Link
-                            to={`/following/${id}`}
+                            to={{
+                                pathname: `/following/${id}`,
+                            }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
