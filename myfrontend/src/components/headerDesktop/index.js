@@ -131,7 +131,7 @@ const HeaderDesktop = () => {
                         <input
                             className={'input-open'}
                             type="text"
-                            placeholder="Pesquisar filmes"
+                            placeholder={searchType === "movies" ? "Pesquisar Filmes" : "Pesquisar Usuários"}
                             name="search"
                         />
                         <div id="select-bar-search" className="select-bar-search" onClick={selectSearch}>
