@@ -196,7 +196,7 @@ const Search = () => {
                 
                 {users.length > 0 && (
                   <Pagination
-                    totalPages={totalPages}
+                    totalPages={totalPages > 5 ? 5 : totalPages}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
                   />
@@ -237,7 +237,7 @@ const Search = () => {
 
                 {movies.length > 0 && (
                   <Pagination
-                    totalPages={totalPages}
+                    totalPages={totalPages > 5 ? 5 : totalPages}
                     currentPage={currentPage}
                     onPageChange={handlePageChange}
                   />
