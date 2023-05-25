@@ -5,6 +5,8 @@ import styles from './styles.css';
 
 import Publication from "../../components/Publication";
 import Header from "../../components/header";
+import HeaderDesktop from "../../components/headerDesktop";
+
 import Menu from "../../components/menu";
 import ViewPublication from "../../components/ViewPublication";
 
@@ -80,7 +82,12 @@ const Home = () => {
 
     return (
         <>
+        {(window.innerWidth > 760)?
+            <HeaderDesktop/>
+        :
+        
             <Header />
+        }
             <div className="content-home">
                 {windowSize.width < 680
                     ?

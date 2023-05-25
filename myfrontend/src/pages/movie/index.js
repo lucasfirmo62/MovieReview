@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import Header from '../../components/header';
+import HeaderDesktop from "../../components/headerDesktop";
 
 import posternotfound from '../../assets/posternotfound.png'
 import userDefault from '../../assets/user-default.jpg'
@@ -60,7 +61,7 @@ const Movie = () => {
         if (!(trailer?.results)) {
             document.getElementById("button-trailer").style.display = "none";
             document.getElementById("back-button-trailer").style.display = "none";
-        }else{
+        } else {
             document.getElementById("button-trailer").style.display = "block";
             document.getElementById("back-button-trailer").style.display = "block";
         }
@@ -144,7 +145,12 @@ const Movie = () => {
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
 
             <div
                 className="movie-details-container"

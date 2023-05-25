@@ -7,19 +7,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import logo from '../../assets/logotype.png'
 
-const Header = () => {
+const HeaderDesktop = () => {
     const navigate = useNavigate();
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchType, setSearchType] = useState("movies");
 
-    const handleSearchIconClick = () => {
-        setIsSearchOpen(!isSearchOpen);
-    };
 
-    if(window.innerWidth > 660){
-
-    }
-    
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -98,7 +90,7 @@ const Header = () => {
         radioButton.addEventListener('change', handleRadioButtonChange);
     });
 
-    async function selectSearch(){
+    async function selectSearch() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
         setTimeout(function () {
@@ -109,72 +101,68 @@ const Header = () => {
         }, 100);
     }
 
-    async function closeOptions(){
+    async function closeOptions() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
-        if(filterOptions.style.display === "block"){
+        if (filterOptions.style.display === "block") {
             filterOptions.style.display = 'none';
         }
     }
 
     return (
         <>
-            <header className={isSearchOpen ? 'header-open' : ''}>
-                <div className={isSearchOpen ? 'div-open' : ''}>
+            <header className={'header-open'}>
+                <div className={'div-open'}>
                     <Link to="/">
                         <img
-                            className={isSearchOpen ? 'img-open' : ''}
+                            className={'img-open'}
                             src={logo} alt="Logo do site"
                         />
                     </Link>
                     <form
                         onSubmit={handleSubmit}
-                        className={isSearchOpen ? 'form-close' : 'form-open'}
+                        className={'form-close'}
                     >
                         <FaSearch
                             color="black"
                             className="search-icon"
-                            onClick={handleSearchIconClick}
                         />
-                        {isSearchOpen && (
-                            <>
+
+                        <input
+                            className={'input-open'}
+                            type="text"
+                            placeholder="Pesquisar filmes"
+                            name="search"
+                        />
+                        <div id="select-bar-search" className="select-bar-search" onClick={selectSearch}>
+                            Filmes
+                        </div>
+                        <div id="option-conf-search-back" className="option-conf-search-back">
+                            <label name="Filmes" className="button-radio" id="moviesL" onClick={closeOptions}>
                                 <input
-                                    className={isSearchOpen ? 'input-open' : ''}
-                                    type="text"
-                                    placeholder="Pesquisar filmes"
-                                    name="search"
+                                    id="movies"
+                                    type="radio"
+                                    name="searchType"
+                                    className="option-conf-search"
+                                    value="movies"
+                                    checked={searchType === "movies"}
+                                    onChange={() => setSearchType("movies")}
                                 />
-                                <div id="select-bar-search" className="select-bar-search" onClick={selectSearch}>
-                                    Filmes
-                                </div>
-                                <div id="option-conf-search-back" className="option-conf-search-back">
-                                    <label name="Filmes" className="button-radio" id="moviesL" onClick={closeOptions}>
-                                        <input
-                                            id="movies"
-                                            type="radio"
-                                            name="searchType"
-                                            className="option-conf-search"
-                                            value="movies"
-                                            checked={searchType === "movies"}
-                                            onChange={() => setSearchType("movies")}
-                                        />
-                                        Filmes
-                                    </label>
-                                    <label name="Usuários" className="button-radio" id="usersL" onClick={closeOptions}>
-                                        <input
-                                            id="users"
-                                            type="radio"
-                                            name="searchType"
-                                            className="option-conf-search"
-                                            value="users"
-                                            checked={searchType === "users"}
-                                            onChange={() => setSearchType("users")}
-                                        />
-                                        Usuários
-                                    </label>
-                                </div>
-                            </>
-                        )}
+                                Filmes
+                            </label>
+                            <label name="Usuários" className="button-radio" id="usersL" onClick={closeOptions}>
+                                <input
+                                    id="users"
+                                    type="radio"
+                                    name="searchType"
+                                    className="option-conf-search"
+                                    value="users"
+                                    checked={searchType === "users"}
+                                    onChange={() => setSearchType("users")}
+                                />
+                                Usuários
+                            </label>
+                        </div>
                     </form>
                 </div>
             </header>
@@ -182,4 +170,4 @@ const Header = () => {
     )
 }
 
-export default Header;
+export default HeaderDesktop;
