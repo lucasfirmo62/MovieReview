@@ -7,7 +7,7 @@ const SignUp = () => {
 
   //Declaração das expressões regulares
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const data_nascimentoRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19[0-9]{2}|2000)$/;
+  const data_nascimentoRegex = /^(19[1-9]\d|2000)-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,20}$/;
 
   const [values, setValues] = useState({
@@ -58,8 +58,8 @@ const SignUp = () => {
       id: 5,
       name: "data_nascimento",
       type: "text",
-      errorMessage: "Insira uma data de nascimento válida",
-      placeholder: "dd/mm/aaaa",
+      errorMessage: "Insira uma data de nascimento válida, certifique-se de que a mesma está formatada de acordo",
+      placeholder: "aaaa-mm-dd",
       label: "Data de Nascimento"
     },
     {
@@ -146,6 +146,7 @@ const SignUp = () => {
     if (isValid) {
       //colocar as informações
       //console.log(values)
+      
       const data = {
         "full_name": values.nome_completo,
         "nickname": values.nome_de_usuario,
