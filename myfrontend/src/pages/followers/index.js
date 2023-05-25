@@ -8,7 +8,7 @@ import CardFollower from "../../components/CardFollower";
 
 import { MdArrowBack } from "react-icons/md";
 
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation  } from "react-router-dom";
 
 const Followers = () => {
 
@@ -17,25 +17,31 @@ const Followers = () => {
   const [user, setUser] = useState([]);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const handlePopstate = () => {
-      navigate.push("/profile");
-    };
-
-    window.addEventListener("popstate", handlePopstate);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopstate);
-    };
-  }, [navigate]);
+  const backButtonRoute = location.state?.prevPath;
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
+
+  // useEffect(() => {
+  //   const handleBrowserBackButton = (event) => {
+  //     if (event.type === 'popstate') {
+  //       console.log('Browser back button clicked');
+  //       history.push('/');
+  //     }
+  //   };
+
+  //   window.addEventListener('popstate', handleBrowserBackButton);
+
+  //   return () => {
+  //     window.removeEventListener('popstate', handleBrowserBackButton);
+  //   };
+  // }, [history]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -70,7 +76,7 @@ const Followers = () => {
       };
 
       try {
-        const userResponse = await api.get(`/usuarios/${idUser}/`, { headers });
+        const userResponse = await api.get(`/usuarios/${id}/`, { headers });
         const followersResponse = await api.get(`/followers/${id}/`, {
           headers,
         });
@@ -105,7 +111,7 @@ const Followers = () => {
           <div className="followers-info">
             <Link
               className="back-btn"
-              to={`/profile`}
+              to={backButtonRoute}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <MdArrowBack size={32} className="back-icon" />
@@ -117,6 +123,9 @@ const Followers = () => {
           <div className="tabs-profile">
             <Link
               to={`/followers/${id}`}
+              state={{
+                prevPath: backButtonRoute
+              }}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <p style={{backgroundColor: '#4b4949'}} className="tab-profile">Seguidores</p>
@@ -124,6 +133,9 @@ const Followers = () => {
 
             <Link
               to={`/following/${id}`}
+              state={{
+                prevPath: backButtonRoute
+              }}
               style={{ textDecoration: "none", color: "#fff" }}
             >
               <p className="tab-profile">Seguindo</p>

@@ -117,13 +117,23 @@ const Profile = () => {
 
                     <div className={'tabs-profile'}>
                         <Link
-                            to={`/followers/${idUser}`}
+                            to={{
+                                pathname: `/followers/${idUser}`,
+                            }}
+                            state={{
+                                prevPath: '/profile'
+                            }}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{followers.length} Seguidores</p>
                         </Link>
                         <Link
-                            to={`/following/${idUser}`}
+                            to={{
+                                pathname: `/following/${idUser}`,
+                            }}
+                            state={{
+                                prevPath: '/profile'
+                            }}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
