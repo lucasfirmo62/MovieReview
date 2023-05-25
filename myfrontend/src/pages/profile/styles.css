@@ -1,24 +1,26 @@
-.content-all{
+.content-all {
     display: flex;
 }
 
-.left-content{
+.left-content {
     width: 25%;
     height: 100px;
 }
 
-.right-content{
+.right-content {
     width: 25%;
     height: 100px;
 }
 
-.content-box-profile{
+.content-box-profile {
     width: 50%;
     background-color: #313131;
     color: white;
+    min-height: 210px;
+    padding-bottom: 16px;
 }
 
-.profile-info{
+.profile-info {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -26,13 +28,13 @@
     padding: 20px;
 }
 
-.image-user{
+.image-user {
     border-radius: 100%;
     width: 150px;
     padding: 20px;
 }
 
-.name-user{
+.name-user {
     padding-top: 20px;
     padding-left: 15px;
     padding-right: 15px;
@@ -40,12 +42,12 @@
     font-size: 23px;
 }
 
-.username-text{
+.username-text {
     font-size: 14px;
     color: rgba(255, 255, 255, 0.623);
 }
 
-.tabs-profile{
+.tabs-profile {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -53,7 +55,20 @@
     padding: 20px;
 }
 
-.tabs-profile p{
+.tabs-profile.colored-tabs p.tab-profile.active {
+    background-color: #444444;
+}
+
+.colored-tabs {
+    text-align: center;
+    border-bottom: 1px solid gray;
+}
+
+.colored-tabs p {
+    width: 40%;
+}
+
+.tabs-profile p {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
@@ -62,31 +77,31 @@
     cursor: pointer;
 }
 
-.tabs-profile p:hover{
+.tabs-profile p:hover {
     background-color: #444444;
 }
 
-.edit-profile{
+.edit-profile {
     font-size: 14px;
     color: white;
 }
 
-.edit-profile:hover{
+.edit-profile:hover {
     cursor: pointer;
     color: rgba(255, 255, 255, 0.623);
 }
 
-.super-critic{
+.super-critic {
     font-size: 12px;
     display: flex;
 }
 
-.critic-name{
+.critic-name {
     font-size: 19px;
     margin-top: -7px;
 }
 
-.verified{
+.verified {
     font-size: 19px;
     color: #d4a60e;
     margin-top: -7px;
@@ -94,14 +109,27 @@
     padding-right: 5px;
 }
 
-@media only screen and (max-width: 660px){
+@media only screen and (max-width: 660px) {
+
+    .content-all {
+        display: block;
+        padding-bottom: 30%;
+    }
+
+    .right-content {
+        display: none;
+    }
 
     .content-all{
         display: block;
-        margin-top: -100px;
+        /* padding-bottom: 30%; */
+    }
+    
+    .left-content {
+        display: none;
     }
 
-    .container{
+    .container {
         background-color: #909090;
         padding-left: 0%;
         padding-right: 0%;
@@ -110,28 +138,19 @@
         max-width: 730px;
     }
 
-    .image-user{
+    .image-user {
         border-radius: 100%;
         width: 110px;
         padding: 20px;
     }
 
-    .left-content{
-        display: block;
-    }
-    
-    .right-content{
-        display: block;
-
-    }
-    
-    .content-box-profile{
+    .content-box-profile {
         width: 100%;
         background-color: #313131;
         color: white;
     }
 
-    .profile-info{
+    .profile-info {
         display: flex;
         flex-direction: row;
         justify-content: center;
@@ -139,15 +158,24 @@
         padding: 5px;
     }
 
-    
-    .tabs-profile{
+    .followers-info {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 80%;
+        gap: 32px;
+        padding: 16px;
+    }
+
+    .tabs-profile {
         flex-direction: row;
         justify-content: center;
         align-items: center;
         padding: 10px;
+        flex-wrap: wrap;
     }
 
-    .tabs-profile p{
+    .tabs-profile p {
         padding-left: 15px;
         padding-right: 15px;
         padding-top: 10px;

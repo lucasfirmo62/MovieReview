@@ -1,0 +1,140 @@
+.content-page {
+  display: flex;
+}
+
+.left-content {
+  display: block;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+  min-height: 210px;
+}
+
+.title-content {
+  flex: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  background-color: #313131;
+}
+
+.movie-favorite-item {
+  text-decoration: none;
+}
+
+.movie-favorite-item:hover {
+  text-decoration: underline;
+  text-decoration-color: #313131;
+}
+
+.title-component {
+  font-size: 40px;
+  color: #ffffff;
+}
+
+.favorite-content {
+  height: 95%;
+  overflow: auto;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #313131;
+  display: flex;
+}
+
+.favoriteMovie-component {
+  padding: 1%;
+  height: 145px;
+  background: #6e6e6e;
+  width: 95%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.moviePicture {
+  margin-left: 5px;
+  background-size: cover;
+  padding: 1%;
+  height: 95%;
+  border-radius: 8px;
+  width: 11%;
+  min-width: 90px;
+  min-height: 106px;
+}
+
+.movieInfo {
+  flex-grow: 1;
+  padding: 0 10px;
+  width: 200px;
+}
+
+.movieTitle {
+  font-weight: bold;
+  color: rgb(42, 42, 42);
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.movieDesc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.button-content {
+  top: 0;
+  right: 0;
+  padding: 10px;
+}
+
+.favoriteButton {
+  background-color: #313131;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.infoFavorite-movie{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 1024px) {
+  .content-page .left-content {
+    display: none;
+  }
+
+  .center-content {
+    width: 100%;
+    margin: auto;
+    font-size: 14px;
+  }
+
+  .title-component {
+    font-size: 24px;
+  }
+
+  .movieInfo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .infoFavorite-movie{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
