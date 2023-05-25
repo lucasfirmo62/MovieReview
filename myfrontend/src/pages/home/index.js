@@ -76,6 +76,8 @@ const Home = () => {
         };
     }, []);
 
+    var idUser = localStorage.getItem('idUser');
+
     return (
         <>
             <Header />
@@ -101,6 +103,7 @@ const Home = () => {
                             critic={publication.pub_text}
                             image={publication?.imgur_link}
                             date={publication.date}
+                            myPub={(publication.user_id === parseInt(idUser)) ? true : false}
                         />
                     ))}
                 </div>
