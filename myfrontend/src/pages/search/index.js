@@ -4,6 +4,7 @@ import "./styles.css";
 import axios from "axios";
 
 import Header from "../../components/header";
+import HeaderDesktop from "../../components/headerDesktop";
 import Pagination from "../../components/pagination";
 
 import { useLocation, Link } from "react-router-dom";
@@ -116,7 +117,12 @@ const Search = () => {
 
   return (
     <>
-      <Header />
+      {(window.innerWidth > 760) ?
+        <HeaderDesktop />
+        :
+
+        <Header />
+      }
 
       <div className="search-container ">
         <div className="search-content">

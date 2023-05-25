@@ -4,6 +4,7 @@ import Menu from '../../components/menu'
 import api from "../../api";
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header'
+import HeaderDesktop from "../../components/headerDesktop";
 import SuperCritico from '../../components/SuperCritico'
 
 const Profile = () => {
@@ -39,7 +40,12 @@ const Profile = () => {
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-all">
                 <div className="left-content">
                     <Menu />

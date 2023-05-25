@@ -5,12 +5,19 @@ import styles from './styles.css';
 
 import Publication from "../../components/Publication";
 import Header from "../../components/header";
+import HeaderDesktop from "../../components/headerDesktop";
+
 import Menu from "../../components/menu";
 
 const Home = () => {
     return (
         <>
+        {(window.innerWidth > 760)?
+            <HeaderDesktop/>
+        :
+        
             <Header />
+        }
             <div className="content-home">
                 <div className="home-left-content">
                     <Menu />
