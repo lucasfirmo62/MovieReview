@@ -16,7 +16,7 @@
     width: 50%;
     background-color: #313131;
     color: white;
-    min-height: 210px;
+    min-height: 100vh;
     padding-bottom: 16px;
 }
 

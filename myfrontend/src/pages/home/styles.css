@@ -18,6 +18,8 @@
     background-color: #313131;
     color: white;
     padding-bottom: 140px;
+    min-height: 100vh;
+    padding-bottom: 16px;
 }
 
 .form {
