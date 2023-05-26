@@ -48,7 +48,7 @@ function CardFollower(props) {
     <div className="card-follower-content">
         <div className="card" key={props.id}>
           <img src="https://i.imgur.com/piVx6dg.png" alt={props.nickname} className="card-image" />
-          <div className="card-details">
+          <div className={props.isUser ? "card-details" : ""}>
             <Link
               className="card-follower-item"
               to={`/user/${props.id}`}
@@ -56,13 +56,15 @@ function CardFollower(props) {
               <p className="card-name">{props.nickname}</p>
             </Link>
           </div>
-          <button onClick={isFollowing ? () => unfollow() : () => follow()} className="select-follow-unfollow">
-                {(isFollowing) ?
-                <div id="follow-status">Desseguir</div>
-                :
-                <div id="follow-status">Seguir</div>
-                }
-          </button>
+          {!props.isUser && 
+            <button onClick={isFollowing ? () => unfollow() : () => follow()} className="select-follow-unfollow">
+                  {(isFollowing) ?
+                  <div id="follow-status">Desseguir</div>
+                  :
+                  <div id="follow-status">Seguir</div>
+                  }
+            </button>
+          }
         </div>
     </div>
   );

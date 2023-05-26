@@ -20,6 +20,7 @@ const Following = () => {
   const navigate = useNavigate();
 
   const backButtonRoute = location.state?.prevPath;
+  const [currentUserfollowing, SetCurrentUserFollowing] = useState([]);
 
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -62,9 +63,16 @@ const Following = () => {
         setUser(response.data);
       });
 
-      await api.get(`/following/${id}/`, { headers }).then((response) => {
-        setFollowing(response.data);
+      const UserfollowingResponse = await api.get(`/following/${id}/`, {
+        headers,
       });
+
+      const followingResponse = await api.get(`/usuarios/following/`, {
+        headers,
+      });
+
+      SetCurrentUserFollowing(followingResponse.data)
+      setFollowing(UserfollowingResponse.data)
     }
 
     userUtility();
@@ -120,9 +128,12 @@ const Following = () => {
             {following.map((followingUser) => (
               <div key={followingUser.id}>
                 <CardFollower
-                  isFollower={true}
+                  isFollower={currentUserfollowing.some(
+                    (user) => user.id === followingUser.id
+                  )}
                   id={followingUser.id}
                   nickname={followingUser.nickname}
+                  isUser={followingUser.id == idUser}
                 />
               </div>
             ))}

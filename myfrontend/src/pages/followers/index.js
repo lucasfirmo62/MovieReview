@@ -28,21 +28,6 @@ const Followers = () => {
     height: window.innerHeight,
   });
 
-  // useEffect(() => {
-  //   const handleBrowserBackButton = (event) => {
-  //     if (event.type === 'popstate') {
-  //       console.log('Browser back button clicked');
-  //       history.push('/');
-  //     }
-  //   };
-
-  //   window.addEventListener('popstate', handleBrowserBackButton);
-
-  //   return () => {
-  //     window.removeEventListener('popstate', handleBrowserBackButton);
-  //   };
-  // }, [history]);
-
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({
@@ -58,17 +43,18 @@ const Followers = () => {
     };
   }, []);
 
+  var loginItem;
+
+  if (localStorage.getItem("tokenUser")) {
+    loginItem = localStorage
+      .getItem("tokenUser")
+      .substring(1, localStorage.getItem("tokenUser").length - 1);
+  }
+
+  var idUser = localStorage.getItem("idUser");
+
   useEffect(() => {
     async function userUtility() {
-      var loginItem;
-
-      if (localStorage.getItem("tokenUser")) {
-        loginItem = localStorage
-          .getItem("tokenUser")
-          .substring(1, localStorage.getItem("tokenUser").length - 1);
-      }
-
-      var idUser = localStorage.getItem("idUser");
 
       const headers = {
         Authorization: `Bearer ${loginItem}`,
@@ -77,9 +63,11 @@ const Followers = () => {
 
       try {
         const userResponse = await api.get(`/usuarios/${id}/`, { headers });
+        
         const followersResponse = await api.get(`/followers/${id}/`, {
           headers,
         });
+
         const followingResponse = await api.get(`/usuarios/following/`, {
           headers,
         });
@@ -155,6 +143,7 @@ const Followers = () => {
                     )}
                     id={follower.id}
                     nickname={follower.nickname}
+                    isUser={follower.id == idUser}
                   />
                 </div>
               ))}
