@@ -6,12 +6,15 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import Header from '../../components/header';
+import HeaderDesktop from "../../components/headerDesktop";
 
 import posternotfound from '../../assets/posternotfound.png'
 import userDefault from '../../assets/user-default.jpg'
 
 import { BsFillPlayFill } from 'react-icons/bs';
 import { AiFillCloseCircle } from 'react-icons/ai';
+
+import api from '../../api';
 
 const Movie = () => {
     const { id } = useParams();
@@ -23,6 +26,7 @@ const Movie = () => {
     const [showTooltip, setShowTooltip] = useState(false);
     const [trailer, setTrailer] = useState([]);
     const [trailerUS, setTrailerUS] = useState([]);
+    const [isMovieFavorite, setIsMovieFavorite] = useState(false);
 
     const castRef = useRef(null);
 
@@ -57,7 +61,7 @@ const Movie = () => {
         if (!(trailer?.results)) {
             document.getElementById("button-trailer").style.display = "none";
             document.getElementById("back-button-trailer").style.display = "none";
-        }else{
+        } else {
             document.getElementById("button-trailer").style.display = "block";
             document.getElementById("back-button-trailer").style.display = "block";
         }
@@ -79,9 +83,74 @@ const Movie = () => {
         document.getElementById("trailer").src = "https://www.youtube.com/embed/undefined";
     }
 
+    let loginItem;
+    if (localStorage.getItem('tokenUser')) {
+        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
+    }
+
+    async function toggleFavoritar() {
+        const data = {
+            "user_id": loginItem,
+            "movie_id": id,
+            "poster_img": `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
+            "movie_title": movie.title
+        }
+
+        const headers = {
+            Authorization: `Bearer ${loginItem}`,
+            "Content-type": "application/json"
+        };
+
+        try {
+            await api.post('/favoritos/', data, { headers })
+
+            setIsMovieFavorite(true)
+        } catch(error) {
+            console.log(error)
+        }
+    }
+
+    async function toggleDesfavoritar() {
+        const headers = {
+            Authorization: `Bearer ${loginItem}`,
+            "Content-type": "application/json"
+        };
+
+        try {
+            await api.delete(`/favoritos/${id}/`, { headers })
+
+            setIsMovieFavorite(false)
+        } catch(error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        async function get_data() {
+            const headers = {
+                Authorization: `Bearer ${loginItem}`,
+                "Content-type": "application/json"
+            };
+            
+            try {
+                const response = await api.get(`/favoritos/${id}/is_movie_favorite/`, { headers })
+                setIsMovieFavorite(response.data.is_favorite)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        get_data()
+    }, [])
+
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
 
             <div
                 className="movie-details-container"
@@ -91,6 +160,9 @@ const Movie = () => {
                     backgroundPosition: 'center'
                 }}
             >
+            
+
+
                 <div className='movie-details-content'>
                     <div>
                         <img
@@ -120,6 +192,11 @@ const Movie = () => {
                                 </li>
                             ))}
                         </ul>
+                        {isMovieFavorite ? 
+                            (<button id="favoritar-button" className="favoritar-button" onClick={toggleDesfavoritar}>Desfavoritar</button>)
+                            :
+                            (<button id="favoritar-button" className="favoritar-button" onClick={toggleFavoritar}>Favoritar</button>)
+                        }
                     </div>
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>

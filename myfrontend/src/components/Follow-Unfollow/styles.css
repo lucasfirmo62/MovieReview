@@ -1,0 +1,15 @@
+.select-follow-unfollow{
+    width: 100px;
+    background-color: #D30069;;
+    color: white;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.select-follow-unfollow:hover{
+    background-color: #db1578;;
+    color: white;
+    transition: 0.2s;
+}
