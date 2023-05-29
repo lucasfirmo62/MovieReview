@@ -11,8 +11,5 @@
       "src": "/(.*)",
       "dest": "myfrontend/$1"
     }
-  ],
-  "git": {
-    "deploymentEnabled": false
-  }
+  ]
 }
