@@ -171,9 +171,19 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
     async function deletPub() {
         optPub.style.display = 'none'
+
+        let id = localStorage.getItem("idUser");
+        id = id.substring(1, id.length - 1);
+        let token = localStorage.getItem("tokenUser");
+        token = token.substring(1, token.length - 1);
+
+        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+        api.delete(`/publicacoes/${idPost}/`, {headers})
+        .then(() => {
+            window.location.reload()
+        })
     }
-
-
 
     return (
         <>
@@ -208,7 +218,6 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         <>
                             <FiMoreHorizontal className="del-publication" onClick={openOption} />
                             <div id={`option-publication-${idPost}`} className={`option-publication-${idPost}`}>
-                                <div className="options-publication-inside" onClick={editPub}>Editar</div>
                                 <div className="options-publication-inside" onClick={deletPub}>Excluir</div>
                             </div>
                         </>
