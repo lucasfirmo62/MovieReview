@@ -13,22 +13,12 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
     const navigate = useNavigate();
     const [user, setUser] = useState({})
 
-    let loginItem;
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     useEffect(() => {
         const fetchData = async () => {
-            const headers = {
-                Authorization: `Bearer ${loginItem}`,
-                "Content-type": "application/json"
-            };
-
             const response = await axios.get(`https://api.themoviedb.org/3/movie/${idMovie}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
             setMovie(response.data);
 
-            const response_user = await api.get(`usuarios/${userID}/`, { headers })
+            const response_user = await api.get(`usuarios/${userID}/`)
             setUser(response_user.data)
         };
 

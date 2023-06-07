@@ -13,15 +13,7 @@ const Favoritos = () => {
 
   useEffect(() => {
     async function getMovies() {
-      let id = localStorage.getItem('idUser')
-      let token = localStorage.getItem('tokenUser')
-
-      id = id.substring(1, id.length - 1)
-      token = token.substring(1, token.length - 1)
-
-      const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
-      const response = await api.get('/favoritos/', { headers })
+      const response = await api.get('/favoritos/')
 
       await setFavoriteList(response.data)
     }
@@ -29,16 +21,8 @@ const Favoritos = () => {
   }, [])
 
   async function clickDesfavoritar(index) {
-    let id = localStorage.getItem('idUser');
-    let token = localStorage.getItem('tokenUser');
-
-    id = id.substring(1, id.length - 1);
-    token = token.substring(1, token.length - 1);
-
-    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
     try {
-      await api.delete(`/favoritos/${index}/`, { headers });
+      await api.delete(`/favoritos/${index}/`);
 
       setFavoriteList(prevList => {
         const updatedList = [...prevList];

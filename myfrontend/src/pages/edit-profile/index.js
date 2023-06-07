@@ -19,16 +19,12 @@ const EditProfile = () => {
 
     useEffect(() => {
         let id = localStorage.getItem('idUser')
-        let token = localStorage.getItem('tokenUser')
 
         id = id.substring(1, id.length - 1)
-        token = token.substring(1, token.length - 1)
-
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 
         const fetchUser = async () => {
             try {
-                const response = await api.get(`/usuarios/${id}/`, { headers });
+                const response = await api.get(`/usuarios/${id}/`);
 
                 setUser({
                     full_name: response.data.full_name,
@@ -45,19 +41,15 @@ const EditProfile = () => {
 
     const handleSaveChanges = () => {
         let id = localStorage.getItem('idUser')
-        let token = localStorage.getItem('tokenUser')
 
         id = id.substring(1, id.length - 1)
-        token = token.substring(1, token.length - 1)
-
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
 
         if (!user.full_name || !user.nickname || !user.bio_text) {
             alert("Por favor, preencha todos os campos");
             return;
         }
 
-        api.patch(`/usuarios/${id}/`, user, { headers })
+        api.patch(`/usuarios/${id}/`, user)
             .then(response => {
                 console.log('Dados do usuário atualizados com sucesso:', response.data);
                 navigate('/profile')
