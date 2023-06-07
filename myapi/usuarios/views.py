@@ -11,8 +11,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 from rest_framework.pagination import PageNumberPagination
-from .models import User, Publication, Connection, FavoritesList
-from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer
+from .models import User, Publication, Connection, FavoritesList, Likes, Deslikes
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, DeslikesSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
@@ -167,6 +167,60 @@ class PublicationViewSet(viewsets.ModelViewSet):
     queryset = Publication.objects.all().order_by('-date')
     authentication_classes = [MyJWTAuthentication]
     pagination_class = PublicationPagination
+    
+    def like(self, request, publication_id=None):
+        user = request.user
+
+        publication = Publication.objects.filter(id=publication_id).first()
+
+        if Likes.objects.filter(user_id=user, publication_id=publication_id).exists():
+            Likes.objects.filter(user_id=user, publication_id=publication_id).delete()
+            return Response({'success': 'Deixando de dar o like.'}, status=status.HTTP_201_CREATED)
+
+        like = Likes.objects.create(
+            user_id=user,
+            publication_id=publication
+        )
+
+        return Response({'success': 'Like feito com sucesso!'}, status=status.HTTP_201_CREATED)
+    
+    def deslike(self, request, publication_id=None):
+        user = request.user
+
+        publication = Publication.objects.filter(id=publication_id).first()
+
+        if Deslikes.objects.filter(user_id=user, publication_id=publication_id).exists():
+            Deslikes.objects.filter(user_id=user, publication_id=publication_id).delete()
+            return Response({'success': 'Deixando de dar o deslike.'}, status=status.HTTP_201_CREATED)
+
+        like = Deslikes.objects.create(
+            user_id=user,
+            publication_id=publication
+        )
+
+        return Response({'success': 'Deslike feito com sucesso!'}, status=status.HTTP_201_CREATED)
+    
+    def likes_by_publication(self, request, publication_id=None):
+        likes = Likes.objects.filter(publication_id=publication_id)
+        
+        user_ids = likes.values_list('user_id', flat=True)  
+
+        users = User.objects.filter(id__in=user_ids)  
+
+        serializer = UserSerializer(users, many=True)  
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    def deslikes_by_publication(self, request, publication_id=None):
+        deslikes = Deslikes.objects.filter(publication_id=publication_id)
+        
+        user_ids = deslikes.values_list('user_id', flat=True)  
+
+        users = User.objects.filter(id__in=user_ids)  
+
+        serializer = UserSerializer(users, many=True)  
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def feed(self, request):
         following = Connection.objects.filter(usuario_alpha=request.user).values_list('usuario_beta', flat=True)

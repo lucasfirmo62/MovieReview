@@ -105,6 +105,10 @@ class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     
+class Deslikes(models.Model):
+    publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    
 class Connection(models.Model):
     usuario_alpha = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conexao_alpha')
     usuario_beta = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conexao_beta')

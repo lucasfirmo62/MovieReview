@@ -11,6 +11,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('feed/', PublicationViewSet.as_view({ 'get': 'feed' })),
     path('pubusuario/<int:user_id>/', PublicationViewSet.as_view({ 'get': 'get_publications_by_user' })),
+    path('likes/<int:publication_id>/', PublicationViewSet.as_view({ 'post': 'like', 'get': 'likes_by_publication' })),
+    path('deslikes/<int:publication_id>/', PublicationViewSet.as_view({ 'post': 'deslike', 'get': 'deslikes_by_publication' })),
     path('favoritos/', FavoritesViewSet.as_view({'post': 'create', 'get': 'list'}), name='criar_favorito'),
     path('favoritos/<int:movie_id>/', FavoritesViewSet.as_view({'delete': 'destroy_by_movie_id'})),
     path('favoritos/<int:movie_id>/is_movie_favorite/', FavoritesViewSet.as_view({'get': 'is_movie_favorite'})),
