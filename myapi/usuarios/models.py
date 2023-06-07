@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ValidationError
 from datetime import date
+from django.utils import timezone
 
 REVIEWS = [
     (1,'1 - Horrível'),
@@ -104,10 +105,12 @@ class Publication(models.Model):
 class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
     
 class Deslikes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
     
 class Connection(models.Model):
     usuario_alpha = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conexao_alpha')

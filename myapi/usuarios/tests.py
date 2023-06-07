@@ -317,7 +317,47 @@ class PublicationTestCase(TestCase):
         
         response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
         self.token = response.data['access']
+    
+    def test_like_publication(self):
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
         
+        response = self.client.post(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Like feito com sucesso!'})
+        
+        response = self.client.get(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Deixando de dar o like!'})
+        
+        response = self.client.get(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 0)
+        
+    def test_deslike_publication(self):
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.post(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Deslike feito com sucesso!'})
+        
+        response = self.client.get(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Deixando de dar o deslike.'})
+        
+        response = self.client.get(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 0)
+    
     def test_create_publication(self):
         response = self.client.post('/publicacoes/', {
             'review': 4,
