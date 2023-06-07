@@ -318,6 +318,24 @@ class PublicationTestCase(TestCase):
         response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
         self.token = response.data['access']
         
+    def test_get_movie_publications(self):
+        publication2 = Publication.objects.create(
+            review=2,
+            pub_text='Bom filme!',
+            user_id=self.user,
+            movie_id=2,
+            movie_title='The godfather',
+        )
+    
+        response = self.client.get(f'/criticas/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.get(f'/criticas/2/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.get(f'/criticas/3/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 0)
+    
     def test_create_publication(self):
         response = self.client.post('/publicacoes/', {
             'review': 4,
