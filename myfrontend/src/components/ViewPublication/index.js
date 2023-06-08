@@ -243,10 +243,10 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
             setTimeout(function() {
                 likePub.style.color = 'rgb(243 60 151)'
                 },300)
-            var luise = -50
-            for (var i = -50; i < 0; i++) {
+            var luise = -30
+            for (var i = -30; i < 0; i++) {
                 setTimeout(function() {
-                    likePub.style.transform = `rotate(${luise + i++}deg)`; // Nova posição
+                    likePub.style.transform = `rotate(${luise + i++}deg)`;
                 }, Math.abs(i)*12);
             }
         } else {
