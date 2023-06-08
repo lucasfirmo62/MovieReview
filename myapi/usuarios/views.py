@@ -226,6 +226,19 @@ class PublicationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(publications, many=True)
         
         return Response(serializer.data)
+    
+    def get_publications_by_movie(self, request, movie_id=None):
+        publications = Publication.objects.filter(movie_id=movie_id).order_by('-date')
+
+        page = self.paginate_queryset(publications)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(publications, many=True)
+        
+        return Response(serializer.data)
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesListSerializer
