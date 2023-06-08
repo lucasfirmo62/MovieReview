@@ -3,6 +3,7 @@ import './styles.css';
 import axios from 'axios';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { IoMdSend } from 'react-icons/io';
+import { AiTwotoneLike, AiTwotoneDislike } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 
 import api from "../../api";
@@ -111,16 +112,19 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
     var commentSinglePub = document.getElementById(`single-comments-on-review-${idPost}`)
     var commentAllPub = document.getElementById(`all-comments-on-review-${idPost}`)
     var readMoreComment = document.getElementById(`read-more-comments-${idPost}`)
+    var likePub = document.getElementById(`like-button-review-${idPost}`)
+    var dislikePub = document.getElementById(`dislike-button-review-${idPost}`)
+
 
     if (commentAllPub) {
         commentAllPub.style.display = 'none'
     }
 
-    if(commentSinglePub){
+    if (commentSinglePub) {
         commentSinglePub.style.display = 'block'
     }
 
-    if(readMoreComment){
+    if (readMoreComment) {
         readMoreComment.style.display = 'block'
     }
 
@@ -174,6 +178,15 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
         commentPub.style.resize = 'none'
     }
 
+    if (likePub) {
+        likePub.style.color = 'white'
+    }
+
+
+    if (dislikePub) {
+        dislikePub.style.color = 'white'
+    }
+
 
     function handleMouseEnter(idPost) {
         var imgHover = document.getElementById(`img-title-hover-${idPost}`);
@@ -221,18 +234,54 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
     }
 
     async function showAllCommentsPublication() {
-        if(commentAllPub.style.display === 'none'){
+        if (commentAllPub.style.display === 'none') {
             commentAllPub.style.display = 'block'
             commentSinglePub.style.display = 'none'
             readMoreComment.innerHTML = "Ver menos comentários"
-        }else{
+        } else {
             commentAllPub.style.display = 'none'
             commentSinglePub.style.display = 'block'
             readMoreComment.innerHTML = "Ver mais comentários"
         }
     }
 
-    async function handleProfileInside(profileUser){
+    async function likeButton() {
+        dislikePub.style.color = 'white'
+
+        if (likePub.style.color === 'white') {
+            setTimeout(function () {
+                likePub.style.color = 'rgb(243 60 151)'
+            }, 300)
+            var luise = -30
+            for (var i = -30; i < 0; i++) {
+                setTimeout(function () {
+                    likePub.style.transform = `rotate(${luise + i++}deg)`;
+                }, Math.abs(i) * 12);
+            }
+        } else {
+            likePub.style.color = 'white'
+        }
+    }
+
+    async function dislikeButton() {
+        likePub.style.color = 'white'
+
+        if (dislikePub.style.color === 'white') {
+            setTimeout(function () {
+                dislikePub.style.color = 'rgb(243 60 151)'
+            }, 300)
+            var luise = -30
+            for (var i = -30; i < 0; i++) {
+                setTimeout(function () {
+                    dislikePub.style.transform = `rotate(${luise + i++}deg)`;
+                }, Math.abs(i) * 12);
+            }
+        } else {
+            dislikePub.style.color = 'white'
+        }
+    }
+
+    async function handleProfileInside(profileUser) {
         navigate(`/user/${profileUser}`);
 
     }
@@ -279,7 +328,10 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                     }
                 </div>
                 <div className="zone-interactive-publication">
-                    <div className="interactive-into"></div>
+                    <div className="interactive-into-likes">
+                        <div className="interactive-into" onClick={likeButton}><AiTwotoneLike id={`like-button-review-${idPost}`} className="like-button" /></div>
+                        <div className="interactive-into" onClick={dislikeButton}><AiTwotoneDislike id={`dislike-button-review-${idPost}`} className="like-button" /></div>
+                    </div>
                     <div className="interactive-into" onClick={showCommentPost}>Comentar</div>
                 </div>
                 <div id={`post-comment-${idPost}`} className={`post-comment-${idPost}`}>
