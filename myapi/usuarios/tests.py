@@ -627,3 +627,18 @@ class FavoritesTestCase(TestCase):
         response = self.client.get('/favoritos/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
+        
+    def test_get_favorite_list_users(self):
+        response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(len(response.data), 1)
+        
+        response = self.client.post('/favoritos/', {
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+          
+        response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+

@@ -380,8 +380,14 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def list(self, request):
-        user_id = request.user.id
+        user_id = request.user
         
+        queryset = FavoritesList.objects.filter(user_id=user_id)
+        serializer = FavoritesListSerializer(queryset, many=True)
+        
+        return Response(serializer.data)
+    
+    def list_by_id(self, request, user_id=None):
         queryset = FavoritesList.objects.filter(user_id=user_id)
         serializer = FavoritesListSerializer(queryset, many=True)
         
