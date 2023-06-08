@@ -318,6 +318,28 @@ class PublicationTestCase(TestCase):
         response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
         self.token = response.data['access']
         
+    def test_comment(self):
+        response = self.client.post(f'/comentarios/5/', {
+            'comment_text': 'Concordo com a sua crítica',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        response = self.client.post(f'/comentarios/1/', {
+            'comment_text': 'Concordo com a sua crítica',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.get(f'/comentarios/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post(f'/comentarios/1/', {
+            'comment_text': 'Discordo de alguns pontos',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.get(f'/comentarios/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 2)
+        
     def test_get_movie_publications(self):
         publication2 = Publication.objects.create(
             review=2,
