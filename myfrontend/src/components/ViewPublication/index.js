@@ -15,23 +15,13 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
     const [user, setUser] = useState({})
     const [showComments, setShowComments] = useState({})
 
-
-    let loginItem;
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     useEffect(() => {
         const fetchData = async () => {
-            const headers = {
-                Authorization: `Bearer ${loginItem}`,
-                "Content-type": "application/json"
-            };
 
             const response = await axios.get(`https://api.themoviedb.org/3/movie/${idMovie}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
             setMovie(response.data);
 
-            const response_user = await api.get(`usuarios/${userID}/`, { headers })
+            const response_user = await api.get(`usuarios/${userID}/`)
             setUser(response_user.data)
         };
 
@@ -180,7 +170,6 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
         imgHover.src = `https://image.tmdb.org/t/p/w185${movie?.poster_path}`
         imgHover.style.display = 'block';
-
     }
 
     function handleMouseLeave(idPost) {
@@ -232,7 +221,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
         }
     }
 
-    async function handleProfileInside(profileUser){
+    async function handleProfileInside(profileUser) {
         navigate(`/user/${profileUser}`);
 
     }
@@ -343,7 +332,6 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                             </div>
                         </div>
                     </>
-
                 }
             </div>
         </>
