@@ -184,6 +184,17 @@
     background-color: #6e6e6e;
 }
 
+.like-button{
+    height: 25px;
+    font-size: 20px;
+    transition: 0.2s;
+}
+
+.like-button:hover{
+    font-size: 25px;
+    transition: 0.2s;
+}
+
 @keyframes spin {
     from {
       transform: rotate(0deg);
