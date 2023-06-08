@@ -131,3 +131,4 @@ class FavoritesList(models.Model):
     movie_id = models.CharField(max_length=300, blank=False)
     poster_img = models.URLField(blank=False, default='')
     movie_title = models.CharField(max_length=200, blank=False, default='')
+    date = models.DateTimeField(default=timezone.now)

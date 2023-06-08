@@ -630,7 +630,7 @@ class FavoritesTestCase(TestCase):
         
     def test_get_favorite_list_users(self):
         response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data['count'], 1)
         
         response = self.client.post('/favoritos/', {
             "movie_id": 550,
@@ -640,5 +640,5 @@ class FavoritesTestCase(TestCase):
           
         response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data['count'], 2)
 
