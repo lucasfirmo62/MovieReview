@@ -11,8 +11,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 from rest_framework.pagination import PageNumberPagination
-from .models import User, Publication, Connection, FavoritesList
-from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer
+from .models import User, Publication, Connection, FavoritesList, Comment
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
@@ -167,6 +167,41 @@ class PublicationViewSet(viewsets.ModelViewSet):
     queryset = Publication.objects.all().order_by('-date')
     authentication_classes = [MyJWTAuthentication]
     pagination_class = PublicationPagination
+    
+    def add_comment(self, request, publication_id=None):
+        user = request.user
+                
+        if not(user):
+            return Response({'error': 'Usuário nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+
+        comment_text = request.data.get('comment_text')
+        
+        comment = Comment.objects.create(
+            user_id=user,
+            publication_id=publication,
+            comment_text=comment_text
+        )
+
+        return Response({'success': 'Comentário feito com sucesso!'}, status=status.HTTP_201_CREATED)
+    
+    def get_comments_by_pub_id(self, request, publication_id=None):
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        comments = Comment.objects.filter(publication_id=publication_id).order_by('-date')
+
+        page = self.paginate_queryset(comments)  
+
+        serializer = CommentSerializer(page, many=True)
+        
+        return self.get_paginated_response(serializer.data)
 
     def feed(self, request):
         following = Connection.objects.filter(usuario_alpha=request.user).values_list('usuario_beta', flat=True)
