@@ -120,6 +120,7 @@ class Comment(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)   
     comment_text = models.CharField(max_length=500)
+    date = models.DateTimeField(default=timezone.now)
 
 class WatchList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -14,8 +14,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 from rest_framework.pagination import PageNumberPagination
-from .models import User, Publication, Connection, FavoritesList, Likes, Deslikes
-from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, DeslikesSerializer
+from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
@@ -179,9 +179,9 @@ class PublicationViewSet(viewsets.ModelViewSet):
             publication = Publication.objects.get(id=publication_id)
         except Publication.DoesNotExist:
             return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
-            
+        
         publication = Publication.objects.filter(id=publication_id).first()
-
+        
         if Likes.objects.filter(user_id=user, publication_id=publication_id).exists():
             Likes.objects.filter(user_id=user, publication_id=publication_id).delete()
             return Response({'success': 'Deixando de dar o like!'}, status=status.HTTP_201_CREATED)
@@ -193,6 +193,41 @@ class PublicationViewSet(viewsets.ModelViewSet):
         )
 
         return Response({'success': 'Like feito com sucesso!'}, status=status.HTTP_201_CREATED)
+    
+    def add_comment(self, request, publication_id=None):
+        user = request.user
+                
+        if not(user):
+            return Response({'error': 'Usuário nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        comment_text = request.data.get('comment_text')
+        
+        comment = Comment.objects.create(
+            user_id=user,
+            publication_id=publication,
+            comment_text=comment_text
+        )
+
+        return Response({'success': 'Comentário feito com sucesso!'}, status=status.HTTP_201_CREATED)
+    
+    def get_comments_by_pub_id(self, request, publication_id=None):
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        comments = Comment.objects.filter(publication_id=publication_id).order_by('-date')
+
+        page = self.paginate_queryset(comments)  
+
+        serializer = CommentSerializer(page, many=True)
+        
+        return self.get_paginated_response(serializer.data)
     
     def deslike(self, request, publication_id=None):                
         user = request.user
@@ -295,6 +330,19 @@ class PublicationViewSet(viewsets.ModelViewSet):
     def get_publications_by_user(self, request, user_id=None):
         user = User.objects.get(pk=user_id)
         publications = Publication.objects.filter(user_id=user).order_by('-date')
+
+        page = self.paginate_queryset(publications)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(publications, many=True)
+        
+        return Response(serializer.data)
+    
+    def get_publications_by_movie(self, request, movie_id=None):
+        publications = Publication.objects.filter(movie_id=movie_id).order_by('-date')
 
         page = self.paginate_queryset(publications)
         

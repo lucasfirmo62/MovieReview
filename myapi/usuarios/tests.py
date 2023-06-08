@@ -356,6 +356,44 @@ class PublicationTestCase(TestCase):
         self.assertEqual(response.data, {'success': 'Deixando de dar o deslike.'})
         
         response = self.client.get(f'/deslikes/{self.publication.id}/')
+    def test_comment(self):
+        response = self.client.post(f'/comentarios/5/', {
+            'comment_text': 'Concordo com a sua crítica',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        response = self.client.post(f'/comentarios/1/', {
+            'comment_text': 'Concordo com a sua crítica',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.get(f'/comentarios/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post(f'/comentarios/1/', {
+            'comment_text': 'Discordo de alguns pontos',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.get(f'/comentarios/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 2)
+        
+    def test_get_movie_publications(self):
+        publication2 = Publication.objects.create(
+            review=2,
+            pub_text='Bom filme!',
+            user_id=self.user,
+            movie_id=2,
+            movie_title='The godfather',
+        )
+    
+        response = self.client.get(f'/criticas/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.get(f'/criticas/2/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.get(f'/criticas/3/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.data['count'], 0)
     
     def test_create_publication(self):
