@@ -10,6 +10,7 @@ router.register(r'publicacoes', PublicationViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('feed/', PublicationViewSet.as_view({ 'get': 'feed' })),
+    path('supercriticos/', UserViewSet.as_view({ 'get': 'super_reviewers' })),
     path('pubusuario/<int:user_id>/', PublicationViewSet.as_view({ 'get': 'get_publications_by_user' })),
     path('likes/<int:publication_id>/', PublicationViewSet.as_view({ 'post': 'like', 'get': 'likes_by_publication' })),
     path('deslikes/<int:publication_id>/', PublicationViewSet.as_view({ 'post': 'deslike', 'get': 'deslikes_by_publication' })),

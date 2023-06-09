@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 
 from rest_framework.response import Response
+from django.db.models import Count
 from rest_framework import viewsets
 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -139,6 +140,14 @@ class UserViewSet(viewsets.ModelViewSet):
         followers = [connection.usuario_alpha for connection in connections]
         serializer = self.get_serializer(followers, many=True)
         return Response(serializer.data)
+    
+    def super_reviewers(self, request):
+        super_reviewers = User.objects.annotate(num_publications=Count('publication')).filter(num_publications__gte=5, super_reviewer=True).order_by('-num_publications')
+        paginator = UserPagination()
+        paginated_super_reviewers = paginator.paginate_queryset(super_reviewers, request)
+        
+        serializer = self.get_serializer(paginated_super_reviewers, many=True)
+        return paginator.get_paginated_response(serializer.data)
     
 class LogoutView(APIView):
     authentication_classes = [MyJWTAuthentication]
