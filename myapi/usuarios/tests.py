@@ -253,6 +253,51 @@ class SignalsTestCase(TestCase):
         response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(len(response.data), 0)
         
+    def test_super_reviewers(self):
+        client = APIClient()
+
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
+        
+        for _ in range(5):
+            publication = Publication.objects.create(
+                review=5,
+                pub_text='Ótimo filme!',
+                user_id=user1,
+                movie_id=1,
+                movie_title='La la land',
+            )
+            
+        for _ in range(3):
+            publication = Publication.objects.create(
+                review=5,
+                pub_text='Ótimo filme!',
+                user_id=user2,
+                movie_id=1,
+                movie_title='La la land',
+            )
+            
+        response = client.get(f'/supercriticos/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.data['count'], 1)
+        
 class LogoutTestCase(TestCase):
     
     def setUp(self):
