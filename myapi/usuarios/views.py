@@ -14,8 +14,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 from rest_framework.pagination import PageNumberPagination
-from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes
-from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer
+from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes, Notification
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer, NotificationSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
@@ -88,6 +88,13 @@ class UserViewSet(viewsets.ModelViewSet):
     
         connection = Connection(usuario_alpha=user, usuario_beta=user_to_follow)
         connection.save()
+        
+        Notification.objects.create(
+            sender=user,  
+            recipient=user_to_follow,  
+            notification_type='follow',
+            is_read=False
+        )
         
         return Response({'status': 'ok'})
     
@@ -191,6 +198,15 @@ class PublicationViewSet(viewsets.ModelViewSet):
             publication_id=publication,
             date=timezone.now()
         )
+        
+        if publication.user_id != user:
+            Notification.objects.create(
+                sender=user,  
+                recipient=publication.user_id,  
+                publication=publication,
+                notification_type='like',
+                is_read=False
+            )
 
         return Response({'success': 'Like feito com sucesso!'}, status=status.HTTP_201_CREATED)
     
@@ -212,6 +228,14 @@ class PublicationViewSet(viewsets.ModelViewSet):
             publication_id=publication,
             comment_text=comment_text
         )
+        
+        if publication.user_id != user:
+            Notification.objects.create(
+                user=publication.user_id,
+                publication=publication,
+                notification_type='comment',
+                is_read=False
+            )
 
         return Response({'success': 'Comentário feito com sucesso!'}, status=status.HTTP_201_CREATED)
     
@@ -243,11 +267,13 @@ class PublicationViewSet(viewsets.ModelViewSet):
             Deslikes.objects.filter(user_id=user, publication_id=publication_id).delete()
             return Response({'success': 'Deixando de dar o deslike.'}, status=status.HTTP_201_CREATED)
 
-        like = Deslikes.objects.create(
-            user_id=user,
-            publication_id=publication,
-            date=timezone.now()
-        )
+        if publication.user_id != user:
+            Notification.objects.create(
+                user=publication.user_id,
+                publication=publication,
+                notification_type='deslike',
+                is_read=False
+            )
 
         return Response({'success': 'Deslike feito com sucesso!'}, status=status.HTTP_201_CREATED)
 
@@ -408,3 +434,19 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         else:
             return Response({'is_favorite': False}) 
     
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.all()
+
+    def list(self, request):
+        queryset = self.filter_queryset(self.get_queryset().filter(recipient=request.user))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def mark_as_read(self, request, pk=None):
+        notification = self.get_object()
+        notification.is_read = True
+        notification.save()
+
+        serializer = self.get_serializer(notification)
+        return Response(serializer.data)

@@ -131,3 +131,15 @@ class FavoritesList(models.Model):
     movie_id = models.CharField(max_length=300, blank=False)
     poster_img = models.URLField(blank=False, default='')
     movie_title = models.CharField(max_length=200, blank=False, default='')
+    
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
+    publication = models.ForeignKey('usuarios.Publication', on_delete=models.CASCADE, null=True, blank=True)
+    notification_type = models.CharField(max_length=20)  # Exemplo: 'like', 'comment'
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    # criar um campo de message 
+
+    def __str__(self):
+        return f'{self.sender.username} - {self.notification_type}'
