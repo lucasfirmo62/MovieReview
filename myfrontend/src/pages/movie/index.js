@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './styles.css';
 
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -12,12 +12,19 @@ import posternotfound from '../../assets/posternotfound.png'
 import userDefault from '../../assets/user-default.jpg'
 
 import { BsFillPlayFill } from 'react-icons/bs';
-import { AiFillCloseCircle } from 'react-icons/ai';
+import { AiFillCloseCircle, AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
+import { FaStar } from 'react-icons/fa';
+import { IoMdEye } from 'react-icons/io';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
 import api from '../../api';
 
 const Movie = () => {
     const { id } = useParams();
+
+    const navigate = useNavigate()
+
+    const [showModalPublication, setShowModalPublication] = useState(false);
 
     const [movie, setMovie] = useState({});
     const [director, setDirector] = useState('');
@@ -27,6 +34,7 @@ const Movie = () => {
     const [trailer, setTrailer] = useState([]);
     const [trailerUS, setTrailerUS] = useState([]);
     const [isMovieFavorite, setIsMovieFavorite] = useState(false);
+    const [isWatchlistSettled, setIsWatchlistSettled] = useState(false);
 
     const castRef = useRef(null);
 
@@ -105,7 +113,7 @@ const Movie = () => {
             await api.post('/favoritos/', data, { headers })
 
             setIsMovieFavorite(true)
-        } catch(error) {
+        } catch (error) {
             console.log(error)
         }
     }
@@ -120,7 +128,7 @@ const Movie = () => {
             await api.delete(`/favoritos/${id}/`, { headers })
 
             setIsMovieFavorite(false)
-        } catch(error) {
+        } catch (error) {
             console.log(error)
         }
     }
@@ -131,7 +139,7 @@ const Movie = () => {
                 Authorization: `Bearer ${loginItem}`,
                 "Content-type": "application/json"
             };
-            
+
             try {
                 const response = await api.get(`/favoritos/${id}/is_movie_favorite/`, { headers })
                 setIsMovieFavorite(response.data.is_favorite)
@@ -142,6 +150,14 @@ const Movie = () => {
 
         get_data()
     }, [])
+
+    async function toggleAddToWatchlist() {
+        setIsWatchlistSettled(true)
+    }
+
+    async function toggleRemovetoWatchlist() {
+        setIsWatchlistSettled(false)
+    }
 
     return (
         <>
@@ -160,7 +176,7 @@ const Movie = () => {
                     backgroundPosition: 'center'
                 }}
             >
-            
+
 
 
                 <div className='movie-details-content'>
@@ -192,11 +208,21 @@ const Movie = () => {
                                 </li>
                             ))}
                         </ul>
-                        {isMovieFavorite ? 
+                        {/* {isMovieFavorite ? 
                             (<button id="favoritar-button" className="favoritar-button" onClick={toggleDesfavoritar}>Desfavoritar</button>)
                             :
                             (<button id="favoritar-button" className="favoritar-button" onClick={toggleFavoritar}>Favoritar</button>)
-                        }
+                        } */}
+                        <div className='movie-analysis'>
+                            <button style={{ maxWidth: 'max-content' }} id="favoritar-button" className="favoritar-button" onClick={isMovieFavorite ? toggleDesfavoritar : toggleFavoritar}>
+                                <FaStar color={isMovieFavorite ? 'gold' : 'gray'} size={20} />
+                            </button>
+
+                            <button style={{ width: '100%' }} id="favoritar-button" className="favoritar-button" onClick={isWatchlistSettled ? toggleRemovetoWatchlist : toggleAddToWatchlist}>
+                                <IoMdEye color={isWatchlistSettled ? '#e90074' : 'gray'} size={20} />
+                                <span>Assistir Depois</span>
+                            </button>
+                        </div>
                     </div>
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>
