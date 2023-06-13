@@ -353,11 +353,17 @@ class PublicationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(publications, many=True)
         
         return Response(serializer.data)
+    
+class FavoritesPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesListSerializer
     authentication_classes = [MyJWTAuthentication]
     queryset = FavoritesList.objects.all()
+    pagination_class = FavoritesPagination
 
     def create(self, request):
         user = request.user
@@ -380,11 +386,22 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def list(self, request):
-        user_id = request.user.id
+        user_id = request.user
         
         queryset = FavoritesList.objects.filter(user_id=user_id)
         serializer = FavoritesListSerializer(queryset, many=True)
         
+        return Response(serializer.data)
+    
+    def list_by_id(self, request, user_id=None):
+        queryset = FavoritesList.objects.filter(user_id=user_id).order_by('-date')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
     def destroy_by_movie_id(self, request, movie_id=None):

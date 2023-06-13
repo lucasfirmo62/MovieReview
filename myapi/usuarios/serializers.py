@@ -43,6 +43,7 @@ class DeslikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Likes
         fields = '__all__'
+        
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
