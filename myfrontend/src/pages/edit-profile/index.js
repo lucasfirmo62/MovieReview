@@ -95,12 +95,14 @@ const EditProfile = () => {
                                 <p>Seu username</p>
                                 <input maxLength={55} placeholder={user.nickname} id='username' className="content-input-edit" value={user.nickname} onChange={(event) => setUser({ ...user, nickname: event.target.value })} />
                             </div>
-                            <div className='row'>
+                            <div className='row-textarea'>
                                 <p>Sobre você</p>
-                                <textarea maxLength={220} placeholder={user.bio_text} id="w3review" rows="4" cols="50" className="content-input-edit" value={user.bio_text} onChange={(event) => setUser({ ...user, bio_text: event.target.value })}> </textarea>
+                                <textarea maxLength={220} placeholder={user.bio_text} id="w3review" rows="4" cols="50" className="content-input-edit-about" value={user.bio_text} onChange={(event) => setUser({ ...user, bio_text: event.target.value })}> </textarea>
                             </div>
                         </div>
-                        <button className='button-simple' onClick={handleSaveChanges}><p>Concluir alterações</p></button>
+                        <div className='row-button'>
+                            <button className='button-simple-edit' onClick={handleSaveChanges}><p>Concluir alterações</p></button>
+                        </div>
                     </div>
                 </div>
                 <div className="right-content">

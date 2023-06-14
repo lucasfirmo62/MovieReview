@@ -63,6 +63,36 @@
     width: 100%;
 }
 
+.content-input-edit-about{
+    font-size: 19px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    width: 100%;
+    resize: none;
+}
+
+.row-textarea{
+    padding-right: 14px;
+}
+
+.button-simple-edit{
+    background-color: #D30069;
+    color: white;
+    border: solid 1px rgba(255, 255, 255, 0);
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.button-simple-edit:hover{
+    background-color: #e90074;
+    border: solid 1px rgba(255, 255, 255, 0);
+}
+
+.row-button{
+    padding: 30px;
+    padding-right: 22px;
+}
+
 @media only screen and (max-width: 1000px){
 
     .content-all{
@@ -120,6 +150,15 @@
         padding-top: 4px;
         padding-bottom: 4px;
         width: 100%;
+    }
+
+    .row-textarea{
+        padding-right: 9px;
+    }
+
+    .row-button{
+        padding: 20px;
+        padding-right: 13px;
     }
 
 }
