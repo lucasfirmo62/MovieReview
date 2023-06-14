@@ -25,6 +25,9 @@ const ViewPublication = ({
   const [user, setUser] = useState({});
   const [showComments, setShowComments] = useState({});
 
+  const [likeNum, setLikeNum] = useState(0)
+  const [deslikeNum, setDeslikeNum] = useState(0)
+
   const [like, setLike] = useState(false);
   const [dislike, setDislike] = useState(false);
 
@@ -347,6 +350,23 @@ const ViewPublication = ({
     }
   }
 
+  useEffect(() => {
+    const headers = {
+      Authorization: `Bearer ${loginItem}`,
+      "Content-type": "application/json",
+    };
+
+    async function get_data() {
+      const response1 = await api.get(`/likes/${idPost}/`, { headers })
+      setLikeNum(response1.data.count)
+
+      const response2 = await api.get(`/deslikes/${idPost}/`, { headers })
+      setDeslikeNum(response2.data.count)
+    }
+
+    get_data()
+  })
+
   async function dislikeButton() {
     let likePub = document.getElementById(`like-button-review-${idPost}`);
     let dislikePub = document.getElementById(`dislike-button-review-${idPost}`);
@@ -469,12 +489,15 @@ const ViewPublication = ({
                 id={`like-button-review-${idPost}`}
                 className="like-button"
               />
+              <h1>{likeNum}</h1>
+
             </div>
             <div className="interactive-into" onClick={dislikeButton}>
               <AiTwotoneDislike
                 id={`dislike-button-review-${idPost}`}
                 className="like-button"
-              />
+                />
+                <h1>{deslikeNum}</h1>
             </div>
           </div>
           <div className="interactive-into" onClick={showCommentPost}>

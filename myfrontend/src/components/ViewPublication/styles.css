@@ -34,6 +34,10 @@
     background: #9d9097;
 }
 
+.interactive-into h1 {
+    font-size: 14px;
+}
+
 .button-cancel {
     display: none;
     font-weight: bold;
