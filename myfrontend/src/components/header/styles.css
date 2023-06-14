@@ -87,12 +87,12 @@ header .search-icon {
     cursor: pointer;
 }
 
-.select-bar-search{
+.select-bar-search-mobile{
     font-size: 14px;
     position: absolute;
     width: 55px;
     left: 385px;
-    background-color: rgb(230, 230, 230);
+    background-color: rgb(255, 255, 255);
     padding: 8px;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -101,17 +101,18 @@ header .search-icon {
     height: 15.5px;
 }
 
-.select-bar-search:hover{
+.select-bar-search-mobile:hover{
     background-color: rgb(240, 240, 240);
 }
 
+
 @media (max-width: 741px) {
-    .select-bar-search{
+    .select-bar-search-mobile{
         font-size: 14px;
         position: absolute;
         width: 55px;
         left: 86.4%;
-        background-color: rgb(230, 230, 230);
+        background-color: rgb(255, 255, 255);
         padding: 8px;
         height: 30px;
         border-top-right-radius: 16px;
@@ -181,12 +182,12 @@ header .search-icon {
 }
 
 @media (max-width: 400px) {
-    .select-bar-search{
+    .select-bar-search-mobile{
         font-size: 14px;
         position: absolute;
         width: 55px;
         left: 80%;
-        background-color: rgb(230, 230, 230);
+        background-color: rgb(255, 255, 255);
         padding: 8px;
         height: 30px;
         border-top-right-radius: 16px;

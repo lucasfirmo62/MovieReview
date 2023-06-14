@@ -60,6 +60,22 @@ const HeaderDesktop = () => {
         };
     }, []);
 
+    const linkVerify = window.location.href;
+
+    setTimeout(function () {
+        if (linkVerify.includes("/search?user")) {
+            const checkedElement = document.getElementById(`usersL`);
+            var name = checkedElement.getAttribute('name')
+            console.log(name)
+            document.getElementById("select-bar-search").innerHTML = name;
+        } else if (linkVerify.includes("/search?query")) {
+            const checkedElement = document.getElementById(`moviesL`);
+            var name = checkedElement.getAttribute('name')
+            console.log(name)
+            document.getElementById("select-bar-search").innerHTML = name;
+        }
+    }, '100');
+
     const radioButtons = document.querySelectorAll('.option-conf-search');
 
     function handleRadioButtonChange() {

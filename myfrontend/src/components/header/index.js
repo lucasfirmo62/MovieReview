@@ -14,6 +14,21 @@ const Header = () => {
 
     const handleSearchIconClick = () => {
         setIsSearchOpen(!isSearchOpen);
+        const linkVerify = window.location.href;
+
+        setTimeout(function () {
+            if (linkVerify.includes("/search?user")) {
+                const checkedElement = document.getElementById(`usersL`);
+                var name = checkedElement.getAttribute('name')
+                console.log(name)
+                document.getElementById("select-bar-search").innerHTML = name;
+            } else if (linkVerify.includes("/search?query")) {
+                const checkedElement = document.getElementById(`moviesL`);
+                var name = checkedElement.getAttribute('name')
+                console.log(name)
+                document.getElementById("select-bar-search").innerHTML = name;
+            }
+        }, '100');
     };
 
     if(window.innerWidth > 660){
@@ -67,6 +82,7 @@ const Header = () => {
             }
         };
     }, []);
+
 
     const radioButtons = document.querySelectorAll('.option-conf-search');
 
@@ -144,7 +160,7 @@ const Header = () => {
                                     placeholder={searchType === "movies" ? "Pesquisar Filmes" : "Pesquisar Usuários"}
                                     name="search"
                                 />
-                                <div id="select-bar-search" className="select-bar-search" onClick={selectSearch}>
+                                <div id="select-bar-search" className="select-bar-search-mobile" onClick={selectSearch}>
                                     Filmes
                                 </div>
                                 <div id="option-conf-search-back" className="option-conf-search-back">
