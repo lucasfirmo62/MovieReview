@@ -1,0 +1,50 @@
+.watchlist-content {
+    width: 100%;
+    height: 100%;
+    background-color: #313131;
+}
+
+.watchlist-content .title-content {
+    display: flex;
+    justify-content: flex-start;
+    gap: 32px;
+}
+
+.watchlist-content .title-content .back-btn {
+    margin-left: 16px;
+}
+
+.watchlist-movie-img {
+    width: 90px;
+    border-radius: 8px;
+}
+
+.watchlist-list {
+    padding: 16px;
+    background-color: #313131;
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.watchlist-list p {
+    color: #fff;
+}
+
+
+/*
+
+.watchlist-list img {
+    width: 120px;
+}
+
+
+
+.watchlist-list {
+    width: 100%;
+}
+
+.watchlist-movie {
+    width: 100%;
+    border-radius: 8px;
+} */

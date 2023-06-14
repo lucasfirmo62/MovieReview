@@ -99,12 +99,13 @@ const Home = () => {
                         <Menu />
                     </div>
                 }
+                
                 <div className="content-box-home">
                     <Publication />
                     {publications.map((publication) => (
                         <ViewPublication
                             userID={publication.user_id}
-                            idPost={publication?.date?.slice(20) + publication?.movie_id}
+                            idPost={publication?.id}
                             idMovie={publication.movie_id}
                             rating={publication.review}
                             critic={publication.pub_text}
@@ -114,6 +115,7 @@ const Home = () => {
                         />
                     ))}
                 </div>
+
                 <div className="home-right-content">
 
                 </div>
