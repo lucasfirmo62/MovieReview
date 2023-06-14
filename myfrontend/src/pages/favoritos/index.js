@@ -109,7 +109,6 @@ const Favoritos = () => {
         </div>
         <div className="center-content">
           <div className="title-content">
-            <div className="title-content">
               <Link
                 className="back-btn"
                 to={'/profile/'}
@@ -118,7 +117,6 @@ const Favoritos = () => {
                 <MdArrowBack size={32} className="back-icon" />
               </Link>
               <h1 className="title-component">Filmes Favoritos</h1>
-            </div>
           </div>
           <div className="favorite-content">
             {favoriteList.map((movie, index) =>

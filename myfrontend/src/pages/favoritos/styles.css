@@ -18,9 +18,10 @@
   flex: auto;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100px;
   background-color: #313131;
+  padding: 16px;
 }
 
 .movie-favorite-item {
@@ -35,17 +36,19 @@
 .title-component {
   font-size: 40px;
   color: #ffffff;
+  margin: 10px;
 }
 
 .favorite-content {
-  height: 95%;
+  height: 100%;
   min-height: 100vh;
-  overflow: auto;
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   background: #313131;
   display: flex;
+  overflow: hidden;
+  padding-bottom: 20px;
 }
 
 .favoriteMovie-component {
