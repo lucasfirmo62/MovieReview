@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import './styles.css';
-
 import { FaSearch } from 'react-icons/fa';
-
+import { MdNotifications } from 'react-icons/md';
+import axios from "axios";
+import FragmentDetailsNotification from "../FragmentDetailsNotification";
 import { Link, useNavigate } from 'react-router-dom';
 
 import logo from '../../assets/logotype.png'
@@ -10,6 +11,7 @@ import logo from '../../assets/logotype.png'
 const HeaderDesktop = () => {
     const navigate = useNavigate();
     const [searchType, setSearchType] = useState("movies");
+    const [notifications, setNotifications] = useState([]);
 
 
     function handleSubmit(event) {
@@ -109,6 +111,51 @@ const HeaderDesktop = () => {
         }
     }
 
+    var galop = document.getElementById('content-notification');
+    if (galop) {
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
+        galop.style.display = 'none'
+    }
+    async function notificationNow() {
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
+        if (galop.style.display === "block") {
+            galop.style.display = 'none';
+        }
+        else if (galop.style.display === "none") {
+            galop.style.display = 'block';
+        }
+    }
+
+    useEffect(() => {
+        axios.get("https://api.npoint.io/cbc695f77c7ff5dac3d1")
+            .then(response => {
+                setNotifications(response.data.notifications);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+
+    var titleRepos;
+
+    function getMovieTitle(idMovie) {
+        const apiKey = "93296066cafd1a70fac5ed2532fda74f";
+        const apiUrl = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=${apiKey}&language=pt-BR`;
+      
+        fetch(apiUrl)
+          .then((response) => response.json())
+          .then((data) => {
+              console.log(data.title)
+              titleRepos = data.title
+            return titleRepos; // Retorna o título do filme
+          })
+          .catch((error) => {
+            console.log(error);
+            return ""; // Retorna uma string vazia em caso de erro
+          });
+      }
+      
+
     return (
         <>
             <header className={'header-open'}>
@@ -164,6 +211,21 @@ const HeaderDesktop = () => {
                             </label>
                         </div>
                     </form>
+                    <div className="ntf-cation" onClick={notificationNow}>
+                        <MdNotifications className="notification" />
+                        <div className="ntf-number">3</div>
+                    </div>
+                    <div id="content-notification" className="content-notification">
+                        {notifications.map((notification) => (
+                            <div key={notification.idPost} className="nofitify-content-inside">
+                                <FragmentDetailsNotification 
+                                        idMovie={notification.idMovie} 
+                                        userName={notification.userName}
+                                        action={notification.action}
+                                        />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </header>
         </>

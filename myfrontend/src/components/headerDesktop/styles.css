@@ -105,6 +105,74 @@ header .search-icon {
     background-color: rgb(240, 240, 240);
 }
 
+.ntf-cation{
+    position: absolute;
+    left: 87%;
+    top: 35px;
+    width: auto;
+    border-radius: 100%;
+    transition: 0.2s;
+    padding: 10px;
+    cursor: pointer;
+    background-color: #6e6e6e;
+}
+
+.notification{
+    color: white;
+    font-size: 20px;
+}
+
+.ntf-number{
+    background-color: #e90074;
+    width: auto;
+    padding-top: 1.2px;
+    padding-bottom: 1.2px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-radius: 100%;
+    position: absolute;
+    margin-top: -10px;
+    margin-left: 16px;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    border: solid 2px #909090;
+}
+
+.ntf-cation:hover{
+    background-color: #313131;
+    transition: 0.2s;
+}
+
+.content-notification{
+    position: absolute;
+    width: 270px;
+    height: 350px;
+    right: 10%;
+    top: 80px;
+    border-radius: 8px;
+    overflow-y: scroll;
+}
+
+.content-notification::-webkit-scrollbar {
+    width: 8px; 
+  }
+  
+  .content-notification::-webkit-scrollbar-track {
+    background-color: #f1f1f1; 
+    border-radius: 4px; 
+  }
+  
+  .content-notification::-webkit-scrollbar-thumb {
+    background-color: #888; 
+    border-radius: 4px; 
+  }
+  
+  .content-notification::-webkit-scrollbar-thumb:hover {
+    background-color: #555; 
+  }
+
+
 @media (max-width: 741px) {
     .select-bar-search{
         font-size: 14px;
