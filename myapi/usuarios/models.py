@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.exceptions import ValidationError
 from datetime import date
+from django.utils import timezone
 
 REVIEWS = [
     (1,'1 - Horrível'),
@@ -104,6 +105,12 @@ class Publication(models.Model):
 class Likes(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+    
+class Deslikes(models.Model):
+    publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
     
 class Connection(models.Model):
     usuario_alpha = models.ForeignKey(User, on_delete=models.CASCADE, related_name='conexao_alpha')
@@ -113,6 +120,7 @@ class Comment(models.Model):
     publication_id = models.ForeignKey(Publication, on_delete=models.CASCADE)  
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)   
     comment_text = models.CharField(max_length=500)
+    date = models.DateTimeField(default=timezone.now)
 
 class WatchList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -123,3 +131,4 @@ class FavoritesList(models.Model):
     movie_id = models.CharField(max_length=300, blank=False)
     poster_img = models.URLField(blank=False, default='')
     movie_title = models.CharField(max_length=200, blank=False, default='')
+    date = models.DateTimeField(default=timezone.now)

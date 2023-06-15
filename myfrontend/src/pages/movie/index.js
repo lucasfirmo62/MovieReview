@@ -13,6 +13,7 @@ import userDefault from '../../assets/user-default.jpg'
 
 import { BsFillPlayFill } from 'react-icons/bs';
 import { AiFillCloseCircle } from 'react-icons/ai';
+import { FaStar } from 'react-icons/fa';
 
 import api from '../../api';
 

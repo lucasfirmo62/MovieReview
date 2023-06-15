@@ -317,7 +317,85 @@ class PublicationTestCase(TestCase):
         
         response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
         self.token = response.data['access']
+    
+    def test_like_publication(self):
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
         
+        response = self.client.post(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Like feito com sucesso!'})
+        
+        response = self.client.get(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Deixando de dar o like!'})
+        
+        response = self.client.get(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 0)
+        
+    def test_deslike_publication(self):
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.post(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Deslike feito com sucesso!'})
+        
+        response = self.client.get(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Deixando de dar o deslike.'})
+        
+        response = self.client.get(f'/deslikes/{self.publication.id}/')
+    def test_comment(self):
+        response = self.client.post(f'/comentarios/5/', {
+            'comment_text': 'Concordo com a sua crítica',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
+        response = self.client.post(f'/comentarios/1/', {
+            'comment_text': 'Concordo com a sua crítica',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.get(f'/comentarios/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post(f'/comentarios/1/', {
+            'comment_text': 'Discordo de alguns pontos',
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.get(f'/comentarios/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 2)
+        
+    def test_get_movie_publications(self):
+        publication2 = Publication.objects.create(
+            review=2,
+            pub_text='Bom filme!',
+            user_id=self.user,
+            movie_id=2,
+            movie_title='The godfather',
+        )
+    
+        response = self.client.get(f'/criticas/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.get(f'/criticas/2/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.get(f'/criticas/3/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 0)
+    
     def test_create_publication(self):
         response = self.client.post('/publicacoes/', {
             'review': 4,
@@ -549,3 +627,18 @@ class FavoritesTestCase(TestCase):
         response = self.client.get('/favoritos/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
+        
+    def test_get_favorite_list_users(self):
+        response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post('/favoritos/', {
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+          
+        response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)
+

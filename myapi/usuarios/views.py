@@ -1,6 +1,9 @@
 from rest_framework.decorators import action
 import tempfile
 from rest_framework import status
+from django.utils import timezone
+
+from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import action
 
@@ -11,8 +14,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 from rest_framework.pagination import PageNumberPagination
-from .models import User, Publication, Connection, FavoritesList
-from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer
+from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
@@ -21,6 +24,7 @@ class UserPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = 'page_size'
     max_page_size = 100
+    
 from imgurpython import ImgurClient
 
 import os
@@ -167,7 +171,117 @@ class PublicationViewSet(viewsets.ModelViewSet):
     queryset = Publication.objects.all().order_by('-date')
     authentication_classes = [MyJWTAuthentication]
     pagination_class = PublicationPagination
+    
+    def like(self, request, publication_id=None):        
+        user = request.user
+        
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        publication = Publication.objects.filter(id=publication_id).first()
+        
+        if Likes.objects.filter(user_id=user, publication_id=publication_id).exists():
+            Likes.objects.filter(user_id=user, publication_id=publication_id).delete()
+            return Response({'success': 'Deixando de dar o like!'}, status=status.HTTP_201_CREATED)
 
+        like = Likes.objects.create(
+            user_id=user,
+            publication_id=publication,
+            date=timezone.now()
+        )
+
+        return Response({'success': 'Like feito com sucesso!'}, status=status.HTTP_201_CREATED)
+    
+    def add_comment(self, request, publication_id=None):
+        user = request.user
+                
+        if not(user):
+            return Response({'error': 'Usuário nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        comment_text = request.data.get('comment_text')
+        
+        comment = Comment.objects.create(
+            user_id=user,
+            publication_id=publication,
+            comment_text=comment_text
+        )
+
+        return Response({'success': 'Comentário feito com sucesso!'}, status=status.HTTP_201_CREATED)
+    
+    def get_comments_by_pub_id(self, request, publication_id=None):
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        comments = Comment.objects.filter(publication_id=publication_id).order_by('-date')
+
+        page = self.paginate_queryset(comments)  
+
+        serializer = CommentSerializer(page, many=True)
+        
+        return self.get_paginated_response(serializer.data)
+    
+    def deslike(self, request, publication_id=None):                
+        user = request.user
+        
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+
+        publication = Publication.objects.filter(id=publication_id).first()
+
+        if Deslikes.objects.filter(user_id=user, publication_id=publication_id).exists():
+            Deslikes.objects.filter(user_id=user, publication_id=publication_id).delete()
+            return Response({'success': 'Deixando de dar o deslike.'}, status=status.HTTP_201_CREATED)
+
+        like = Deslikes.objects.create(
+            user_id=user,
+            publication_id=publication,
+            date=timezone.now()
+        )
+
+        return Response({'success': 'Deslike feito com sucesso!'}, status=status.HTTP_201_CREATED)
+
+    def likes_by_publication(self, request, publication_id=None):
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        likes = Likes.objects.filter(publication_id=publication_id)
+        user_ids = likes.values_list('user_id', flat=True)
+        users = User.objects.filter(id__in=user_ids).order_by('-likes__date')
+        
+        page = self.paginate_queryset(users)  
+        
+        serializer = UserSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+    
+    def deslikes_by_publication(self, request, publication_id=None):
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        deslikes = Deslikes.objects.filter(publication_id=publication_id)
+        user_ids = deslikes.values_list('user_id', flat=True)  
+        users = User.objects.filter(id__in=user_ids).order_by('-likes__date')
+        
+        page = self.paginate_queryset(users)  
+
+        serializer = UserSerializer(page, many=True)  
+
+        return self.get_paginated_response(serializer.data)
+    
     def feed(self, request):
         following = Connection.objects.filter(usuario_alpha=request.user).values_list('usuario_beta', flat=True)
         
@@ -226,11 +340,30 @@ class PublicationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(publications, many=True)
         
         return Response(serializer.data)
+    
+    def get_publications_by_movie(self, request, movie_id=None):
+        publications = Publication.objects.filter(movie_id=movie_id).order_by('-date')
+
+        page = self.paginate_queryset(publications)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(publications, many=True)
+        
+        return Response(serializer.data)
+    
+class FavoritesPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesListSerializer
     authentication_classes = [MyJWTAuthentication]
     queryset = FavoritesList.objects.all()
+    pagination_class = FavoritesPagination
 
     def create(self, request):
         user = request.user
@@ -253,11 +386,22 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def list(self, request):
-        user_id = request.user.id
+        user_id = request.user
         
         queryset = FavoritesList.objects.filter(user_id=user_id)
         serializer = FavoritesListSerializer(queryset, many=True)
         
+        return Response(serializer.data)
+    
+    def list_by_id(self, request, user_id=None):
+        queryset = FavoritesList.objects.filter(user_id=user_id).order_by('-date')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
     def destroy_by_movie_id(self, request, movie_id=None):
