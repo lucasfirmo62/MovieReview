@@ -140,6 +140,46 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(followers, many=True)
         return Response(serializer.data)
     
+    def update(self, request, *args, **kwargs):
+        profile_image = request.data.get('profile_image')
+        nickname = request.data.get('nickname')
+        full_name = request.data.get('full_name')
+        bio_text = request.data.get('bio_text')
+
+        if not profile_image and not any([nickname, full_name, bio_text]):
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=request.user)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+        if profile_image == 'null':
+            profile_image = None
+
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            if profile_image:
+                temp_file.write(profile_image.read())
+                temp_file.flush()
+                imgur_link = upload_to_imgur(temp_file.name)
+            else:
+                imgur_link = request.user.profile_image 
+
+            user_data = {
+                "nickname": nickname or request.user.nickname,  
+                "full_name": full_name or request.user.full_name,  
+                "bio_text": bio_text or request.user.bio_text, 
+                "profile_image": imgur_link
+            }
+
+            serializer = self.get_serializer(instance=request.user, data=user_data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        os.unlink(temp_file.name)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+    
 class LogoutView(APIView):
     authentication_classes = [MyJWTAuthentication]
 
