@@ -6,7 +6,9 @@ import HeaderDesktop from "../../components/headerDesktop";
 
 import api from '../../api';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
+import { MdArrowBack } from "react-icons/md";
 
 const EditProfile = () => {
     const navigate = useNavigate()
@@ -81,11 +83,22 @@ const EditProfile = () => {
                 </div>
                 <div className="content-box-profile">
                     <div className='content-edit-space'>
+                        <div className="followers-info">
+                            <Link
+                                className="back-btn"
+                                to={`/profile`}
+                                style={{ textDecoration: "none", color: "#fff" }}
+                            >
+                                <MdArrowBack size={32} className="back-icon" />
+                            </Link>
+
+                            <p>Editar Perfil</p>
+                        </div>
+
                         <div className="profile-info">
                             <img className="image-user" alt='image-user' src="https://i.imgur.com/piVx6dg.png" />
                             <p className="name-user">{user.name}</p>
                         </div>
-                        <h2>Editar Perfil</h2>
                         <div className="conf-profile">
                             <div className='row'>
                                 <p>Seu nome</p>
