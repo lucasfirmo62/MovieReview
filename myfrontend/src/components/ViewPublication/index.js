@@ -283,8 +283,9 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                     <div className="content-conf-review-write">
                         <img
                             className="user-image"
-                            src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
+                            src={user.profile_image ? user.profile_image : "https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"}
                             alt="user-photo"
+                            style={{ objectFit: "cover" }}
                         />
                     </div>
                     <div>

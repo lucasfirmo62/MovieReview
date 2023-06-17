@@ -126,6 +126,7 @@ const Followers = () => {
                     id={follower.id}
                     nickname={follower.nickname}
                     isUser={follower.id == idUser}
+                    profile_image={follower.profile_image}
                   />
                 </div>
               ))}

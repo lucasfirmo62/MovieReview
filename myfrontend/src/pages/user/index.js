@@ -44,7 +44,7 @@ const User = () => {
     const [myfollowing, setMyFollowing] = useState([]);
     const [myfollowers, setMyFollowers] = useState([]);
     const [isFollowingLoaded, setIsFollowingLoaded] = useState(false);
-    
+
     const [page, setPage] = useState(1);
     const isFirstPageRef = useRef(false);
 
@@ -93,11 +93,11 @@ const User = () => {
 
             setIsFollowingLoaded(true)
         }
-        
+
         userUtility()
 
     }, [idMyUser])
-    
+
     async function goEditProfile() {
         navigate("/edit-profile")
     }
@@ -149,7 +149,12 @@ const User = () => {
 
                 <div className="content-box-profile">
                     <div className="profile-info">
-                        <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
+                        <img
+                            className="image-user"
+                            alt="user"
+                            src={user.profile_image ? user.profile_image : "https://i.imgur.com/piVx6dg.png"}
+                            style={{ objectFit: "cover" }}
+                        />
                         <div>
                             <p className="name-user">{user.full_name}</p>
                             <p className="username-text">@{user.nickname}</p>
@@ -160,12 +165,12 @@ const User = () => {
                             }
                             {(isFollowingLoaded && idMyUser != id) && (
                                 <>
-                                <FollowUnfollow
-                                    isFollower={myfollowing.some(
-                                        (followingUser) => followingUser.id === Number(id)
-                                    )}
-                                    id={user.id}
-                                />
+                                    <FollowUnfollow
+                                        isFollower={myfollowing.some(
+                                            (followingUser) => followingUser.id === Number(id)
+                                        )}
+                                        id={user.id}
+                                    />
                                 </>
                             )}
                             <p className="bio-text">{user.bio_text}</p>
