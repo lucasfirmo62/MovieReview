@@ -17,6 +17,7 @@ import Favoritos from './pages/favoritos';
 import Followers from './pages/followers';
 import Following from './pages/following';
 import Watchlist from './pages/watchlist';
+import Supercriticos from './pages/supercriticos';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -80,6 +81,10 @@ export default function Router() {
                 <Route 
                     path="/watchlist/:id" 
                     element={<PrivateRoute> <Watchlist /> </PrivateRoute>}
+                />
+                <Route 
+                    path="supercriticos/" 
+                    element={<PrivateRoute> <Supercriticos /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>
