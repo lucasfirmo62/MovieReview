@@ -18,11 +18,18 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
     useEffect(() => {
         const fetchData = async () => {
 
+            let token = localStorage.getItem('tokenUser')
+  
+            token = token.substring(1,token.length-1)
+            
+            const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
             const response = await axios.get(`https://api.themoviedb.org/3/movie/${idMovie}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
             setMovie(response.data);
 
-            const response_user = await api.get(`usuarios/${userID}/`)
+            const response_user = await api.get(`usuarios/${userID}/`, {headers})
             setUser(response_user.data)
+            console.log("paodoce")
         };
 
         fetchData();
@@ -166,7 +173,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
 
     function handleMouseEnter(idPost) {
-        var imgHover = document.getElementById(`img-title-hover-${idPost}`);
+        let imgHover = document.getElementById(`img-title-hover-${idPost}`);
 
         imgHover.src = `https://image.tmdb.org/t/p/w185${movie?.poster_path}`
         imgHover.style.display = 'block';
@@ -238,7 +245,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         />
                     </div>
                     <div>
-                        <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{user.nickname}</div><div className="date-release">{datePublication}</div></div>
+                        <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{user?.nickname}</div><div className="date-release">{datePublication}</div></div>
                         <div className="movie-indice">Sobre <div className="movie-insert" onClick={handleTitle}
                             onMouseEnter={() => handleMouseEnter(idPost)} onMouseLeave={() => handleMouseLeave(idPost)}>
                             {movie?.title} de {(movie?.release_date) ? movie?.release_date.substr(0, 4) : movie?.release_date}
@@ -267,6 +274,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         null
                     }
                 </div>
+                
                 <div className="zone-interactive-publication">
                     <div className="interactive-into"></div>
                     <div className="interactive-into" onClick={showCommentPost}>Comentar</div>
@@ -333,6 +341,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         </div>
                     </>
                 }
+                
             </div>
         </>
     )

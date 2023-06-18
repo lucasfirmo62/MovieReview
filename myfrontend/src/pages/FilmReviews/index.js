@@ -23,8 +23,8 @@ const FilmReviews = () => {
 
     const isFirstPageRef = useRef(false);
 
-    const [publications, setPublications] = useState([])
     const [page, setPage] = useState(1)
+
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
@@ -41,7 +41,7 @@ const FilmReviews = () => {
         }
 
         fetchData()
-    })
+    }, [])
 
     return (
         <>
@@ -74,7 +74,7 @@ const FilmReviews = () => {
                         </Link>
 
                         <h1 className="title">{movie?.title}</h1>
-                        <h2 className="subtitle">{numberPublications <= 0 ? "Não foram encontradas críticas" : `${numberPublications} ${numberPublications === 1 ? 'crítica' : 'críticas'}`}</h2>
+                        <h2 className="subtitle">2 críticas</h2>
 
                         <div
                             className="movie-details-container"
@@ -97,9 +97,9 @@ const FilmReviews = () => {
                         date="2023-06-08T15:30:00Z" 
                         myPub={false}
                     />
-                     <ViewPublication
+                    <ViewPublication
                         userID={1} 
-                        idPost={1} 
+                        idPost={3} 
                         idMovie={502356} 
                         rating={4}
                         critic="Ótimo filme! Altamente recomendado." 
@@ -107,17 +107,6 @@ const FilmReviews = () => {
                         date="2023-06-08T15:30:00Z" 
                         myPub={false}
                     />
-                     <ViewPublication
-                        userID={1} 
-                        idPost={1} 
-                        idMovie={502356} 
-                        rating={4}
-                        critic="Ótimo filme! Altamente recomendado." 
-                        image={null} 
-                        date="2023-06-08T15:30:00Z" 
-                        myPub={false}
-                    />
-            
                 </div>
                 <div className="home-right-content">
 
@@ -126,7 +115,5 @@ const FilmReviews = () => {
         </>
     )
 }
-
-
 
 export default FilmReviews;
