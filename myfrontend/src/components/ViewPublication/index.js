@@ -24,6 +24,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
             const response_user = await api.get(`usuarios/${userID}/`)
             setUser(response_user.data)
+            console.log("paodoce")
         };
 
         fetchData();
@@ -179,11 +180,10 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
 
     function handleMouseEnter(idPost) {
-        var imgHover = document.getElementById(`img-title-hover-${idPost}`);
+        let imgHover = document.getElementById(`img-title-hover-${idPost}`);
 
         imgHover.src = `https://image.tmdb.org/t/p/w185${movie?.poster_path}`
         imgHover.style.display = 'block';
-
     }
 
     function handleMouseLeave(idPost) {
@@ -288,7 +288,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         />
                     </div>
                     <div>
-                        <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{user.nickname}</div><div className="date-release">{datePublication}</div></div>
+                        <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{user?.nickname}</div><div className="date-release">{datePublication}</div></div>
                         <div className="movie-indice">Sobre <div className="movie-insert" onClick={handleTitle}
                             onMouseEnter={() => handleMouseEnter(idPost)} onMouseLeave={() => handleMouseLeave(idPost)}>
                             {movie?.title} de {(movie?.release_date) ? movie?.release_date.substr(0, 4) : movie?.release_date}
@@ -317,6 +317,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         null
                     }
                 </div>
+                
                 <div className="zone-interactive-publication">
                     <div className="interactive-into-likes">
                         <div className="interactive-into" onClick={likeButton}><AiTwotoneLike id={`like-button-review-${idPost}`} className="like-button" /></div>
@@ -385,8 +386,8 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                             </div>
                         </div>
                     </>
-
                 }
+                
             </div>
         </>
     )

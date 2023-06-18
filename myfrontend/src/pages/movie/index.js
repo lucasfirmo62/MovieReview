@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './styles.css';
 
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -140,9 +140,6 @@ const Movie = () => {
                     backgroundPosition: 'center'
                 }}
             >
-            
-
-
                 <div className='movie-details-content'>
                     <div>
                         <img
@@ -177,6 +174,14 @@ const Movie = () => {
                             :
                             (<button id="favoritar-button" className="favoritar-button" onClick={toggleFavoritar}>Favoritar</button>)
                         }
+                        <div className='block-critics'>
+                            <Link
+                                className='critic'
+                                to={`/reviews/${id}`}
+                            >
+                                <p>Visualizar Críticas...</p>
+                            </Link>
+                        </div>
                     </div>
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>

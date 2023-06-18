@@ -16,6 +16,7 @@ import User from './pages/user';
 import Favoritos from './pages/favoritos';
 import Followers from './pages/followers';
 import Following from './pages/following';
+import FilmReviews from './pages/FilmReviews';
 import Watchlist from './pages/watchlist';
 
 const PrivateRoute = ({ children }) => {
@@ -78,6 +79,10 @@ export default function Router() {
                     element={<PrivateRoute> <Following /> </PrivateRoute>}
                 />
                 <Route 
+                    path="/reviews/:id" 
+                    element={<PrivateRoute> <FilmReviews /> </PrivateRoute>}
+                />
+                <Route
                     path="/watchlist/:id" 
                     element={<PrivateRoute> <Watchlist /> </PrivateRoute>}
                 />
