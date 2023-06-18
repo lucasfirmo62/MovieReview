@@ -10,6 +10,7 @@ router.register(r'publicacoes', PublicationViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('notificacoes/', NotificationViewSet.as_view({ 'get': 'list' })),
+    path('notificacoes/mark_as_read/<int:notification_id>/', NotificationViewSet.as_view({'post': 'mark_as_read'}), name='mark-as-read'),
     path('feed/', PublicationViewSet.as_view({ 'get': 'feed' })),
     path('pubusuario/<int:user_id>/', PublicationViewSet.as_view({ 'get': 'get_publications_by_user' })),
     path('likes/<int:publication_id>/', PublicationViewSet.as_view({ 'post': 'like', 'get': 'likes_by_publication' })),

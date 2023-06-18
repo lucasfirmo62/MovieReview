@@ -139,7 +139,7 @@ class Notification(models.Model):
     notification_type = models.CharField(max_length=20)  # Exemplo: 'like', 'comment'
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    # criar um campo de message 
+    message = models.CharField(max_length=300)
 
     def __str__(self):
         return f'{self.sender.username} - {self.notification_type}'

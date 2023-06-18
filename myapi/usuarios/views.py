@@ -89,11 +89,14 @@ class UserViewSet(viewsets.ModelViewSet):
         connection = Connection(usuario_alpha=user, usuario_beta=user_to_follow)
         connection.save()
         
+        message = f'{user.nickname} seguiu você'
+        
         Notification.objects.create(
             sender=user,  
             recipient=user_to_follow,  
             notification_type='follow',
-            is_read=False
+            is_read=False,
+            message=message
         )
         
         return Response({'status': 'ok'})
@@ -200,12 +203,15 @@ class PublicationViewSet(viewsets.ModelViewSet):
         )
         
         if publication.user_id != user:
+            message = f'{user.nickname} curtiu sua publicação'
+            
             Notification.objects.create(
                 sender=user,  
                 recipient=publication.user_id,  
                 publication=publication,
                 notification_type='like',
-                is_read=False
+                is_read=False,
+                message=message
             )
 
         return Response({'success': 'Like feito com sucesso!'}, status=status.HTTP_201_CREATED)
@@ -230,11 +236,15 @@ class PublicationViewSet(viewsets.ModelViewSet):
         )
         
         if publication.user_id != user:
+            message = f'{user.nickname} comentou sua publicação'
+            
             Notification.objects.create(
-                user=publication.user_id,
+                sender=user,  
+                recipient=publication.user_id,  
                 publication=publication,
                 notification_type='comment',
-                is_read=False
+                is_read=False,
+                message=message
             )
 
         return Response({'success': 'Comentário feito com sucesso!'}, status=status.HTTP_201_CREATED)
@@ -262,18 +272,16 @@ class PublicationViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
 
         publication = Publication.objects.filter(id=publication_id).first()
-
+        
         if Deslikes.objects.filter(user_id=user, publication_id=publication_id).exists():
             Deslikes.objects.filter(user_id=user, publication_id=publication_id).delete()
             return Response({'success': 'Deixando de dar o deslike.'}, status=status.HTTP_201_CREATED)
-
-        if publication.user_id != user:
-            Notification.objects.create(
-                user=publication.user_id,
-                publication=publication,
-                notification_type='deslike',
-                is_read=False
-            )
+        
+        deslike = Deslikes.objects.create(
+            user_id=user,
+            publication_id=publication,
+            date=timezone.now()
+        )
 
         return Response({'success': 'Deslike feito com sucesso!'}, status=status.HTTP_201_CREATED)
 
@@ -300,7 +308,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         deslikes = Deslikes.objects.filter(publication_id=publication_id)
         user_ids = deslikes.values_list('user_id', flat=True)  
-        users = User.objects.filter(id__in=user_ids).order_by('-likes__date')
+        users = User.objects.filter(id__in=user_ids).order_by('-deslikes__date')
         
         page = self.paginate_queryset(users)  
 
@@ -433,20 +441,33 @@ class FavoritesViewSet(viewsets.ModelViewSet):
             return Response({'is_favorite': True})
         else:
             return Response({'is_favorite': False}) 
+        
+        
+class NotificationPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
     
 class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     queryset = Notification.objects.all()
+    pagination_class = NotificationPagination
 
     def list(self, request):
-        queryset = self.filter_queryset(self.get_queryset().filter(recipient=request.user))
+        queryset = self.filter_queryset(self.get_queryset().filter(recipient=request.user)).order_by('-created_at')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    def mark_as_read(self, request, pk=None):
-        notification = self.get_object()
+    def mark_as_read(self, request, notification_id=None):
+        notification = get_object_or_404(Notification, id=notification_id)
         notification.is_read = True
         notification.save()
-
+    
         serializer = self.get_serializer(notification)
         return Response(serializer.data)

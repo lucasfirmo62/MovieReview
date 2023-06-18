@@ -2,7 +2,7 @@ from django.test import TestCase
 
 import requests
 
-from usuarios.models import User, Publication, FavoritesList, Connection
+from usuarios.models import User, Publication, FavoritesList, Connection, Notification
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -356,6 +356,8 @@ class PublicationTestCase(TestCase):
         self.assertEqual(response.data, {'success': 'Deixando de dar o deslike.'})
         
         response = self.client.get(f'/deslikes/{self.publication.id}/')
+        self.assertEqual(response.data['count'], 0)
+        
     def test_comment(self):
         response = self.client.post(f'/comentarios/5/', {
             'comment_text': 'Concordo com a sua crítica',
@@ -627,3 +629,92 @@ class FavoritesTestCase(TestCase):
         response = self.client.get('/favoritos/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
+        
+class NotificationViewSetTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        
+        self.user = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        self.user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        self.publication = Publication.objects.create(
+            review=5,
+            pub_text='Ótimo filme!',
+            user_id=self.user,
+            movie_id=1,
+            movie_title='La la land',
+        )
+        
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+    def test_notification_comment(self):
+        response = self.client.post(f'/comentarios/{self.publication.id}/', { 'comment_text': 'Melhor filme de todos', }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        response = self.client.post('/api/token/', {'email': 'lebron@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.get(f'/notificacoes/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)  
+        
+    def test_notification_like(self):
+        response = self.client.post(f'/likes/{self.publication.id}/')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {'success': 'Like feito com sucesso!'})
+        
+        response = self.client.post('/api/token/', {'email': 'lebron@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.get(f'/notificacoes/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)  
+        
+    def test_notification_follow(self): 
+        response = self.client.post(f'/usuarios/{self.user.pk}/follow/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'ok'})
+        
+        response = self.client.post('/api/token/', {'email': 'lebron@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.get(f'/notificacoes/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)  
+
+    def test_mark_notification_as_read(self):
+        response = self.client.post(f'/usuarios/{self.user.pk}/follow/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {'status': 'ok'})        
+        
+        response = self.client.post('/api/token/', {'email': 'lebron@example.com', 'password': '123mudar'})
+        self.assertEqual(response.status_code, 200)
+        self.token = response.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        response = self.client.post(f'/notificacoes/mark_as_read/1/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
