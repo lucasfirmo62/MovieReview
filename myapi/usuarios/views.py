@@ -150,6 +150,46 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(followers, many=True)
         return Response(serializer.data)
     
+    def update(self, request, *args, **kwargs):
+        profile_image = request.data.get('profile_image')
+        nickname = request.data.get('nickname')
+        full_name = request.data.get('full_name')
+        bio_text = request.data.get('bio_text')
+
+        if not profile_image and not any([nickname, full_name, bio_text]):
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=request.user)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+        if profile_image == 'null':
+            profile_image = None
+
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            if profile_image:
+                temp_file.write(profile_image.read())
+                temp_file.flush()
+                imgur_link = upload_to_imgur(temp_file.name)
+            else:
+                imgur_link = request.user.profile_image 
+
+            user_data = {
+                "nickname": nickname or request.user.nickname,  
+                "full_name": full_name or request.user.full_name,  
+                "bio_text": bio_text or request.user.bio_text, 
+                "profile_image": imgur_link
+            }
+
+            serializer = self.get_serializer(instance=request.user, data=user_data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        os.unlink(temp_file.name)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+    
 class LogoutView(APIView):
     authentication_classes = [MyJWTAuthentication]
 
@@ -387,11 +427,17 @@ class PublicationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(publications, many=True)
         
         return Response(serializer.data)
+    
+class FavoritesPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesListSerializer
     authentication_classes = [MyJWTAuthentication]
     queryset = FavoritesList.objects.all()
+    pagination_class = FavoritesPagination
 
     def create(self, request):
         user = request.user
@@ -414,11 +460,22 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def list(self, request):
-        user_id = request.user.id
+        user_id = request.user
         
         queryset = FavoritesList.objects.filter(user_id=user_id)
         serializer = FavoritesListSerializer(queryset, many=True)
         
+        return Response(serializer.data)
+    
+    def list_by_id(self, request, user_id=None):
+        queryset = FavoritesList.objects.filter(user_id=user_id).order_by('-date')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
     def destroy_by_movie_id(self, request, movie_id=None):

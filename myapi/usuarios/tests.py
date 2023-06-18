@@ -253,6 +253,37 @@ class SignalsTestCase(TestCase):
         response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(len(response.data), 0)
         
+    def test_update(self):
+        client = APIClient()
+        
+        user = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.token = response.data['access']
+        
+        
+        image = Image.new('RGB', (100, 100), (255, 255, 255))
+
+        image_file = BytesIO()
+        image.save(image_file, 'jpeg')
+        image_file.seek(0)
+        
+        response = client.patch(f'/usuarios/1/', {"profile_image": image_file} , HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 200)
+        
+        response = client.patch(f'/usuarios/1/', { "nickname": "steph" } ,HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 200)
+        
+        response = client.patch(f'/usuarios/1/', { "full_name": "Steph Curry Jr"} , HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 200)
+        
 class LogoutTestCase(TestCase):
     
     def setUp(self):
@@ -630,6 +661,20 @@ class FavoritesTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 2)
         
+        def test_get_favorite_list_users(self):
+            response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+            self.assertEqual(response.data['count'], 1)
+
+            response = self.client.post('/favoritos/', {
+                "movie_id": 550,
+                "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+                "movie_title": "Fight Club"
+            }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+
+            response = self.client.get('/movies/favoritos/1/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data['count'], 2)
+
 class NotificationViewSetTest(TestCase):
     def setUp(self):
         self.client = APIClient()

@@ -37,23 +37,12 @@ const Home = () => {
         };
     }, [])
 
-    let loginItem;
-
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     const fetchFeed = async () => {
         if (page === 1) {
             isFirstPageRef.current = true;
         }
 
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
-        const response = await api.get(`feed/?page=${page}`, { headers });
+        const response = await api.get(`feed/?page=${page}`);
         setPublications(prevPublications => [...prevPublications, ...response.data.results]);
     };
 
