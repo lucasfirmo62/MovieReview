@@ -125,10 +125,8 @@ const Publication = () => {
         formData.append('movie_id', data.movie_id);
         formData.append('movie_title', data.movie_title);
 
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' };
-
         try {
-            const response = await api.post('/publicacoes/', formData, { headers });
+            const response = await api.post('/publicacoes/', formData);
             console.log(response.data);
 
             setMinLoadingTimePassed(false);

@@ -184,6 +184,10 @@
     background-color: #6e6e6e;
 }
 
+.like-button{
+    font-size: 20px;
+}
+
 @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -450,6 +454,11 @@ div .no-star{
     transition: 0.2s;
     background-color: rgba(110, 110, 110, 0.527);
     cursor: pointer;
+}
+
+.interactive-into-likes{
+    width: 50%;
+    display: flex;
 }
 
 .comment-send-button{

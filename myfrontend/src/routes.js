@@ -17,6 +17,7 @@ import Favoritos from './pages/favoritos';
 import Followers from './pages/followers';
 import Following from './pages/following';
 import FilmReviews from './pages/FilmReviews';
+import Watchlist from './pages/watchlist';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -80,6 +81,10 @@ export default function Router() {
                 <Route 
                     path="/reviews/:id" 
                     element={<PrivateRoute> <FilmReviews /> </PrivateRoute>}
+                />
+                <Route
+                    path="/watchlist/:id" 
+                    element={<PrivateRoute> <Watchlist /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>

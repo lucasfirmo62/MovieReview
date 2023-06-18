@@ -8,14 +8,8 @@ const FollowUnfollow = (props) => {
     const [isFollowing, setIsFollowing] = useState(props.isFollower)
 
     async function unfollow() {
-        let token = localStorage.getItem('tokenUser')
-
-        token = token.substring(1, token.length - 1)
-
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
         try {
-            const response = await api.post(`/usuarios/${props.id}/unfollow/`, null, { headers })
+            const response = await api.post(`/usuarios/${props.id}/unfollow/`, null)
 
             setIsFollowing(false)
         } catch (error) {
@@ -24,15 +18,8 @@ const FollowUnfollow = (props) => {
     }
 
     async function follow() {
-        console.log("user")
-        let token = localStorage.getItem('tokenUser')
-
-        token = token.substring(1, token.length - 1)
-
-        const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
         try {
-            const response = await api.post(`/usuarios/${props.id}/follow/`, null, { headers })
+            const response = await api.post(`/usuarios/${props.id}/follow/`, null)
 
             setIsFollowing(true)
         } catch (error) {
