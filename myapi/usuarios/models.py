@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     birth_date = models.DateField('Birth date', validators=[validate_birth_date])
     email = models.EmailField(max_length=100, unique=True)
     super_reviewer = models.BooleanField(default=False)
+    profile_image = models.URLField(blank=True)
     
     USERNAME_FIELD = 'email'
     
@@ -131,3 +132,4 @@ class FavoritesList(models.Model):
     movie_id = models.CharField(max_length=300, blank=False)
     poster_img = models.URLField(blank=False, default='')
     movie_title = models.CharField(max_length=200, blank=False, default='')
+    date = models.DateTimeField(default=timezone.now)

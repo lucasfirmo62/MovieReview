@@ -24,7 +24,6 @@ const Profile = () => {
     const [following, setFollowing] = useState([]);
     const isFirstPageRef = useRef(false);
 
-    var loginItem;
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
@@ -47,36 +46,23 @@ const Profile = () => {
 
     const navigate = useNavigate();
 
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     var idUser = localStorage.getItem('idUser');
 
     useEffect(() => {
         async function userUtility() {
-            const headers = {
-                Authorization: `Bearer ${loginItem}`,
-                "Content-type": "application/json"
-            };
-
-            await api.get(`/usuarios/${idUser}/`, { headers })
+            await api.get(`/usuarios/${idUser}/`)
                 .then(response => { setUser(response.data) })
             
-            const followersResponse = await api.get(`/usuarios/followers/`, {
-                    headers,
-            });
+            const followersResponse = await api.get(`/usuarios/followers/`);
 
-            const followingResponse = await api.get(`/usuarios/following/`, {
-                headers,
-            });
+            const followingResponse = await api.get(`/usuarios/following/`);
           
             setFollowers(followersResponse.data);
             setFollowing(followingResponse.data);
         }
 
         userUtility()
-    }, [idUser, loginItem])
+    }, [idUser])
 
     async function goEditProfile() {
         navigate("/edit-profile")
@@ -88,12 +74,7 @@ const Profile = () => {
             isFirstPageRef.current = true;
         }
 
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
-        const response = await api.get(`pubusuario/${idUser}/?page=${page}`, { headers });
+        const response = await api.get(`pubusuario/${idUser}/?page=${page}`);
         setPublications(prevPublications => [...prevPublications, ...response.data.results]);
     };
 
@@ -178,6 +159,12 @@ const Profile = () => {
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>Favoritos</p>
+                        </Link>
+                        <Link
+                            to={`/watchlist/${idUser}/`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Assistir no futuro</p>
                         </Link>
                     </div>
                     {publications.map((publication) => (

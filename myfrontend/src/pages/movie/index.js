@@ -93,26 +93,15 @@ const Movie = () => {
         document.getElementById("trailer").src = "https://www.youtube.com/embed/undefined";
     }
 
-    let loginItem;
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     async function toggleFavoritar() {
         const data = {
-            "user_id": loginItem,
             "movie_id": id,
             "poster_img": `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
             "movie_title": movie.title
         }
 
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
         try {
-            await api.post('/favoritos/', data, { headers })
+            await api.post('/favoritos/', data)
 
             setIsMovieFavorite(true)
         } catch (error) {
@@ -121,13 +110,8 @@ const Movie = () => {
     }
 
     async function toggleDesfavoritar() {
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
         try {
-            await api.delete(`/favoritos/${id}/`, { headers })
+            await api.delete(`/favoritos/${id}/`)
 
             setIsMovieFavorite(false)
         } catch (error) {
@@ -136,14 +120,9 @@ const Movie = () => {
     }
 
     useEffect(() => {
-        async function get_data() {
-            const headers = {
-                Authorization: `Bearer ${loginItem}`,
-                "Content-type": "application/json"
-            };
-
+        async function get_data() {            
             try {
-                const response = await api.get(`/favoritos/${id}/is_movie_favorite/`, { headers })
+                const response = await api.get(`/favoritos/${id}/is_movie_favorite/`)
                 setIsMovieFavorite(response.data.is_favorite)
             } catch (error) {
                 console.log(error)
@@ -201,7 +180,7 @@ const Movie = () => {
                                 />
 
                                 <h2 style={{ fontSize: '18px' }}>Crítica de: {movie.title}</h2>
-                                
+
                                 <button className='button-modal-critica' onClick={closeModal}><AiOutlineClose size={20} /></button>
                             </div>
                             
