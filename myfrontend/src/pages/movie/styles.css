@@ -357,3 +357,53 @@
         max-height: 577px;
       }
 }
+
+
+
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+.modal-content {
+    color: #fff;
+    background-color: #272727;
+    padding: 32px;
+    border-radius: 5px;
+    min-width: 40%;
+    border: none;
+}
+
+.modal-critica-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.modal-critica-content button {
+    margin-left: auto;
+}
+
+.button-modal-critica {
+    background-color: transparent;
+    color: rgb(154, 154, 154);
+    border: none;
+    cursor: pointer;
+    width: max-content;
+}
+
+.button-modal-critica:hover {
+    color: rgb(93, 93, 93);
+}
