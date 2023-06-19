@@ -50,31 +50,15 @@ const User = () => {
 
     const navigate = useNavigate();
 
-    var loginItem;
-
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     var idMyUser = localStorage.getItem('idUser');
 
     useEffect(() => {
         async function userUtility() {
-            await api.get(`/usuarios/${id}/`, {
-                headers: {
-                    Authorization: `Bearer ${loginItem}`,
-                    "Content-type": "application/json"
-                },
-            })
+            await api.get(`/usuarios/${id}/`)
                 .then(response => { setUser(response.data) })
 
             try {
-                const responseFollowing = await api.get(`/following/${id}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowing = await api.get(`/following/${id}/`)
 
                 setFollowing(responseFollowing.data)
             } catch (error) {
@@ -82,12 +66,7 @@ const User = () => {
             }
 
             try {
-                const responseFollowers = await api.get(`/followers/${id}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowers = await api.get(`/followers/${id}/`)
 
                 setFollowers(responseFollowers.data)
 
@@ -96,12 +75,7 @@ const User = () => {
             }
 
             try {
-                const responseFollowing = await api.get(`/following/${idMyUser}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowing = await api.get(`/following/${idMyUser}/`)
 
                 setMyFollowing(responseFollowing.data)
             } catch (error) {
@@ -109,12 +83,7 @@ const User = () => {
             }
 
             try {
-                const responseFollowers = await api.get(`/followers/${idMyUser}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowers = await api.get(`/followers/${idMyUser}/`)
 
                 setMyFollowers(responseFollowers.data)
 
@@ -127,7 +96,7 @@ const User = () => {
         
         userUtility()
 
-    }, [idMyUser, loginItem])
+    }, [idMyUser])
     
     async function goEditProfile() {
         navigate("/edit-profile")
@@ -138,12 +107,7 @@ const User = () => {
             isFirstPageRef.current = true;
         }
 
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
-        const response = await api.get(`/pubusuario/${id}/?page=${page}`, { headers });
+        const response = await api.get(`/pubusuario/${id}/?page=${page}`);
         console.log("pao doce", response.data.results)
         setPublications(prevPublications => [...prevPublications, ...response.data.results]);
     };
@@ -234,6 +198,15 @@ const User = () => {
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
+                        </Link>
+                        <Link
+                            to={`/favoritos/${id}`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
+                        >
+                            <p className={'tab-profile'}>Favoritos</p>
                         </Link>
                     </div>
                     {publications.map((publication) => (

@@ -12,7 +12,8 @@ class UserSerializer(serializers.ModelSerializer):
             'birth_date',
             'email',
             'super_reviewer',
-            'password'
+            'password',
+            'profile_image',
         ]
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -43,6 +44,7 @@ class DeslikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Likes
         fields = '__all__'
+        
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
