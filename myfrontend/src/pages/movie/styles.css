@@ -30,6 +30,36 @@
     height: 450px;
 }
 
+.movie-details-content .favoritar-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    border: none;
+    max-height: max-content;
+    padding: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    margin: 4px;
+    font-weight: bold;
+    justify-content: center;
+}
+
+.movie-details-content .favoritado {
+    background-color: #ffc107;
+    color: #ffffff;
+}
+
+.movie-details-content .favoritado::before {
+    content: "\2605";
+    margin-right: 5px;
+}
+
+.movie-details-content .movie-analysis {
+    display: flex;
+}
+
 .movie-details-content .title-details {
     display: flex;
     align-items: center;
