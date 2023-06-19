@@ -118,7 +118,7 @@ const Movie = () => {
     }
 
     useEffect(() => {
-        async function get_data() {            
+        async function get_data() {
             try {
                 const response = await api.get(`/favoritos/${id}/is_movie_favorite/`)
                 setIsMovieFavorite(response.data.is_favorite)
@@ -184,11 +184,6 @@ const Movie = () => {
                                 </li>
                             ))}
                         </ul>
-                        {/* {isMovieFavorite ? 
-                            (<button id="favoritar-button" className="favoritar-button" onClick={toggleDesfavoritar}>Desfavoritar</button>)
-                            :
-                            (<button id="favoritar-button" className="favoritar-button" onClick={toggleFavoritar}>Favoritar</button>)
-                        } */}
                         <div className='movie-analysis'>
                             <button style={{ maxWidth: 'max-content' }} id="favoritar-button" className="favoritar-button" onClick={isMovieFavorite ? toggleDesfavoritar : toggleFavoritar}>
                                 <FaStar color={isMovieFavorite ? 'gold' : 'gray'} size={20} />
@@ -198,7 +193,7 @@ const Movie = () => {
                                 <IoMdEye color={isWatchlistSettled ? '#e90074' : 'gray'} size={20} />
                                 <span>Assistir Depois</span>
                             </button>
-                        }
+                        </div>
                         <div className='block-critics'>
                             <Link
                                 className='critic'
@@ -208,6 +203,7 @@ const Movie = () => {
                             </Link>
                         </div>
                     </div>
+
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>
                         {cast && cast.map(member => (
