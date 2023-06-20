@@ -253,10 +253,19 @@ class SignalsTestCase(TestCase):
         response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(len(response.data), 0)
         
-    def test_update(self):
+    def test_super_reviewers(self):
         client = APIClient()
+
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
         
-        user = User.objects.create_user(
+        user2 = User.objects.create_user(
             email='steph@example.com',
             full_name='Steph Curry',
             nickname='jararaca',
@@ -265,24 +274,29 @@ class SignalsTestCase(TestCase):
             password='123mudar'
         )
         
-        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
-        self.token = response.data['access']
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
         
-        
-        image = Image.new('RGB', (100, 100), (255, 255, 255))
-
-        image_file = BytesIO()
-        image.save(image_file, 'jpeg')
-        image_file.seek(0)
-        
-        response = client.patch(f'/usuarios/1/', {"profile_image": image_file} , HTTP_AUTHORIZATION=f'Bearer {self.token}')
-        self.assertEqual(response.status_code, 200)
-        
-        response = client.patch(f'/usuarios/1/', { "nickname": "steph" } ,HTTP_AUTHORIZATION=f'Bearer {self.token}')
-        self.assertEqual(response.status_code, 200)
-        
-        response = client.patch(f'/usuarios/1/', { "full_name": "Steph Curry Jr"} , HTTP_AUTHORIZATION=f'Bearer {self.token}')
-        self.assertEqual(response.status_code, 200)
+        for _ in range(5):
+            publication = Publication.objects.create(
+                review=5,
+                pub_text='Ótimo filme!',
+                user_id=user1,
+                movie_id=1,
+                movie_title='La la land',
+            )
+            
+        for _ in range(3):
+            publication = Publication.objects.create(
+                review=5,
+                pub_text='Ótimo filme!',
+                user_id=user2,
+                movie_id=1,
+                movie_title='La la land',
+            )
+            
+        response = client.get(f'/supercriticos/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.data['count'], 1)
         
 class LogoutTestCase(TestCase):
     
