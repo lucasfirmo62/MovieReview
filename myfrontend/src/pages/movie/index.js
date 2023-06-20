@@ -120,6 +120,7 @@ const Movie = () => {
     }
 
     useEffect(() => {
+    
         async function get_data() {            
             try {
                 const response = await api.get(`/favoritos/${id}/is_movie_favorite/`)
@@ -231,7 +232,16 @@ const Movie = () => {
                                 <AiOutlinePlus color={'gold'} size={20} />
                             </button>
                         </div>
+                        <div className='block-critics'>
+                            <Link
+                                className='critic'
+                                to={`/reviews/${id}`}
+                            >
+                                <p>Visualizar Críticas...</p>
+                            </Link>
+                        </div>
                     </div>
+
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>
                         {cast && cast.map(member => (
