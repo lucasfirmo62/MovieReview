@@ -34,7 +34,7 @@
     display: flex;
     align-items: center;
     justify-items: center;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .title-details h1+h1 {
@@ -346,3 +346,29 @@
     content: "\2605"; 
     margin-right: 5px;
   }
+
+
+
+
+
+
+
+
+  
+.block-critics .critic {
+    width: max-content;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #8e8e8e;
+}
+
+.block-critics .critic p {
+    margin-left: 8px;
+}
+
+.block-critics .critic:hover {
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    text-decoration: underline;
+}
+

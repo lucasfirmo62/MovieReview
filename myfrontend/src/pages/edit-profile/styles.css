@@ -63,6 +63,35 @@
     width: 100%;
 }
 
+.row .image-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.row .image-block p {
+    font-weight: weight;
+    color: #b8b8b8;
+}
+
+.image-field {
+    background-color: #363636;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.clear-image-button {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.clear-image-button svg {
+    color: #fff;
+}
+
 @media only screen and (max-width: 1000px){
 
     .content-all{
