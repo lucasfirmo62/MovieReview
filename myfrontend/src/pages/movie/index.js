@@ -125,17 +125,46 @@ const Movie = () => {
             } catch (error) {
                 console.log(error)
             }
+
+            try {
+                const response = await api.get(`/watchlist/${id}/is_movie_on_watchlist/`)
+                console.log("aaa",response.data.is_movie_on_watchlist)
+                setIsWatchlistSettled(response.data.is_movie_on_watchlist)
+            } catch (error) {
+                console.log(error)
+            }
         }
 
         get_data()
     }, [])
 
+    let idUser = localStorage.getItem("idUser");
+
     async function toggleAddToWatchlist() {
-        setIsWatchlistSettled(true)
+        const data = {
+            "user_id": idUser,
+            "movie_id": id,
+            "poster_img": `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
+            "movie_title": movie.title
+        }
+
+        try {
+            await api.post('/watchlist/', data)
+
+            setIsWatchlistSettled(true)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     async function toggleRemovetoWatchlist() {
-        setIsWatchlistSettled(false)
+        try {
+            await api.delete(`/watchlist/movie/${id}/`)
+
+            setIsWatchlistSettled(false)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
