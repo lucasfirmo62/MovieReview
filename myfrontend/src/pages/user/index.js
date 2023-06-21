@@ -208,6 +208,12 @@ const User = () => {
                         >
                             <p className={'tab-profile'}>Favoritos</p>
                         </Link>
+                        <Link
+                            to={`/watchlist/${id}/`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Assistir no futuro</p>
+                        </Link>
                     </div>
                     {publications.map((publication) => (
                         <ViewPublication

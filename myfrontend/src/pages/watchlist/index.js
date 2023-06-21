@@ -6,19 +6,18 @@ import styles from './styles.css';
 
 import api from "../../api";
 
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { FaTimes, FaStar } from 'react-icons/fa';
 import { MdArrowBack } from "react-icons/md";
 import { AiFillEye } from 'react-icons/ai';
 
 const Watchlist = () => {
+    const { id } = useParams();
+
     var [Watchlist, setWatchlist] = useState([]);
     var [page, setPage] = useState(1);
     const isFirstPageRef = useRef(false);
-
-    let id = localStorage.getItem('idUser')
-    id = id.substring(1, id.length - 1)
 
     const getMovies = async () => {
         if (page === 1) {
@@ -27,9 +26,11 @@ const Watchlist = () => {
 
         const response = await api.get(`/watchlist/user/${id}/?page=${page}`);
 
+        console.log(response.data.results)
+
         const watchlistMovies = response.data.results.map(movie => ({
             ...movie,
-            watchlist: true
+            watchlist: movie.watchlist
         }));
 
         setWatchlist((prevPublications) => [
