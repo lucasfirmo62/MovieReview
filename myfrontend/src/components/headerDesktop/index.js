@@ -112,11 +112,14 @@ const HeaderDesktop = () => {
     }
 
     var galop = document.getElementById('content-notification');
+    var button = document.getElementById('more-notify');
+
     if (galop) {
         galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
         galop.style.display = 'none'
     }
     async function notificationNow() {
+        button.style.display = 'block'
         galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
         if (galop.style.display === "block") {
             galop.style.display = 'none';
@@ -136,25 +139,6 @@ const HeaderDesktop = () => {
             });
     }, []);
 
-    var titleRepos;
-
-    function getMovieTitle(idMovie) {
-        const apiKey = "93296066cafd1a70fac5ed2532fda74f";
-        const apiUrl = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=${apiKey}&language=pt-BR`;
-      
-        fetch(apiUrl)
-          .then((response) => response.json())
-          .then((data) => {
-              console.log(data.title)
-              titleRepos = data.title
-            return titleRepos; // Retorna o título do filme
-          })
-          .catch((error) => {
-            console.log(error);
-            return ""; // Retorna uma string vazia em caso de erro
-          });
-      }
-      
 
     return (
         <>
@@ -218,13 +202,14 @@ const HeaderDesktop = () => {
                     <div id="content-notification" className="content-notification">
                         {notifications.map((notification) => (
                             <div key={notification.idPost} className="nofitify-content-inside">
-                                <FragmentDetailsNotification 
-                                        idMovie={notification.idMovie} 
-                                        userName={notification.userName}
-                                        action={notification.action}
-                                        />
+                                <FragmentDetailsNotification
+                                    idMovie={notification.idMovie}
+                                    userName={notification.userName}
+                                    action={notification.action}
+                                />
                             </div>
                         ))}
+                        <div id="more-notify" className="more-notify"><p>Ver tudo</p></div>
                     </div>
                 </div>
             </header>

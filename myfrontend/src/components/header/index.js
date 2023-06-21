@@ -144,25 +144,6 @@ const Header = () => {
                 console.log(error);
             });
     }, []);
-
-    var titleRepos;
-
-    function getMovieTitle(idMovie) {
-        const apiKey = "93296066cafd1a70fac5ed2532fda74f";
-        const apiUrl = `https://api.themoviedb.org/3/movie/${idMovie}?api_key=${apiKey}&language=pt-BR`;
-      
-        fetch(apiUrl)
-          .then((response) => response.json())
-          .then((data) => {
-              console.log(data.title)
-              titleRepos = data.title
-            return titleRepos; // Retorna o título do filme
-          })
-          .catch((error) => {
-            console.log(error);
-            return ""; // Retorna uma string vazia em caso de erro
-          });
-      }
       
 
     return (

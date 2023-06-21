@@ -144,13 +144,35 @@ header .search-icon {
     transition: 0.2s;
 }
 
+.more-notify{
+    position: fixed;
+    top: 430px;
+    background-color: white;
+    max-width: 270px;
+    border-radius: 0px 0px 0px 8px;
+    cursor: pointer;
+    display: none;
+}
+
+.more-notify:hover{
+    background-color: #6e6e6e; 
+    color: white;
+}
+
+.more-notify p{
+    padding-left: 35%;
+    padding-right: 40%;
+    max-height: auto;
+    max-width: auto;
+}
+
 .content-notification{
     position: absolute;
-    width: 270px;
-    height: 350px;
+    max-width: 270px;
+    max-height: 350px;
     right: 10%;
     top: 80px;
-    border-radius: 8px;
+    border-radius: 8px 8px 0px 0px;
     overflow-y: scroll;
 }
 
