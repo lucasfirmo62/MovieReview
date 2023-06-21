@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import User, Publication, FavoritesList, Comment, Likes
+
+from .models import User, Publication, FavoritesList, Comment, Likes, WatchList
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,7 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
             'birth_date',
             'email',
             'super_reviewer',
-            'password'
+            'password',
+            'profile_image',
         ]
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -32,6 +34,11 @@ class PublicationSerializer(serializers.ModelSerializer):
 class FavoritesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = FavoritesList
+        fields = '__all__'
+        
+class WatchlistSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WatchList
         fields = '__all__'
         
 class LikesSerializer(serializers.ModelSerializer):

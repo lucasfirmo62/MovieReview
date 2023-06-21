@@ -8,14 +8,15 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 
 from rest_framework.response import Response
+from django.db.models import Count
 from rest_framework import viewsets
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 from rest_framework.pagination import PageNumberPagination
-from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes
-from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer
+from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes, WatchList
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer, WatchlistSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
@@ -139,6 +140,54 @@ class UserViewSet(viewsets.ModelViewSet):
         followers = [connection.usuario_alpha for connection in connections]
         serializer = self.get_serializer(followers, many=True)
         return Response(serializer.data)
+    
+    def super_reviewers(self, request):
+        super_reviewers = User.objects.annotate(num_publications=Count('publication')).filter(num_publications__gte=5, super_reviewer=True).order_by('-num_publications')
+        paginator = UserPagination()
+        paginated_super_reviewers = paginator.paginate_queryset(super_reviewers, request)
+        
+        serializer = self.get_serializer(paginated_super_reviewers, many=True)
+        return paginator.get_paginated_response(serializer.data)
+    
+    def update(self, request, *args, **kwargs):
+        profile_image = request.data.get('profile_image')
+        nickname = request.data.get('nickname')
+        full_name = request.data.get('full_name')
+        bio_text = request.data.get('bio_text')
+
+        if not profile_image and not any([nickname, full_name, bio_text]):
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=request.user)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+        if profile_image == 'null':
+            profile_image = None
+
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            if profile_image:
+                temp_file.write(profile_image.read())
+                temp_file.flush()
+                imgur_link = upload_to_imgur(temp_file.name)
+            else:
+                imgur_link = request.user.profile_image 
+
+            user_data = {
+                "nickname": nickname or request.user.nickname,  
+                "full_name": full_name or request.user.full_name,  
+                "bio_text": bio_text or request.user.bio_text, 
+                "profile_image": imgur_link
+            }
+
+            serializer = self.get_serializer(instance=request.user, data=user_data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        os.unlink(temp_file.name)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
     
 class LogoutView(APIView):
     authentication_classes = [MyJWTAuthentication]
@@ -424,4 +473,70 @@ class FavoritesViewSet(viewsets.ModelViewSet):
             return Response({'is_favorite': True})
         else:
             return Response({'is_favorite': False}) 
+        
+class WatchlistPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+        
+class WatchlistViewset(viewsets.ModelViewSet):
+    serializer_class = WatchlistSerializer
+    authentication_classes = [MyJWTAuthentication]
+    queryset = WatchList.objects.all()
+    pagination_class = WatchlistPagination
+
+    def create(self, request):
+        user = request.user
+        movie_id = request.data.get('movie_id')
+        poster_img = request.data.get('poster_img')
+        movie_title = request.data.get('movie_title')
+        
+        if WatchList.objects.filter(user_id=user, movie_id=movie_id).exists():
+            return Response({'error': 'Esse filme já foi adicionado à watchlist.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        watchlist = WatchList.objects.create(
+            user_id=user,
+            movie_id=movie_id,
+            poster_img=poster_img,
+            movie_title=movie_title
+        )
+        
+        serializer = WatchlistSerializer(watchlist)
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def list(self, request, user_id=None):
+        queryset = WatchList.objects.filter(user_id=user_id).order_by('-date')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def destroy_by_movie_id(self, request, movie_id=None):
+        user_id = request.user.id
+
+        watchlist = WatchList.objects.filter(user_id=user_id, movie_id=movie_id)
+
+        if not watchlist:
+            return Response({'error': 'Este filme não está na watchlist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        watchlist.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=True, methods=['get'])
+    def is_movie_on_watchlist(self, request, pk=None, movie_id=None):
+        user_id = request.user.id
+        
+        if WatchList.objects.filter(user_id=user_id, movie_id=movie_id).exists():
+            return Response({'is_movie_on_watchlist': True})
+        else:
+            return Response({'is_movie_on_watchlist': False}) 
+    
+    
+
     
