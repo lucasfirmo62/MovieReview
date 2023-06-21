@@ -18,6 +18,7 @@ import Followers from './pages/followers';
 import Following from './pages/following';
 import FilmReviews from './pages/FilmReviews';
 import Watchlist from './pages/watchlist';
+import Supercriticos from './pages/supercriticos';
 import FavoritosUsers  from './pages/favoritosUsers';
 
 const PrivateRoute = ({ children }) => {
@@ -90,6 +91,10 @@ export default function Router() {
                 <Route
                     path="/watchlist/:id" 
                     element={<PrivateRoute> <Watchlist /> </PrivateRoute>}
+                />
+                <Route 
+                    path="supercriticos/" 
+                    element={<PrivateRoute> <Supercriticos /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>

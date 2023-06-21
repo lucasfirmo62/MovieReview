@@ -12,6 +12,9 @@ import ViewPublication from "../../components/ViewPublication";
 
 import api from "../../api";
 
+import Trending from "../../components/Trending"
+import TrendingCarousel from "../../components/TrendingCarousel";
+
 const Home = () => {
     const [publications, setPublications] = useState([]);
     const [page, setPage] = useState(1);
@@ -90,6 +93,7 @@ const Home = () => {
                 }
                 <div className="content-box-home">
                     <Publication />
+                    <TrendingCarousel />
                     {publications.map((publication) => (
                         <ViewPublication
                             userID={publication.user_id}
@@ -104,7 +108,7 @@ const Home = () => {
                     ))}
                 </div>
                 <div className="home-right-content">
-
+                    <Trending />
                 </div>
             </div>
         </>
