@@ -2,10 +2,17 @@
     background-color: #d3d3d3;
     border-radius: 8px;
     border: none;
-    min-height: 280px;
+    height: max-content;
     max-width: 70%;
     margin: auto;
     margin-top: 16px;
+}
+
+.trending-content .select-follow-unfollow {
+    background-color: rgba(0,0,0,0.5);
+    margin-left: auto;
+    margin-right: 16px;
+    width: max-content;
 }
 
 .trending-content h2 {
@@ -17,11 +24,19 @@
     width: 100%;
     cursor: pointer;
     box-sizing: border-box;
-    /* padding: 12px 0px 0px 12px; */
     font-weight: 600;
     display: flex;
     align-items: center;
     padding-left: 14px;
+}
+
+.trending-content .trending-item p {
+    color: #000;
+    margin-left: 8px;
+}
+
+.trending-content .trending-item p:hover {
+    text-decoration: underline;
 }
 
 .trending-content .trending-item img {
@@ -29,11 +44,6 @@
     width: auto;
     border-radius: 4px;
     padding: 0;
-    /* max-width: 40px; */
-}
-
-.trending-content .trending-item img + p {
-    margin-left: 8px;
 }
 
 .trending-content .trending-item:hover {
@@ -41,8 +51,12 @@
     transition: background-color 0.3s ease;
 }
 
-.trending-content .trending-item.final {
+.trending-content .trending-item.final p {
     color: #4169E1;
+}
+
+.trending-content .trending-item.final p:hover {
+    text-decoration: underline;
 }
 
 .trending-content .trending-item.final:hover {

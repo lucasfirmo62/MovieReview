@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User, Publication, FavoritesList, Comment, Likes, WatchList
+from .models import User, Publication, FavoritesList, Comment, Likes, WatchList, Connection
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +17,13 @@ class UserSerializer(serializers.ModelSerializer):
             'profile_image',
         ]
         extra_kwargs = {'password': {'write_only': True}}
+        
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        user_id = request.user.id
+        data['is_followed'] = Connection.objects.filter(usuario_alpha=user_id, usuario_beta=instance).exists()
+        return data
 
 class PublicationSerializer(serializers.ModelSerializer):
     class Meta:

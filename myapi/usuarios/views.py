@@ -143,6 +143,7 @@ class UserViewSet(viewsets.ModelViewSet):
     
     def super_reviewers(self, request):
         super_reviewers = User.objects.annotate(num_publications=Count('publication')).filter(num_publications__gte=5, super_reviewer=True).order_by('-num_publications')
+        
         paginator = UserPagination()
         paginated_super_reviewers = paginator.paginate_queryset(super_reviewers, request)
         
