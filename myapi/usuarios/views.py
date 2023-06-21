@@ -313,7 +313,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         page = self.paginate_queryset(users)  
         
-        serializer = UserSerializer(page, many=True)
+        serializer = UserSerializer(page, many=True, context={'request': request})
         return self.get_paginated_response(serializer.data)
     
     def deslikes_by_publication(self, request, publication_id=None):
@@ -328,7 +328,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         page = self.paginate_queryset(users)  
 
-        serializer = UserSerializer(page, many=True)  
+        serializer = UserSerializer(page, many=True, context={'request': request})  
 
         return self.get_paginated_response(serializer.data)
     
