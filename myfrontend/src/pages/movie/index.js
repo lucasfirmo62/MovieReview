@@ -287,9 +287,9 @@ const Movie = () => {
                 </div>
             </div>
             <div className="similar-movies">
-                <h2>Filmes Similares</h2>
+                {similarMovies.length > 0 && (<h2>Filmes Similares</h2>)}
                 <ul ref={listRef}>
-                    {showArrowLeft && (
+                    {similarMovies.length > 0 && showArrowLeft && (
                         <div className="scroll-arrow-left" onClick={() => handleScrollLeft('prev')}>
                             <FaAngleLeft size={32} />
                         </div>
@@ -306,7 +306,7 @@ const Movie = () => {
                         </li>
                     ))}
 
-                    {showArrowRight && (
+                    {similarMovies.length > 0 && showArrowRight && (
                         <div className="scroll-arrow-right" onClick={() => handleScrollRight('next')}>
                             <FaAngleRight size={32} />
                         </div>
