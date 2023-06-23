@@ -501,7 +501,7 @@ class WatchlistViewset(viewsets.ModelViewSet):
             movie_title=movie_title
         )
         
-        serializer = WatchlistSerializer(watchlist)
+        serializer = WatchlistSerializer(watchlist, context={'request': request})
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
