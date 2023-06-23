@@ -153,6 +153,26 @@ header .search-icon {
     overflow-y: scroll;
 }
 
+.more-notify-mobile{
+    background-color: white;
+    width: 100%;
+    height: auto;
+    border-radius: 0px 0px 0px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.more-notify-mobile:hover{
+    background-color: #6e6e6e; 
+    color: white;
+}
+
 .content-notification::-webkit-scrollbar {
     width: 8px;
 }

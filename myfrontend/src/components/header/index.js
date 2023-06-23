@@ -19,10 +19,10 @@ const Header = () => {
         setIsSearchOpen(!isSearchOpen);
     };
 
-    if(window.innerWidth > 660){
+    if (window.innerWidth > 660) {
 
     }
-    
+
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -101,7 +101,7 @@ const Header = () => {
         radioButton.addEventListener('change', handleRadioButtonChange);
     });
 
-    async function selectSearch(){
+    async function selectSearch() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
         setTimeout(function () {
@@ -112,10 +112,10 @@ const Header = () => {
         }, 100);
     }
 
-    async function closeOptions(){
+    async function closeOptions() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
-        if(filterOptions.style.display === "block"){
+        if (filterOptions.style.display === "block") {
             filterOptions.style.display = 'none';
         }
     }
@@ -144,7 +144,7 @@ const Header = () => {
                 console.log(error);
             });
     }, []);
-      
+
 
     return (
         <>
@@ -210,16 +210,17 @@ const Header = () => {
                         <div className="ntf-number">3</div>
                     </div>
                     <div id="content-notification" className="content-notification-mobile">
-                        <MdArrowBack className="back-notification" onClick={notificationNow}/>
+                        <MdArrowBack className="back-notification" onClick={notificationNow} />
                         {notifications.map((notification) => (
                             <div key={notification.idPost} className="nofitify-content-inside-mobile">
-                                <FragmentDetailsNotification 
-                                        idMovie={notification.idMovie} 
-                                        userName={notification.userName}
-                                        action={notification.action}
-                                        />
+                                <FragmentDetailsNotification
+                                    idMovie={notification.idMovie}
+                                    userName={notification.userName}
+                                    action={notification.action}
+                                />
                             </div>
                         ))}
+                        <div id="more-notify" className="more-notify-mobile"><p>Ver tudo</p></div>
                     </div>
                 </div>
             </header>
