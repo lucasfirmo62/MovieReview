@@ -159,7 +159,7 @@ header .search-icon {
     height: auto;
     border-radius: 0px 0px 0px 8px;
     cursor: pointer;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -200,6 +200,7 @@ header .search-icon {
     border-radius: 100%;
     color: white;
     font-size: 20px;
+    display: none;
 }
 
 @media (max-width: 741px) {

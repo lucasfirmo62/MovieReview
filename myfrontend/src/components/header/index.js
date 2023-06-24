@@ -121,12 +121,19 @@ const Header = () => {
     }
 
     var galop = document.getElementById('content-notification');
+    var button = document.getElementById('more-notify');
+    var backButton = document.getElementById('back-notification');
+
+
     if (galop) {
         galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
         galop.style.display = 'none'
+        backButton.style.display = 'none'
     }
     async function notificationNow() {
-        galop.style.backgroundColor = 'rgba(255, 255, 255)'
+        button.style.display = 'block'
+        backButton.style.display = 'block'
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
         if (galop.style.display === "block") {
             galop.style.display = 'none';
         }
@@ -210,7 +217,7 @@ const Header = () => {
                         <div className="ntf-number">3</div>
                     </div>
                     <div id="content-notification" className="content-notification-mobile">
-                        <MdArrowBack className="back-notification" onClick={notificationNow} />
+                        <MdArrowBack id="back-notification" className="back-notification" onClick={notificationNow} />
                         {notifications.map((notification) => (
                             <div key={notification.idPost} className="nofitify-content-inside-mobile">
                                 <FragmentDetailsNotification
