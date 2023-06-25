@@ -173,6 +173,7 @@ header .search-icon {
     top: 80px;
     border-radius: 8px 8px 8px 8px;
     overflow-y: scroll;
+    z-index: 20;
 }
 
 .content-notification::-webkit-scrollbar {

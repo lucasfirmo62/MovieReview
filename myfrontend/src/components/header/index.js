@@ -125,11 +125,12 @@ const Header = () => {
     var backButton = document.getElementById('back-notification');
 
 
-    if (galop) {
+    if (galop && button && backButton) {
         galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
         galop.style.display = 'none'
         backButton.style.display = 'none'
     }
+
     async function notificationNow() {
         button.style.display = 'block'
         backButton.style.display = 'block'
