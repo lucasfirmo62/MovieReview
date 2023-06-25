@@ -19,6 +19,8 @@ import { FaStar } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
+import Publication from '../../components/PublicationModal'
+
 import api from '../../api';
 
 const Movie = () => {
@@ -224,6 +226,16 @@ const Movie = () => {
         }
     }
 
+    const openModal = () => {
+        setShowModalPublication(true);
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+        setShowModalPublication(false);
+        document.body.style.overflow = 'auto';
+    };
+
     return (
         <>
             {(window.innerWidth > 760) ?
@@ -241,6 +253,27 @@ const Movie = () => {
                     backgroundPosition: 'center'
                 }}
             >
+                {showModalPublication && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <div className='modal-critica-content'>
+                                <img
+                                    width={80}
+                                    height={120}
+                                    className="movie-poster"
+                                    src={`https://image.tmdb.org/t/p/w185${movie?.poster_path}`}
+                                    alt={`Cartaz do filme ${movie?.title}`}
+                                />
+
+                                <h2 style={{ fontSize: '18px' }}>Crítica de: {movie.title}</h2>
+
+                                <button className='button-modal-critica' onClick={closeModal}><AiOutlineClose size={20} /></button>
+                            </div>
+                            
+                            <Publication selectedMovie={movie} />
+                        </div>
+                    </div>
+                )}
 
                 <div className='movie-details-content'>
                     <div>
@@ -279,6 +312,9 @@ const Movie = () => {
                             <button style={{ width: '100%' }} id="favoritar-button" className="favoritar-button" onClick={isWatchlistSettled ? toggleRemovetoWatchlist : toggleAddToWatchlist}>
                                 <IoMdEye color={isWatchlistSettled ? '#e90074' : 'gray'} size={20} />
                                 <span>Assistir Depois</span>
+                            </button>
+                            <button style={{ maxWidth: 'max-content' }} id="favoritar-button" className="favoritar-button" onClick={!showModalPublication ? openModal : closeModal}>
+                                <AiOutlinePlus color={'gold'} size={20} />
                             </button>
                         </div>
                         <div className='block-critics'>
