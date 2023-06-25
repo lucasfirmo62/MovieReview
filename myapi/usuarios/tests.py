@@ -2,7 +2,7 @@ from django.test import TestCase
 
 import requests
 
-from usuarios.models import User, Publication, FavoritesList, Connection
+from usuarios.models import User, Publication, FavoritesList, Connection, WatchList
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -252,6 +252,51 @@ class SignalsTestCase(TestCase):
         
         response = client.get(f'/usuarios/following/', HTTP_AUTHORIZATION=f'Bearer {token}')
         self.assertEqual(len(response.data), 0)
+        
+    def test_super_reviewers(self):
+        client = APIClient()
+
+        user1 = User.objects.create_user(
+            email='lebron@example.com',
+            full_name='Lebron James',
+            nickname='Papai Lebron',
+            bio_text='Nunca desista! (3-1)',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        user2 = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+        
+        response = self.client.post('/api/token/', {'email': user1.email, 'password': '123mudar'})
+        token = response.data['access']
+        
+        for _ in range(5):
+            publication = Publication.objects.create(
+                review=5,
+                pub_text='Ótimo filme!',
+                user_id=user1,
+                movie_id=1,
+                movie_title='La la land',
+            )
+            
+        for _ in range(3):
+            publication = Publication.objects.create(
+                review=5,
+                pub_text='Ótimo filme!',
+                user_id=user2,
+                movie_id=1,
+                movie_title='La la land',
+            )
+            
+        response = client.get(f'/supercriticos/', HTTP_AUTHORIZATION=f'Bearer {token}')
+        self.assertEqual(response.data['count'], 1)
         
 class LogoutTestCase(TestCase):
     
@@ -642,3 +687,70 @@ class FavoritesTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 2)
 
+class WatchlistTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            email='steph@example.com',
+            full_name='Steph Curry',
+            nickname='jararaca',
+            bio_text='Chef Curry cozinhando os defensores',
+            birth_date='2001-05-11',
+            password='123mudar'
+        )
+
+        response = self.client.post('/api/token/', {'email': 'steph@example.com', 'password': '123mudar'})
+        self.token = response.data['access']
+        
+        response = self.client.post('/watchlist/', {
+            "movie_id": 238,
+            "poster_img": "https://image.tmdb.org/t/p/w500/qjiskwlV1qQzRCjpV0cL9pEMF9a.jpg",
+            "movie_title": "The Godfather"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(WatchList.objects.count(), 1)
+
+    def test_add_watchlist(self):
+        response = self.client.post('/watchlist/', {
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(WatchList.objects.count(), 2)
+        
+        response = self.client.post('/watchlist/', {
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(WatchList.objects.count(), 2)
+        
+    def test_delete_watchlist(self):
+        self.assertEqual(WatchList.objects.count(), 1)
+
+        movie_id = 238
+        response = self.client.delete(f'/watchlist/movie/{movie_id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(WatchList.objects.count(), 0)
+        
+        response = self.client.delete(f'/watchlist/movie/{movie_id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, 404)
+        
+    def test_get_watchlist_list(self):
+        response = self.client.get(f'/watchlist/user/{self.user.id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.data['count'], 1)
+        
+        response = self.client.post('/watchlist/', {
+            "movie_id": 550,
+            "poster_img": "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
+            "movie_title": "Fight Club"
+        }, HTTP_AUTHORIZATION=f'Bearer {self.token}')
+          
+        response = self.client.get(f'/watchlist/user/{self.user.id}/', HTTP_AUTHORIZATION=f'Bearer {self.token}')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)

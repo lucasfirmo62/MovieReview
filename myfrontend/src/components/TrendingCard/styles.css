@@ -1,0 +1,15 @@
+.trending-card-content {
+    display: flex;
+    padding: 16px 32px 16px 32px;
+    gap: 16px;
+    align-items: center;
+}
+
+.trending-card-content img {
+    max-height: 80px;
+}
+
+.trending-card-content h3:hover {
+    color: #c6c6c6;
+    cursor: pointer;
+}

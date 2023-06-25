@@ -64,20 +64,10 @@ const Search = () => {
     };
   }, []);
 
-  let loginItem;
-  if (localStorage.getItem('tokenUser')) {
-    loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-  }
-
   useEffect(() => {
     if (query === null) {
       const fetchData = async () => {
-        const headers = {
-          Authorization: `Bearer ${loginItem}`,
-          "Content-type": "application/json"
-        }
-        
-        const response = await api.get(`/usuarios/search/?nickname=${user}&page=${currentPage}`, { headers });
+        const response = await api.get(`/usuarios/search/?nickname=${user}&page=${currentPage}`);
   
         setUsers(response.data.results.results);
   

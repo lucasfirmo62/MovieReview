@@ -14,8 +14,10 @@ import userDefault from '../../assets/user-default.jpg'
 import MovieCard from '../../components/MovieCard';
 
 import { BsFillPlayFill } from 'react-icons/bs';
-import { AiFillCloseCircle } from 'react-icons/ai';
+import { AiFillCloseCircle, AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 import { FaStar } from 'react-icons/fa';
+import { IoMdEye } from 'react-icons/io';
+import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
@@ -27,6 +29,7 @@ const Movie = () => {
     const navigate = useNavigate()
 
     const listRef = useRef(null);
+    const [showModalPublication, setShowModalPublication] = useState(false);
 
     const [movie, setMovie] = useState({});
     const [director, setDirector] = useState('');
@@ -36,6 +39,7 @@ const Movie = () => {
     const [trailer, setTrailer] = useState([]);
     const [trailerUS, setTrailerUS] = useState([]);
     const [isMovieFavorite, setIsMovieFavorite] = useState(false);
+    const [isWatchlistSettled, setIsWatchlistSettled] = useState(false);
 
     const [similarMovies, setSimilarMovies] = useState([]);
     const [scrollPosition, setScrollPosition] = useState(0);
@@ -146,26 +150,15 @@ const Movie = () => {
         document.getElementById("trailer").src = "https://www.youtube.com/embed/undefined";
     }
 
-    let loginItem;
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     async function toggleFavoritar() {
         const data = {
-            "user_id": loginItem,
             "movie_id": id,
             "poster_img": `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
             "movie_title": movie.title
         }
 
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
         try {
-            await api.post('/favoritos/', data, { headers })
+            await api.post('/favoritos/', data)
 
             setIsMovieFavorite(true)
         } catch (error) {
@@ -174,13 +167,8 @@ const Movie = () => {
     }
 
     async function toggleDesfavoritar() {
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
         try {
-            await api.delete(`/favoritos/${id}/`, { headers })
+            await api.delete(`/favoritos/${id}/`)
 
             setIsMovieFavorite(false)
         } catch (error) {
@@ -196,8 +184,16 @@ const Movie = () => {
             };
 
             try {
-                const response = await api.get(`/favoritos/${id}/is_movie_favorite/`, { headers })
+                const response = await api.get(`/favoritos/${id}/is_movie_favorite/`)
                 setIsMovieFavorite(response.data.is_favorite)
+            } catch (error) {
+                console.log(error)
+            }
+
+            try {
+                const response = await api.get(`/watchlist/${id}/is_movie_on_watchlist/`)
+                console.log("aaa",response.data.is_movie_on_watchlist)
+                setIsWatchlistSettled(response.data.is_movie_on_watchlist)
             } catch (error) {
                 console.log(error)
             }
@@ -205,6 +201,35 @@ const Movie = () => {
 
         get_data()
     }, [])
+
+    let idUser = localStorage.getItem("idUser");
+
+    async function toggleAddToWatchlist() {
+        const data = {
+            "user_id": idUser,
+            "movie_id": id,
+            "poster_img": `https://image.tmdb.org/t/p/w500/${movie.poster_path}`,
+            "movie_title": movie.title
+        }
+
+        try {
+            await api.post('/watchlist/', data)
+
+            setIsWatchlistSettled(true)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async function toggleRemovetoWatchlist() {
+        try {
+            await api.delete(`/watchlist/movie/${id}/`)
+
+            setIsWatchlistSettled(false)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <>
@@ -223,8 +248,6 @@ const Movie = () => {
                     backgroundPosition: 'center'
                 }}
             >
-
-
 
                 <div className='movie-details-content'>
                     <div>
@@ -260,7 +283,26 @@ const Movie = () => {
                             :
                             (<button id="favoritar-button" className="favoritar-button" onClick={toggleFavoritar}>Favoritar</button>)
                         }
+                        <div className='movie-analysis'>
+                            <button style={{ maxWidth: 'max-content' }} id="favoritar-button" className="favoritar-button" onClick={isMovieFavorite ? toggleDesfavoritar : toggleFavoritar}>
+                                <FaStar color={isMovieFavorite ? 'gold' : 'gray'} size={20} />
+                            </button>
+
+                            <button style={{ width: '100%' }} id="favoritar-button" className="favoritar-button" onClick={isWatchlistSettled ? toggleRemovetoWatchlist : toggleAddToWatchlist}>
+                                <IoMdEye color={isWatchlistSettled ? '#e90074' : 'gray'} size={20} />
+                                <span>Assistir Depois</span>
+                            </button>
+                        </div>
+                        <div className='block-critics'>
+                            <Link
+                                className='critic'
+                                to={`/reviews/${id}`}
+                            >
+                                <p>Visualizar Críticas...</p>
+                            </Link>
+                        </div>
                     </div>
+
                     <h2 className="cast-block">Elenco</h2>
                     <ul ref={castRef} className="cast-content" style={{ width: 'max-content', listStyleType: 'none', margin: 0, paddingLeft: '16px' }}>
                         {cast && cast.map(member => (

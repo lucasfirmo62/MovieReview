@@ -15,15 +15,7 @@ const Favoritos = () => {
 
   useEffect(() => {
     async function getMovies() {
-      let id = localStorage.getItem('idUser')
-      let token = localStorage.getItem('tokenUser')
-
-      id = id.substring(1, id.length - 1)
-      token = token.substring(1, token.length - 1)
-
-      const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
-      const response = await api.get('/favoritos/', { headers })
+      const response = await api.get('/favoritos/')
 
 
       const favoriteMovies = response.data.map(movie => ({
@@ -37,14 +29,6 @@ const Favoritos = () => {
   }, [])
 
   async function clickDesfavoritar(movieId) {
-    let id = localStorage.getItem('idUser');
-    let token = localStorage.getItem('tokenUser');
-
-    id = id.substring(1, id.length - 1);
-    token = token.substring(1, token.length - 1);
-
-    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
     try {
       const index = favoriteList.findIndex(movie => movie.movie_id === movieId);
 
@@ -55,7 +39,7 @@ const Favoritos = () => {
           return updatedList;
         });
 
-        await api.delete(`/favoritos/${movieId}/`, { headers });
+        await api.delete(`/favoritos/${movieId}/`);
       }
     } catch (error) {
       console.log('Ocorreu um erro ao remover o favorito:', error);
