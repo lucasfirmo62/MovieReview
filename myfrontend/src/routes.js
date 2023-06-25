@@ -16,7 +16,10 @@ import User from './pages/user';
 import Favoritos from './pages/favoritos';
 import Followers from './pages/followers';
 import Following from './pages/following';
+import FilmReviews from './pages/FilmReviews';
 import Watchlist from './pages/watchlist';
+import Supercriticos from './pages/supercriticos';
+import FavoritosUsers  from './pages/favoritosUsers';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -70,6 +73,10 @@ export default function Router() {
                     element={<PrivateRoute> <Favoritos /> </PrivateRoute>}
                 />
                 <Route 
+                    path="/favoritos/:id" 
+                    element={<PrivateRoute> <FavoritosUsers /> </PrivateRoute>}
+                />
+                <Route 
                     path="/followers/:id" 
                     element={<PrivateRoute> <Followers /> </PrivateRoute>}
                 />
@@ -78,8 +85,16 @@ export default function Router() {
                     element={<PrivateRoute> <Following /> </PrivateRoute>}
                 />
                 <Route 
+                    path="/reviews/:id" 
+                    element={<PrivateRoute> <FilmReviews /> </PrivateRoute>}
+                />
+                <Route
                     path="/watchlist/:id" 
                     element={<PrivateRoute> <Watchlist /> </PrivateRoute>}
+                />
+                <Route 
+                    path="supercriticos/" 
+                    element={<PrivateRoute> <Supercriticos /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>

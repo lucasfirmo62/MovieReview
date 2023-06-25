@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from datetime import date
 from django.utils import timezone
 
+from django.utils import timezone
+
 REVIEWS = [
     (1,'1 - Horrível'),
     (2,'2 - Ruim'),
@@ -126,6 +128,9 @@ class Comment(models.Model):
 class WatchList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     movie_id = models.CharField(max_length=300)
+    poster_img = models.URLField(blank=False, default='')
+    movie_title = models.CharField(max_length=200, blank=False, default='')
+    date = models.DateTimeField(default=timezone.now)
 
 class FavoritesList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)

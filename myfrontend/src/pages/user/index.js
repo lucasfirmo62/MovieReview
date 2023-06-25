@@ -199,6 +199,21 @@ const User = () => {
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
+                        <Link
+                            to={`/favoritos/${id}`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
+                        >
+                            <p className={'tab-profile'}>Favoritos</p>
+                        </Link>
+                        <Link
+                            to={`/watchlist/${id}/`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Assistir no futuro</p>
+                        </Link>
                     </div>
                     {publications.map((publication) => (
                         <ViewPublication
