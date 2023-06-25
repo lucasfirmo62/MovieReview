@@ -1,0 +1,13 @@
+.content-box-home .supercriticos-pagination {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.content-box-home .supercriticos-pagination button {
+    color: #fff;
+}
+
+.content-box-home .supercriticos-pagination button:hover {
+    color: var(--main-color);
+}

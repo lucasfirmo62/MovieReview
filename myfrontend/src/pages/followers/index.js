@@ -42,35 +42,17 @@ const Followers = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  var loginItem;
-
-  if (localStorage.getItem("tokenUser")) {
-    loginItem = localStorage
-      .getItem("tokenUser")
-      .substring(1, localStorage.getItem("tokenUser").length - 1);
-  }
-
+  
   var idUser = localStorage.getItem("idUser");
 
   useEffect(() => {
     async function userUtility() {
-
-      const headers = {
-        Authorization: `Bearer ${loginItem}`,
-        "Content-type": "application/json",
-      };
-
       try {
-        const userResponse = await api.get(`/usuarios/${id}/`, { headers });
+        const userResponse = await api.get(`/usuarios/${id}/`);
         
-        const followersResponse = await api.get(`/followers/${id}/`, {
-          headers,
-        });
+        const followersResponse = await api.get(`/followers/${id}/`);
 
-        const followingResponse = await api.get(`/usuarios/following/`, {
-          headers,
-        });
+        const followingResponse = await api.get(`/usuarios/following/`);
 
         setUser(userResponse.data);
         setFollowers(followersResponse.data);

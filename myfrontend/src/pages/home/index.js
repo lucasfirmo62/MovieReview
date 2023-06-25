@@ -12,6 +12,9 @@ import ViewPublication from "../../components/ViewPublication";
 
 import api from "../../api";
 
+import Trending from "../../components/Trending"
+import TrendingCarousel from "../../components/TrendingCarousel";
+
 const Home = () => {
     const [publications, setPublications] = useState([]);
     const [page, setPage] = useState(1);
@@ -37,23 +40,12 @@ const Home = () => {
         };
     }, [])
 
-    let loginItem;
-
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     const fetchFeed = async () => {
         if (page === 1) {
             isFirstPageRef.current = true;
         }
 
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
-        const response = await api.get(`feed/?page=${page}`, { headers });
+        const response = await api.get(`feed/?page=${page}`);
         setPublications(prevPublications => [...prevPublications, ...response.data.results]);
     };
 
@@ -101,6 +93,7 @@ const Home = () => {
                 }
                 <div className="content-box-home">
                     <Publication />
+                    <TrendingCarousel />
                     {publications.map((publication) => (
                         <ViewPublication
                             userID={publication.user_id}
@@ -115,7 +108,7 @@ const Home = () => {
                     ))}
                 </div>
                 <div className="home-right-content">
-
+                    <Trending />
                 </div>
             </div>
         </>
