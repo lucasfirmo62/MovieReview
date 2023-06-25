@@ -123,6 +123,7 @@ const Following = () => {
                   id={followingUser.id}
                   nickname={followingUser.nickname}
                   isUser={followingUser.id == idUser}
+                  profile_image={followingUser.profile_image}
                 />
               </div>
             ))}

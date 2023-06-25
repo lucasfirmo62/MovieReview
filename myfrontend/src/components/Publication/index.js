@@ -25,10 +25,23 @@ const Publication = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showMovieOptions, setShowMovieOptions] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
+    const [user, setUser] = useState(null);
 
     function handleReviewChange(rating) {
         setSelectedReview(rating);
     }
+
+    useEffect(() => {
+        let id = localStorage.getItem("idUser");
+        id = id.substring(1, id.length - 1);
+
+        async function userUtility() {
+            await api.get(`/usuarios/${id}/`)
+                .then(response => { setUser(response.data) })
+        }
+
+        userUtility()
+    }, [])
 
     const debouncedSearch = debounce(async (query) => {
         try {
@@ -143,7 +156,7 @@ const Publication = () => {
             setShowConfirmation(false);
         } catch (error) {
             console.log(error);
-        } 
+        }
         window.location.reload();
     };
 
@@ -200,11 +213,12 @@ const Publication = () => {
 
                 <div className="publication-text-content">
                     <div className="content-conf-review-write">
-                        <img
+                        {user && (<img
                             className="user-image"
-                            src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
+                            src={user.profile_image ? user.profile_image : "https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"}
                             alt="user-photo"
-                        />
+                            style={{ objectFit: "cover" }}
+                        />)}
                         <button onClick={cancelPost} id="button-cancel" className="button-cancel">Cancelar</button>
                     </div>
                     <textarea
@@ -229,7 +243,7 @@ const Publication = () => {
                 <div className="content-post-review">
                     <div id="publication-movie-content" className="publication-movie-content">
 
-                        <div style={{ width: "100%", height: "100%", position: "relative", display: "flex", justifyContent: "center"}}>
+                        <div style={{ width: "100%", height: "100%", position: "relative", display: "flex", justifyContent: "center" }}>
                             <input
                                 type="text"
                                 placeholder="Selecione o filme"

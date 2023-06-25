@@ -155,7 +155,12 @@ const User = () => {
 
                 <div className="content-box-profile">
                     <div className="profile-info">
-                        <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
+                        <img
+                            className="image-user"
+                            alt="user"
+                            src={user.profile_image ? user.profile_image : "https://i.imgur.com/piVx6dg.png"}
+                            style={{ objectFit: "cover" }}
+                        />
                         <div>
                             <p className="name-user">{user.full_name}</p>
                             <p className="username-text">@{user.nickname}</p>

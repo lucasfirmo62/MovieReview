@@ -125,30 +125,45 @@ const Movie = () => {
     }, [id]);
 
     setTimeout(function () {
-        if (!(trailer?.results)) {
-            document.getElementById("button-trailer").style.display = "none";
-            document.getElementById("back-button-trailer").style.display = "none";
-        } else {
-            document.getElementById("button-trailer").style.display = "block";
-            document.getElementById("back-button-trailer").style.display = "block";
+        const buttonTrailer = document.getElementById("button-trailer");
+        const backButtonTrailer = document.getElementById("back-button-trailer");
+      
+        if (buttonTrailer && backButtonTrailer) {
+          if (!(trailer?.results)) {
+            buttonTrailer.style.display = "none";
+            backButtonTrailer.style.display = "none";
+          } else {
+            buttonTrailer.style.display = "block";
+            backButtonTrailer.style.display = "block";
+          }
         }
-
     }, 100);
 
 
     function trailerShow() {
-        document.getElementById("content-video").style.display = "block";
-
-        if (trailer?.results[0]) {
-            document.getElementById("trailer").src = `https://www.youtube.com/embed/${trailer.results[0]?.key}?=autoplay=1`;
-        } else if (trailerUS?.results[0]) {
-            document.getElementById("trailer").src = `https://www.youtube.com/embed/${trailerUS.results[0]?.key}?=autoplay=1`;
+        const contentVideo = document.getElementById("content-video");
+        const trailerElement = document.getElementById("trailer");
+      
+        if (contentVideo && trailerElement) {
+          contentVideo.style.display = "block";
+      
+          if (trailer?.results[0]) {
+            trailerElement.src = `https://www.youtube.com/embed/${trailer.results[0]?.key}?=autoplay=1`;
+          } else if (trailerUS?.results[0]) {
+            trailerElement.src = `https://www.youtube.com/embed/${trailerUS.results[0]?.key}?=autoplay=1`;
+          }
         }
-    }
-    function trailerHidden() {
-        document.getElementById("content-video").style.display = "none";
-        document.getElementById("trailer").src = "https://www.youtube.com/embed/undefined";
-    }
+      }
+      
+      function trailerHidden() {
+        const contentVideo = document.getElementById("content-video");
+        const trailerElement = document.getElementById("trailer");
+      
+        if (contentVideo && trailerElement) {
+          contentVideo.style.display = "none";
+          trailerElement.src = "https://www.youtube.com/embed/undefined";
+        }
+      }
 
     async function toggleFavoritar() {
         const data = {
@@ -335,9 +350,9 @@ const Movie = () => {
                                     onMouseEnter={() => setShowTooltip(true)}
                                     onMouseLeave={() => setShowTooltip(false)}
                                     style={{ width: 100, height: 150, borderRadius: 4, position: 'relative' }}
-                                    src={member.profile_path ? `https://image.tmdb.org/t/p/w500/${member.profile_path}` : userDefault}
-                                    alt={member.name}
-                                    title={member.name}
+                                    src={member?.profile_path ? `https://image.tmdb.org/t/p/w500/${member?.profile_path}` : userDefault}
+                                    alt={member?.name}
+                                    title={member?.name}
                                 />
 
                                 <p className="movie-name">{member.name}</p>
