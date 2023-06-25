@@ -1,0 +1,58 @@
+import React from "react";
+import './styles.css';
+
+import { Link } from "react-router-dom";
+
+const Trending = () => {
+
+    return (
+        <>
+            <div className="trending-content-carousel-title">
+                <h2>Super Críticos</h2>
+                <Link to="supercriticos/">
+                    <button>
+                        Ver mais
+                    </button>
+                </Link>
+            </div>
+
+            <div className="trending-content-carousel">
+                <div className="trending-item">
+                    <img className="image-user" alt="user" src={"https://i.pinimg.com/550x/ef/f3/db/eff3dbf3ddb97b7232e742a97206cc93.jpg"} />
+                    <p>Lucas Lima da Silva</p>
+                </div>
+                <div className="trending-item">
+                    <img className="image-user" alt="user" src={"https://i.pinimg.com/550x/ef/f3/db/eff3dbf3ddb97b7232e742a97206cc93.jpg"} />
+                    <p>Diego Alves</p>
+                </div>
+                <div className="trending-item">
+                    <img className="image-user" alt="user" src={"https://i.pinimg.com/550x/ef/f3/db/eff3dbf3ddb97b7232e742a97206cc93.jpg"} />
+                    <p>Neymar Junior</p>
+                </div>
+                <div className="trending-item">
+                    <img className="image-user" alt="user" src={"https://i.pinimg.com/736x/fd/fc/ef/fdfcefc24e58a4e3ed4dd6099d530353.jpg"} />
+                    <p>Diego Alves</p>
+                </div>
+                <div className="trending-item">
+                    <img className="image-user" alt="user" src={"https://i.pinimg.com/736x/fd/fc/ef/fdfcefc24e58a4e3ed4dd6099d530353.jpg"} />
+                    <p>Neymar Junior</p>
+                </div>
+                <div className="trending-item">
+                    <img className="image-user" alt="user" src={"https://i.pinimg.com/736x/fd/fc/ef/fdfcefc24e58a4e3ed4dd6099d530353.jpg"} />
+                    <p>Neymar Junior</p>
+                </div>
+                <div className="trending-item">
+                    <img className="image-user" alt="user" src={"https://i.pinimg.com/736x/fd/fc/ef/fdfcefc24e58a4e3ed4dd6099d530353.jpg"} />
+                    <p>Neymar Junior</p>
+                </div>
+                {/* <div className="trending-item final">
+                    <Link to="supercriticos/">
+                        <p>Ver mais...</p>
+                    </Link>
+                </div> */}
+            </div>
+        </>
+    )
+}
+
+export default Trending;

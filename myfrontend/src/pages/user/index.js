@@ -3,6 +3,7 @@ import './styles.css'
 import api from "../../api";
 import Menu from '../../components/menu'
 import Header from '../../components/header'
+import HeaderDesktop from '../../components/headerDesktop'
 import { useNavigate } from 'react-router-dom';
 import SuperCritico from '../../components/SuperCritico'
 import FollowUnfollow from "../../components/Follow-Unfollow";
@@ -44,7 +45,7 @@ const User = () => {
     const [myfollowing, setMyFollowing] = useState([]);
     const [myfollowers, setMyFollowers] = useState([]);
     const [isFollowingLoaded, setIsFollowingLoaded] = useState(false);
-    
+
     const [page, setPage] = useState(1);
     const isFirstPageRef = useRef(false);
 
@@ -93,11 +94,11 @@ const User = () => {
 
             setIsFollowingLoaded(true)
         }
-        
+
         userUtility()
 
     }, [idMyUser])
-    
+
     async function goEditProfile() {
         navigate("/edit-profile")
     }
@@ -135,7 +136,12 @@ const User = () => {
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-all">
                 {windowSize.width < 680
                     ?
@@ -160,12 +166,12 @@ const User = () => {
                             }
                             {(isFollowingLoaded && idMyUser != id) && (
                                 <>
-                                <FollowUnfollow
-                                    isFollower={myfollowing.some(
-                                        (followingUser) => followingUser.id === Number(id)
-                                    )}
-                                    id={user.id}
-                                />
+                                    <FollowUnfollow
+                                        isFollower={myfollowing.some(
+                                            (followingUser) => followingUser.id === Number(id)
+                                        )}
+                                        id={user.id}
+                                    />
                                 </>
                             )}
                             <p className="bio-text">{user.bio_text}</p>
@@ -198,6 +204,21 @@ const User = () => {
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
+                        </Link>
+                        <Link
+                            to={`/favoritos/${id}`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
+                        >
+                            <p className={'tab-profile'}>Favoritos</p>
+                        </Link>
+                        <Link
+                            to={`/watchlist/${id}/`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Assistir no futuro</p>
                         </Link>
                     </div>
                     {publications.map((publication) => (

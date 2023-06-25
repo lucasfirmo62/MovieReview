@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import './styles.css';
-
+import { MdNotifications } from 'react-icons/md';
 import { FaSearch } from 'react-icons/fa';
-
+import { MdArrowBack } from "react-icons/md";
+import axios from "axios";
+import FragmentDetailsNotification from "../FragmentDetailsNotification";
 import { Link, useNavigate } from 'react-router-dom';
 
 import logo from '../../assets/logotype.png'
@@ -11,15 +13,16 @@ const Header = () => {
     const navigate = useNavigate();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchType, setSearchType] = useState("movies");
+    const [notifications, setNotifications] = useState([]);
 
     const handleSearchIconClick = () => {
         setIsSearchOpen(!isSearchOpen);
     };
 
-    if(window.innerWidth > 660){
+    if (window.innerWidth > 660) {
 
     }
-    
+
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -98,7 +101,7 @@ const Header = () => {
         radioButton.addEventListener('change', handleRadioButtonChange);
     });
 
-    async function selectSearch(){
+    async function selectSearch() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
         setTimeout(function () {
@@ -109,13 +112,47 @@ const Header = () => {
         }, 100);
     }
 
-    async function closeOptions(){
+    async function closeOptions() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
-        if(filterOptions.style.display === "block"){
+        if (filterOptions.style.display === "block") {
             filterOptions.style.display = 'none';
         }
     }
+
+    var galop = document.getElementById('content-notification');
+    var button = document.getElementById('more-notify');
+    var backButton = document.getElementById('back-notification');
+
+
+    if (galop && button && backButton) {
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
+        galop.style.display = 'none'
+        backButton.style.display = 'none'
+    }
+
+    async function notificationNow() {
+        button.style.display = 'block'
+        backButton.style.display = 'block'
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
+        if (galop.style.display === "block") {
+            galop.style.display = 'none';
+        }
+        else if (galop.style.display === "none") {
+            galop.style.display = 'block';
+        }
+    }
+
+    useEffect(() => {
+        axios.get("https://api.npoint.io/cbc695f77c7ff5dac3d1")
+            .then(response => {
+                setNotifications(response.data.notifications);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+
 
     return (
         <>
@@ -176,6 +213,23 @@ const Header = () => {
                             </>
                         )}
                     </form>
+                    <div className="ntf-cation-mobile" onClick={notificationNow}>
+                        <MdNotifications className="notification-mobile" />
+                        <div className="ntf-number">3</div>
+                    </div>
+                    <div id="content-notification" className="content-notification-mobile">
+                        <MdArrowBack id="back-notification" className="back-notification" onClick={notificationNow} />
+                        {notifications.map((notification) => (
+                            <div key={notification.idPost} className="nofitify-content-inside-mobile">
+                                <FragmentDetailsNotification
+                                    idMovie={notification.idMovie}
+                                    userName={notification.userName}
+                                    action={notification.action}
+                                />
+                            </div>
+                        ))}
+                        <div id="more-notify" className="more-notify-mobile"><p>Ver tudo</p></div>
+                    </div>
                 </div>
             </header>
         </>
