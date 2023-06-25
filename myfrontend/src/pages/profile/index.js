@@ -52,11 +52,11 @@ const Profile = () => {
         async function userUtility() {
             await api.get(`/usuarios/${idUser}/`)
                 .then(response => { setUser(response.data) })
-            
+
             const followersResponse = await api.get(`/usuarios/followers/`);
 
             const followingResponse = await api.get(`/usuarios/following/`);
-          
+
             setFollowers(followersResponse.data);
             setFollowing(followingResponse.data);
         }
@@ -68,14 +68,16 @@ const Profile = () => {
         navigate("/edit-profile")
     }
 
-
     const fetchProfilePost = async () => {
         if (page === 1) {
             isFirstPageRef.current = true;
         }
 
         const response = await api.get(`pubusuario/${idUser}/?page=${page}`);
-        setPublications(prevPublications => [...prevPublications, ...response.data.results]);
+        setPublications((prevPublications) => [
+            ...prevPublications,
+            ...response.data.results,
+        ]);
     };
 
     useEffect(() => {
@@ -88,17 +90,16 @@ const Profile = () => {
         const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
 
         if (scrollTop + clientHeight >= scrollHeight - 0) {
-            setPage(page + 1);
+            setPage((prevPage) => prevPage + 1);
         }
     };
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener("scroll", handleScroll);
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
-
 
     return (
         <>
