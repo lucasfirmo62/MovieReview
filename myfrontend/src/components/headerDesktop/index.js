@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from "react";
 import './styles.css';
+
 import { FaSearch } from 'react-icons/fa';
-import { MdNotifications } from 'react-icons/md';
-import axios from "axios";
-import FragmentDetailsNotification from "../FragmentDetailsNotification";
-import { Link, useNavigate } from 'react-router-dom';
+
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import logo from '../../assets/logotype.png'
 
+import { MdNotifications } from 'react-icons/md';
+
+import axios from "axios";
+
+import FragmentDetailsNotification from "../FragmentDetailsNotification";
+
+import api from '../../api';
+
 const HeaderDesktop = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [searchType, setSearchType] = useState("movies");
     const [notifications, setNotifications] = useState([]);
 
+    const [notReadNotifications, setNotReadNotifications] = useState([]);
+    const [notReadNotificationsNumber, setNotReadNotificationsNumber] = useState([]);
+
+    let id = localStorage.getItem("idUser");
+    id = id.substring(1, id.length - 1);
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -25,6 +39,46 @@ const HeaderDesktop = () => {
             navigate(`/search?query=${query}`);
         }
     }
+
+    var galop = document.getElementById('content-notification');
+    var button = document.getElementById('more-notify');
+
+    if (galop) {
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
+        galop.style.display = 'none'
+    }
+
+    async function notificationNow() {
+        button.style.display = 'block'
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
+        if (galop.style.display === "block") {
+            galop.style.display = 'none';
+        }
+        else if (galop.style.display === "none") {
+            galop.style.display = 'block';
+        }
+
+        try {
+            await api.post('/notificacoes/mark_as_read/')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        api.get('/notificacoes/')
+            .then(response => {
+                setNotifications(response.data.results);
+
+                const unreadNotifications = response.data.results.filter((notification) => notification.is_read == false);
+
+                setNotReadNotifications(unreadNotifications);
+                setNotReadNotificationsNumber(unreadNotifications.length);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
 
     useEffect(() => {
         const addEventListeners = () => {
@@ -111,35 +165,6 @@ const HeaderDesktop = () => {
         }
     }
 
-    var galop = document.getElementById('content-notification');
-    var button = document.getElementById('more-notify');
-
-    if (galop) {
-        galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
-        galop.style.display = 'none'
-    }
-    async function notificationNow() {
-        button.style.display = 'block'
-        galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
-        if (galop.style.display === "block") {
-            galop.style.display = 'none';
-        }
-        else if (galop.style.display === "none") {
-            galop.style.display = 'block';
-        }
-    }
-
-    useEffect(() => {
-        axios.get("https://api.npoint.io/cbc695f77c7ff5dac3d1")
-            .then(response => {
-                setNotifications(response.data.notifications);
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    }, []);
-
-
     return (
         <>
             <header className={'header-open'}>
@@ -197,20 +222,36 @@ const HeaderDesktop = () => {
                     </form>
                     <div className="ntf-cation" onClick={notificationNow}>
                         <MdNotifications className="notification" />
-                        <div className="ntf-number">3</div>
+                        {notReadNotificationsNumber != 0 && (<div className="ntf-number">{notReadNotificationsNumber}</div>)}
                     </div>
-                    <div id="content-notification" className="content-notification">
-                        {notifications.map((notification) => (
-                            <div key={notification.idPost} className="nofitify-content-inside">
-                                <FragmentDetailsNotification
-                                    idMovie={notification.idMovie}
-                                    userName={notification.userName}
-                                    action={notification.action}
-                                />
-                            </div>
-                        ))}
-                        <div id="more-notify" className="more-notify"><p>Ver tudo</p></div>
-                    </div>
+                    {notifications.length > 0 ? (
+                        <div id="content-notification" className="content-notification">
+                            {notifications.map((notification) => (
+                                <div key={notification.idPost} className="nofitify-content-inside">
+                                    <FragmentDetailsNotification
+                                        publication_id={notification.publication}
+                                        user_id={notification.sender}
+                                        message={notification.message}
+                                        notification_type={notification.notification_type}
+                                        mark_as_read={notification.is_read}
+                                    />
+                                </div>
+                            ))}
+                            <Link
+                                to={`/notifications/${id}`}
+                                state={{
+                                    prevPath: location.pathname
+                                }}
+                                style={{ textDecoration: "none", color: "#000" }}
+                            >
+                                <div id="more-notify" className="more-notify"><p>Ver mais</p></div>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div id="content-notification" className="content-notification">
+                            <div id="more-notify" className="more-notify no-notification"><p>Não há notificações!</p></div>
+                        </div>
+                    )}
                 </div>
             </header>
         </>

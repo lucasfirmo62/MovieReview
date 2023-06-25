@@ -97,7 +97,7 @@ const User = () => {
 
         userUtility()
 
-    }, [idMyUser])
+    }, [id])
 
     async function goEditProfile() {
         navigate("/edit-profile")

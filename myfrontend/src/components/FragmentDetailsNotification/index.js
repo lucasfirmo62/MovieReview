@@ -1,29 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useNegative } from 'react';
 import './styles.css';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import axios from 'axios';
 
-function FragmentDetailsNotification({ idMovie, userName, action }) {
-  const [movieDetails, setMovieDetails] = useState(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get(`https://api.themoviedb.org/3/movie/${idMovie}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
-      setMovieDetails(response.data);
-    }
-    fetchData();
-  }, [idMovie]);
+// caso mark_as_read seja false colocar uma cor diferente, senão colocar uma cor normal
+function FragmentDetailsNotification({ user_id, publication_id, message, notification_type, mark_as_read }) {
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <div className='nofitify-content-inside'>
-      {action === "like" ? (
-        <p>{`${userName} curtiu sua crítica sobre "${movieDetails?.title}"`}</p>
-      ) : action === "comment" ? (
-        <p>{`${userName} comentou sua crítica sobre "${movieDetails?.title}"`}</p>
-      ) : null}
-    </div>
+    <Link
+      to={notification_type === 'follow' ? `/user/${user_id}` : `/publication/${publication_id}`}
+      state={{
+        prevPath: location.pathname
+      }}
+      style={{ textDecoration: "none" }}
+    >
+      <div className='nofitify-content-inside'>
+        <p>{message}</p>
+        
+        {!mark_as_read && (
+          <div className='notification-not-read'></div>
+        )}
+      </div>
+    </Link>
   );
 }
 

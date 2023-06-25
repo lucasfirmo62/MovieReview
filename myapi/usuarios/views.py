@@ -600,3 +600,9 @@ class NotificationViewSet(viewsets.ModelViewSet):
     
         serializer = self.get_serializer(notification)
         return Response(serializer.data)
+    
+    def mark_all_as_read(self, request):
+        queryset = self.get_queryset().filter(recipient=request.user, is_read=False)
+        queryset.update(is_read=True)
+        
+        return Response("Notificações marcadas como lida.")
