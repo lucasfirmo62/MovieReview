@@ -11,6 +11,8 @@ import HeaderDesktop from "../../components/headerDesktop";
 import posternotfound from '../../assets/posternotfound.png'
 import userDefault from '../../assets/user-default.jpg'
 
+import MovieCard from '../../components/MovieCard';
+
 import { BsFillPlayFill } from 'react-icons/bs';
 import { AiFillCloseCircle, AiOutlinePlus, AiOutlineClose } from 'react-icons/ai';
 import { FaStar } from 'react-icons/fa';
@@ -24,6 +26,7 @@ const Movie = () => {
 
     const navigate = useNavigate()
 
+    const listRef = useRef(null);
     const [showModalPublication, setShowModalPublication] = useState(false);
 
     const [movie, setMovie] = useState({});
@@ -36,8 +39,62 @@ const Movie = () => {
     const [isMovieFavorite, setIsMovieFavorite] = useState(false);
     const [isWatchlistSettled, setIsWatchlistSettled] = useState(false);
 
+    const [similarMovies, setSimilarMovies] = useState([]);
+    const [scrollPosition, setScrollPosition] = useState(0);
+
+    const [showArrowLeft, setShowArrowLeft] = useState(false);
+    const [showArrowRight, setShowArrowRight] = useState(true);
+    const [reload, setReload] = useState()
+
     const castRef = useRef(null);
 
+    function navigateAnotherMoviePage(id) {
+        navigate(`/movie/${id}`)
+    }
+
+    useEffect(() => {
+        const list = listRef.current;
+        list.scrollTo({ left: 0, behavior: 'instant' });
+        setShowArrowLeft(false);
+        setShowArrowRight(true);
+    }, [id]);
+
+    const handleScrollLeft = () => {
+        const list = listRef.current;
+        const newScrollLeft = list.scrollLeft - list.clientWidth;
+
+        list.scrollTo({
+            left: newScrollLeft,
+            behavior: 'smooth',
+        });
+
+        const isAtBeginning = newScrollLeft <= 0;
+        setShowArrowLeft(!isAtBeginning);
+        setShowArrowRight(true);
+    };
+
+    const handleScrollRight = () => {
+        const list = listRef.current;
+        const newScrollLeft = list.scrollLeft + list.clientWidth;
+
+        list.scrollTo({
+            left: newScrollLeft,
+            behavior: 'smooth',
+        });
+
+        const isAtEnd = newScrollLeft + list.clientWidth >= list.scrollWidth;
+        setShowArrowRight(!isAtEnd);
+        setShowArrowLeft(true);
+    };
+
+    useEffect(() => {
+        async function fetchData() {
+            const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
+            setSimilarMovies(response.data.results);
+        }
+        fetchData();
+    }, [id]);
+    
     useEffect(() => {
         async function fetchData() {
             const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
@@ -136,7 +193,7 @@ const Movie = () => {
         }
 
         get_data()
-    }, [])
+    }, [id])
 
     let idUser = localStorage.getItem("idUser");
 
@@ -184,6 +241,7 @@ const Movie = () => {
                     backgroundPosition: 'center'
                 }}
             >
+
                 <div className='movie-details-content'>
                     <div>
                         <img
@@ -257,6 +315,33 @@ const Movie = () => {
                         ))}
                     </ul>
                 </div>
+            </div>
+            <div className="similar-movies">
+                {similarMovies.length > 0 && (<h2>Filmes Similares</h2>)}
+                <ul ref={listRef}>
+                    {similarMovies.length > 0 && showArrowLeft && (
+                        <div className="scroll-arrow-left" onClick={() => handleScrollLeft('prev')}>
+                            <FaAngleLeft size={32} />
+                        </div>
+                    )}
+
+                    {similarMovies.map((movie) => (
+                        <li key={movie.id}>
+                            <MovieCard
+                                movie_id={movie.id}
+                                title={movie.title}
+                                poster={movie.poster_path}
+                                navigateAnotherMoviePage={navigateAnotherMoviePage}
+                            />
+                        </li>
+                    ))}
+
+                    {similarMovies.length > 0 && showArrowRight && (
+                        <div className="scroll-arrow-right" onClick={() => handleScrollRight('next')}>
+                            <FaAngleRight size={32} />
+                        </div>
+                    )}
+                </ul>
             </div>
             <div id='content-video' className='content-video'>
                 <iframe id="trailer" className='video-trailer' src={`https://www.youtube.com/embed/undefined`} allow='autoplay' />
