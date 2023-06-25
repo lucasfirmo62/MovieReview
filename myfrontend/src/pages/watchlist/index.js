@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Header from '../../components/header';
+import HeaderDesktop from "../../components/headerDesktop";
 import Menu from '../../components/menu';
 
 import styles from './styles.css';
@@ -115,7 +116,12 @@ const Watchlist = () => {
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-page">
                 <div className="left-content">
                     <Menu />

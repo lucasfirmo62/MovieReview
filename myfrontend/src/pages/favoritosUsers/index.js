@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
 import Menu from '../../components/menu';
 
+import HeaderDesktop from "../../components/headerDesktop";
+
 import { useParams } from 'react-router-dom';
 
 import styles from './styles.css';
@@ -45,7 +47,12 @@ const FavoritosUsers = () => {
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-page">
                 <div className="left-content">
                     <Menu />

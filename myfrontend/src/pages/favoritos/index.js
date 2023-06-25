@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
+import HeaderDesktop from "../../components/headerDesktop";
 import Menu from '../../components/menu';
 
 import styles from './styles.css';
@@ -86,7 +87,12 @@ const Favoritos = () => {
 
   return (
     <>
-      <Header />
+      {(window.innerWidth > 760) ?
+        <HeaderDesktop />
+        :
+
+        <Header />
+      }
       <div className="content-page">
         <div className="left-content">
           <Menu />
