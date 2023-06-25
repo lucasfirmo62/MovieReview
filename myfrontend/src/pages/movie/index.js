@@ -19,8 +19,6 @@ import { FaStar } from 'react-icons/fa';
 import { IoMdEye } from 'react-icons/io';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 
-import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
-
 import api from '../../api';
 
 const Movie = () => {
@@ -178,11 +176,6 @@ const Movie = () => {
 
     useEffect(() => {
         async function get_data() {
-            const headers = {
-                Authorization: `Bearer ${loginItem}`,
-                "Content-type": "application/json"
-            };
-
             try {
                 const response = await api.get(`/favoritos/${id}/is_movie_favorite/`)
                 setIsMovieFavorite(response.data.is_favorite)
@@ -200,7 +193,7 @@ const Movie = () => {
         }
 
         get_data()
-    }, [])
+    }, [id])
 
     let idUser = localStorage.getItem("idUser");
 
@@ -278,11 +271,6 @@ const Movie = () => {
                                 </li>
                             ))}
                         </ul>
-                        {isMovieFavorite ?
-                            (<button id="favoritar-button" className="favoritar-button" onClick={toggleDesfavoritar}>Desfavoritar</button>)
-                            :
-                            (<button id="favoritar-button" className="favoritar-button" onClick={toggleFavoritar}>Favoritar</button>)
-                        }
                         <div className='movie-analysis'>
                             <button style={{ maxWidth: 'max-content' }} id="favoritar-button" className="favoritar-button" onClick={isMovieFavorite ? toggleDesfavoritar : toggleFavoritar}>
                                 <FaStar color={isMovieFavorite ? 'gold' : 'gray'} size={20} />
