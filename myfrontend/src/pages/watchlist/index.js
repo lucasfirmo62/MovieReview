@@ -1,47 +1,127 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from '../../components/header';
+import HeaderDesktop from "../../components/headerDesktop";
 import Menu from '../../components/menu';
 
 import styles from './styles.css';
 
 import api from "../../api";
 
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { FaTimes, FaStar } from 'react-icons/fa';
 import { MdArrowBack } from "react-icons/md";
+import { AiFillEye } from 'react-icons/ai';
 
 const Watchlist = () => {
+    const { id } = useParams();
+
     var [Watchlist, setWatchlist] = useState([]);
+    var [page, setPage] = useState(1);
+    const isFirstPageRef = useRef(false);
+
+    const getMovies = async () => {
+        if (page === 1) {
+            isFirstPageRef.current = true;
+        }
+
+        const response = await api.get(`/watchlist/user/${id}/?page=${page}`);
+
+        console.log(response.data.results)
+
+        const watchlistMovies = response.data.results.map(movie => ({
+            ...movie,
+            watchlist: movie.watchlist
+        }));
+
+        setWatchlist((prevPublications) => [
+            ...prevPublications,
+            ...watchlistMovies,
+        ]);
+    };
+
+    const handleScroll = () => {
+        const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+
+        if (scrollTop + clientHeight >= scrollHeight) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    };
 
     useEffect(() => {
-        async function getMovies() {
-            let id = localStorage.getItem('idUser')
-            let token = localStorage.getItem('tokenUser')
-
-            id = id.substring(1, id.length - 1)
-            token = token.substring(1, token.length - 1)
-
-            const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
-            const response = await api.get('/favoritos/', { headers })
-
-            await setWatchlist(response.data)
+        if (isFirstPageRef.current === false || page !== 1) {
+            getMovies();
         }
-        getMovies()
-    }, [])
+    }, [page]);
 
-    async function toggleRemoveToWatchlist() {
-      
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    async function toggleRemoveToWatchlist(movieId) {
+        try {
+            const index = Watchlist.findIndex(movie => movie.movie_id === movieId);
+
+            if (index !== -1) {
+                setWatchlist(prevList => {
+                    const updatedList = [...prevList];
+                    updatedList[index].watchlist = false;
+                    return updatedList;
+                });
+
+                await api.delete(`watchlist/movie/${movieId}/`);
+            }
+        } catch (error) {
+            console.log('Ocorreu um erro ao remover na watchlist:', error);
+        }
     }
 
-    async function toggleAddToWatchlist() {
-       
+    async function toggleAddToWatchlist(movie) {
+        let id = movie.movie_id
+
+        const data = {
+            "user_id": localStorage.getItem('idUser'),
+            "movie_id": movie.movie_id,
+            "poster_img": `https://image.tmdb.org/t/p/w500/${movie.poster_img}`,
+            "movie_title": movie.movie_title
+        }
+
+        let loginItem;
+
+        if (localStorage.getItem('tokenUser')) {
+            loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
+        }
+
+        try {
+            const index = Watchlist.findIndex(movie => movie.movie_id === id);
+
+            await api.post('/watchlist/', data)
+
+            if (index !== -1) {
+                setWatchlist(prevList => {
+                    const updatedList = [...prevList];
+                    updatedList[index].watchlist = true;
+                    return updatedList;
+                });
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
+
+    console.log(Watchlist.length)
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-page">
                 <div className="left-content">
                     <Menu />
@@ -74,10 +154,27 @@ const Watchlist = () => {
                                     </div>
 
                                     <div className="button-content">
-                                        <button className="watchlistButton">
-                                            <span className="closeIcon">
-                                            <FaTimes size={14} />
-                                        </span></button>
+                                        {movie.watchlist ? (
+
+                                            <button
+                                                className="watchlistButton"
+                                                onClick={() => toggleRemoveToWatchlist(movie.movie_id)}
+                                            >
+                                                <span className="closeIcon">
+                                                    <AiFillEye className="pink-eye" size={18} />
+                                                </span>
+                                            </button>
+                                        ) : (
+
+                                            <button
+                                                className="watchlistButton"
+                                                onClick={() => toggleAddToWatchlist(movie)}
+                                            >
+                                                <span className="closeIcon">
+                                                    <AiFillEye color="#fff" size={18} />
+                                                </span>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Menu from "../../components/menu";
 import api from "../../api";
 import Header from "../../components/header";
+import HeaderDesktop from "../../components/headerDesktop";
 
 import CardFollower from "../../components/CardFollower";
 
@@ -63,7 +64,12 @@ const Following = () => {
 
   return (
     <>
-      <Header />
+       {(window.innerWidth > 760) ?
+        <HeaderDesktop />
+        :
+
+        <Header />
+      }
       <div className="content-all">
         {windowSize.width < 680 ? (
           <Menu />
@@ -117,6 +123,7 @@ const Following = () => {
                   id={followingUser.id}
                   nickname={followingUser.nickname}
                   isUser={followingUser.id == idUser}
+                  profile_image={followingUser.profile_image}
                 />
               </div>
             ))}

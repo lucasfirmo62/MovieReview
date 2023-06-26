@@ -18,19 +18,19 @@ import { MdArrowBack } from "react-icons/md";
 
 const FilmReviews = () => {
     const { id } = useParams();
+    
     const [movie, setMovie] = useState(null)
-    const [numberPublications, setNumberPublications] = useState(0)
-
-    const isFirstPageRef = useRef(false);
-
+    const [publications, setPublications] = useState([])
     const [page, setPage] = useState(1)
-
+    
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
     });
 
-    let loginItem;
+    const [numberPublications, setNumberPublications] = useState(0)
+
+    const isFirstPageRef = useRef(false);
 
     let idUser = localStorage.getItem("idUser");
 
@@ -42,6 +42,43 @@ const FilmReviews = () => {
 
         fetchData()
     }, [])
+
+    const fetchCritics = async () => {
+        if (page === 1) {
+          isFirstPageRef.current = true;
+        }
+    
+        const response = await api.get(`criticas/${id}/?page=${page}`);
+    
+        console.log(`criticas/${id}/?page=${page}`);
+    
+        setNumberPublications(response.data.count);
+        setPublications((prevPublications) => [
+          ...prevPublications,
+          ...response.data.results,
+        ]);
+      };
+    
+      const handleScroll = () => {
+        const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+    
+        if (scrollTop + clientHeight >= scrollHeight) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      };
+    
+      useEffect(() => {
+        if (isFirstPageRef.current === false || page !== 1) {
+          fetchCritics();
+        }
+      }, [page]);
+    
+      useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+          window.removeEventListener("scroll", handleScroll);
+        };
+      }, []);
 
     return (
         <>
@@ -74,7 +111,7 @@ const FilmReviews = () => {
                         </Link>
 
                         <h1 className="title">{movie?.title}</h1>
-                        <h2 className="subtitle">2 críticas</h2>
+                        <h2 className="subtitle">{numberPublications <= 0 ? "Não foram encontradas críticas" : `${numberPublications} ${numberPublications === 1 ? 'crítica' : 'críticas'}`}</h2>
 
                         <div
                             className="movie-details-container"
@@ -87,26 +124,18 @@ const FilmReviews = () => {
                             }}
                         ></div>
                     </div>
-                    <ViewPublication
-                        userID={1} 
-                        idPost={1} 
-                        idMovie={502356} 
-                        rating={4}
-                        critic="Ótimo filme! Altamente recomendado." 
-                        image={null} 
-                        date="2023-06-08T15:30:00Z" 
-                        myPub={false}
-                    />
-                    <ViewPublication
-                        userID={1} 
-                        idPost={3} 
-                        idMovie={502356} 
-                        rating={4}
-                        critic="Ótimo filme! Altamente recomendado." 
-                        image={null} 
-                        date="2023-06-08T15:30:00Z" 
-                        myPub={false}
-                    />
+                    {publications.map((publication) => (
+                        <ViewPublication
+                            userID={publication.user_id}
+                            idPost={publication?.date?.slice(20) + publication?.movie_id}
+                            idMovie={publication.movie_id}
+                            rating={publication.review}
+                            critic={publication.pub_text}
+                            image={publication?.imgur_link}
+                            date={publication.date}
+                            myPub={(publication.user_id === parseInt(idUser)) ? true : false}
+                        />
+                    ))}
                 </div>
                 <div className="home-right-content">
 

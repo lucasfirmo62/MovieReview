@@ -46,7 +46,10 @@ const Home = () => {
         }
 
         const response = await api.get(`feed/?page=${page}`);
-        setPublications(prevPublications => [...prevPublications, ...response.data.results]);
+        setPublications((prevPublications) => [
+            ...prevPublications,
+            ...response.data.results,
+        ]);
     };
 
     useEffect(() => {
@@ -59,14 +62,14 @@ const Home = () => {
         const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
 
         if (scrollTop + clientHeight >= scrollHeight - 0) {
-            setPage(page + 1);
+            setPage((prevPage) => prevPage + 1);
         }
     };
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener("scroll", handleScroll);
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
@@ -74,12 +77,12 @@ const Home = () => {
 
     return (
         <>
-        {(window.innerWidth > 760)?
-            <HeaderDesktop/>
-        :
-        
-            <Header />
-        }
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-home">
                 {windowSize.width < 680
                     ?

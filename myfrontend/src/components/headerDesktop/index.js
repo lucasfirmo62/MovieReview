@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import './styles.css';
-
 import { FaSearch } from 'react-icons/fa';
-
+import { MdNotifications } from 'react-icons/md';
+import axios from "axios";
+import FragmentDetailsNotification from "../FragmentDetailsNotification";
 import { Link, useNavigate } from 'react-router-dom';
 
 import logo from '../../assets/logotype.png'
@@ -10,6 +11,7 @@ import logo from '../../assets/logotype.png'
 const HeaderDesktop = () => {
     const navigate = useNavigate();
     const [searchType, setSearchType] = useState("movies");
+    const [notifications, setNotifications] = useState([]);
 
 
     function handleSubmit(event) {
@@ -109,6 +111,35 @@ const HeaderDesktop = () => {
         }
     }
 
+    var galop = document.getElementById('content-notification');
+    var button = document.getElementById('more-notify');
+
+    if (galop) {
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
+        galop.style.display = 'none'
+    }
+    async function notificationNow() {
+        button.style.display = 'block'
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
+        if (galop.style.display === "block") {
+            galop.style.display = 'none';
+        }
+        else if (galop.style.display === "none") {
+            galop.style.display = 'block';
+        }
+    }
+
+    useEffect(() => {
+        axios.get("https://api.npoint.io/cbc695f77c7ff5dac3d1")
+            .then(response => {
+                setNotifications(response.data.notifications);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
+
+
     return (
         <>
             <header className={'header-open'}>
@@ -164,6 +195,22 @@ const HeaderDesktop = () => {
                             </label>
                         </div>
                     </form>
+                    <div className="ntf-cation" onClick={notificationNow}>
+                        <MdNotifications className="notification" />
+                        <div className="ntf-number">3</div>
+                    </div>
+                    <div id="content-notification" className="content-notification">
+                        {notifications.map((notification) => (
+                            <div key={notification.idPost} className="nofitify-content-inside">
+                                <FragmentDetailsNotification
+                                    idMovie={notification.idMovie}
+                                    userName={notification.userName}
+                                    action={notification.action}
+                                />
+                            </div>
+                        ))}
+                        <div id="more-notify" className="more-notify"><p>Ver tudo</p></div>
+                    </div>
                 </div>
             </header>
         </>
