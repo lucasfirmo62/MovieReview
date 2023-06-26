@@ -9,6 +9,9 @@ import { FaPlus, FaCheck } from 'react-icons/fa'
 import { BsCheckCircleFill } from 'react-icons/bs'
 
 const Trending = () => {
+    let idMyUser = localStorage.getItem("idUser");
+    idMyUser = idMyUser.substring(1, idMyUser.length - 1);
+
     const [superReviewers, setSuperReviewers] = useState([])
 
     useEffect(() => {
@@ -81,13 +84,13 @@ const Trending = () => {
                                 <p>{superReviewer.nickname}</p>
                             </Link>
 
-                            <button className="select-follow-unfollow" style={{ backgroundColor: (superReviewer.is_followed ? '#e90074' : 'rgba(0,0,0,0.5)') }} onClick={superReviewer.is_followed ? () => unfollow(superReviewer.id, index) : () => follow(superReviewer.id, index)}>
+                            {idMyUser != superReviewer.id && (<button className="select-follow-unfollow" style={{ backgroundColor: (superReviewer.is_followed ? '#e90074' : 'rgba(0,0,0,0.5)') }} onClick={superReviewer.is_followed ? () => unfollow(superReviewer.id, index) : () => follow(superReviewer.id, index)}>
                                 {(superReviewer.is_followed) ?
                                     <div id="follow-status"><FaCheck size={12} /></div>
                                     :
                                     <div id="follow-status"><FaPlus size={12} /></div>
                                 }
-                            </button>
+                            </button>)}
                         </div>
                     )
                 })}
