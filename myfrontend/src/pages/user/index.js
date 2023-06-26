@@ -109,7 +109,6 @@ const User = () => {
         }
 
         const response = await api.get(`/pubusuario/${id}/?page=${page}`);
-        console.log("pao doce", response.data.results)
         setPublications(prevPublications => [...prevPublications, ...response.data.results]);
     };
 

@@ -73,7 +73,9 @@ const HeaderDesktop = () => {
                 const unreadNotifications = response.data.results.filter((notification) => notification.is_read == false);
 
                 setNotReadNotifications(unreadNotifications);
-                setNotReadNotificationsNumber(unreadNotifications.length);
+
+                if (response.data.results.length > 0)
+                    setNotReadNotificationsNumber(response.data.results[0].not_read_count);
             })
             .catch(error => {
                 console.log(error);
@@ -222,7 +224,8 @@ const HeaderDesktop = () => {
                     </form>
                     <div className="ntf-cation" onClick={notificationNow}>
                         <MdNotifications className="notification" />
-                        {notReadNotificationsNumber != 0 && (<div className="ntf-number">{notReadNotificationsNumber}</div>)}
+                        {notReadNotificationsNumber != 0 && notReadNotificationsNumber > 10 && (<div className="ntf-number">10+</div>)}
+                        {notReadNotificationsNumber != 0 && notReadNotificationsNumber <= 10 && (<div className="ntf-number">{notReadNotificationsNumber}</div>)}
                     </div>
                     {notifications.length > 0 ? (
                         <div id="content-notification" className="content-notification">
