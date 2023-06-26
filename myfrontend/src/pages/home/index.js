@@ -80,6 +80,8 @@ const Home = () => {
 
     var idUser = localStorage.getItem('idUser');
 
+    console.log(publications)
+
     return (
         <>
         {(window.innerWidth > 760)?
@@ -111,6 +113,7 @@ const Home = () => {
                             image={publication?.imgur_link}
                             date={publication.date}
                             myPub={(publication.user_id === parseInt(idUser)) ? true : false}
+                            id={publication.id}
                         />
                     ))}
                 </div>

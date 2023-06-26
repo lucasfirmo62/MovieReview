@@ -8,13 +8,15 @@ import { useNavigate } from 'react-router-dom';
 
 import api from "../../api";
 
-const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date, myPub }) => {
+const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date, myPub, id }) => {
     const [movie, setMovie] = useState([]);
     const criticRef = useRef(null);
     const criticLimitedRef = useRef(null);
     const navigate = useNavigate();
     const [user, setUser] = useState({})
     const [showComments, setShowComments] = useState({})
+    const [postComment, setPostComment] = useState('');
+    var showCommentsTrue = "nada";
 
 
     let loginItem;
@@ -235,6 +237,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
     async function showAllCommentsPublication() {
         if (commentAllPub.style.display === 'none') {
+            showCommentsTrue = [...showComments]
             commentAllPub.style.display = 'block'
             commentSinglePub.style.display = 'none'
             readMoreComment.innerHTML = "Ver menos comentários"
@@ -243,6 +246,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
             commentSinglePub.style.display = 'block'
             readMoreComment.innerHTML = "Ver mais comentários"
         }
+
     }
 
     async function likeButton() {
@@ -285,6 +289,36 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
         navigate(`/user/${profileUser}`);
 
     }
+
+    async function handleSubmitComment() {
+        var textarea = document.getElementById(`comment-${idPost}`);
+
+        var commentReview = textarea.value;
+
+        console.log(commentReview);
+
+        let id = localStorage.getItem("idUser");
+        id = id.substring(1, id.length - 1);
+        let token = localStorage.getItem("tokenUser");
+        token = token.substring(1, token.length - 1);
+
+        const commentText = {
+            'comment_text': commentReview
+        };
+
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        api.post(`/comentarios/${id}/`, commentText, { headers })
+            .then(response => {
+                console.log('Resposta:', response.data);
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+    };
 
     return (
         <>
@@ -335,10 +369,14 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                     <div className="interactive-into" onClick={showCommentPost}>Comentar</div>
                 </div>
                 <div id={`post-comment-${idPost}`} className={`post-comment-${idPost}`}>
-                    <textarea id={`comment-${idPost}`} classname={`comment-${idPost}`}></textarea>
+                    <textarea
+                        id={`comment-${idPost}`}
+                        classname={`comment-${idPost}`}
+                        placeholder="Escreva um comentário sobre a crítica"
+                    />
                     <div className="zone-interactive-publication-options">
                         <button className="comment-send-button" onClick={cancelCommentPost}>Cancelar</button>
-                        <button className="comment-send-button-press">Postar Comentário<IoMdSend className="comment-send" /></button>
+                        <button className="comment-send-button-press" onClick={handleSubmitComment}>Postar Comentário<IoMdSend className="comment-send" /></button>
                     </div>
                 </div>
                 {(showComments.length > 1) ?
@@ -359,7 +397,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                             </div>
                         </div>
                         <div id={`all-comments-on-review-${idPost}`} className={`all-comments-on-review-${idPost}`}>
-                            {showComments.map((showCommentsAll) => (
+                            {showCommentsTrue.map((showCommentsAll) => (
                                 <div className="self-comment-on">
                                     <div className="content-conf-review-write">
                                         <img

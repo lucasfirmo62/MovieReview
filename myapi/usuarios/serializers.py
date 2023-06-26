@@ -27,6 +27,7 @@ class PublicationSerializer(serializers.ModelSerializer):
             'movie_id',
             'movie_title',
             'imgur_link',
+            'id'
         ]
 
 class FavoritesListSerializer(serializers.ModelSerializer):
