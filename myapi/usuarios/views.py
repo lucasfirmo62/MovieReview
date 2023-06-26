@@ -154,6 +154,7 @@ class UserViewSet(viewsets.ModelViewSet):
     
     def super_reviewers(self, request):
         super_reviewers = User.objects.annotate(num_publications=Count('publication')).filter(num_publications__gte=5, super_reviewer=True).order_by('-num_publications')
+        
         paginator = UserPagination()
         paginated_super_reviewers = paginator.paginate_queryset(super_reviewers, request)
         
@@ -349,7 +350,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         page = self.paginate_queryset(users)  
         
-        serializer = UserSerializer(page, many=True)
+        serializer = UserSerializer(page, many=True, context={'request': request})
         return self.get_paginated_response(serializer.data)
     
     def is_liked(self, request, publication_id=None):
@@ -394,7 +395,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         page = self.paginate_queryset(users)  
 
-        serializer = UserSerializer(page, many=True)  
+        serializer = UserSerializer(page, many=True, context={'request': request})  
 
         return self.get_paginated_response(serializer.data)
     
