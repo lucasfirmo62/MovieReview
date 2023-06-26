@@ -141,6 +141,7 @@ header .search-icon {
 .ntf-cation-mobile:hover {
     background-color: #313131;
     transition: 0.2s;
+    z-index: 20;
 }
 
 .content-notification-mobile {
@@ -151,6 +152,7 @@ header .search-icon {
     top: 0px;
     border-radius: 0px;
     overflow-y: scroll;
+    z-index: 20;
 }
 
 .more-notify-mobile{
@@ -163,7 +165,7 @@ header .search-icon {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 10px;
+    padding: 10px 0 10px 0;
     font-size: 19px;
     font-weight: bold;
 }
@@ -171,6 +173,11 @@ header .search-icon {
 .more-notify-mobile:hover{
     background-color: #6e6e6e; 
     color: white;
+}
+
+.nofitify-content-inside-mobile {
+    display: flex;
+    width: 90%;
 }
 
 .content-notification::-webkit-scrollbar {

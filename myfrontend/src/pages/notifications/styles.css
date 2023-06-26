@@ -1,0 +1,10 @@
+.notifications-pagination {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.notifications-pagination button {
+    color: #fff;
+}

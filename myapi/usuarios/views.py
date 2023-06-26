@@ -582,16 +582,18 @@ class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer
     queryset = Notification.objects.all()
     pagination_class = NotificationPagination
-
+    
     def list(self, request):
         queryset = self.filter_queryset(self.get_queryset().filter(recipient=request.user)).order_by('-created_at')
         
         page = self.paginate_queryset(queryset)
+        
         if page is not None:
-            serializer = self.get_serializer(page, many=True)
+            serializer = self.get_serializer(page, context={'request': request}, many=True)
             return self.get_paginated_response(serializer.data)
         
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, context={'request': request}, many=True)
+        
         return Response(serializer.data)
 
     def mark_as_read(self, request, notification_id=None):
@@ -601,3 +603,9 @@ class NotificationViewSet(viewsets.ModelViewSet):
     
         serializer = self.get_serializer(notification)
         return Response(serializer.data)
+    
+    def mark_all_as_read(self, request):
+        queryset = self.get_queryset().filter(recipient=request.user, is_read=False)
+        queryset.update(is_read=True)
+        
+        return Response("Notificações marcadas como lida.")

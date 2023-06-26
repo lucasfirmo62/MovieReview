@@ -119,6 +119,10 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
         readMoreComment.style.display = 'block'
     }
 
+    if (optPub) {
+        optPub.style.zIndex = '1';
+    }
+
 
     if (full) {
         full.style.display = 'block'

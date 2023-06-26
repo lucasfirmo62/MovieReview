@@ -75,4 +75,13 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+        
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+
+        user_id = request.user.id
+
+        data['not_read_count'] = Notification.objects.filter(recipient=user_id, is_read=False).count()
+        return data
 

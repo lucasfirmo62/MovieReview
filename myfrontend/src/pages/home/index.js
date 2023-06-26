@@ -60,7 +60,7 @@ const Home = () => {
 
     const handleScroll = () => {
         const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-
+        
         if (scrollTop + clientHeight >= scrollHeight - 0) {
             setPage((prevPage) => prevPage + 1);
         }
