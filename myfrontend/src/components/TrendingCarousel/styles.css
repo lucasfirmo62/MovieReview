@@ -14,6 +14,10 @@
     gap: 16px;
 }
 
+.trending-content-carousel .trending-item p {
+    color: #fff;
+}
+
 .trending-content-carousel-title {
     padding-top: 16px;
     display: flex;
@@ -49,7 +53,6 @@
     font-weight: 600;
     display: flex;
     align-items: center;
-    padding-left: 14px;
     flex-direction: column;
     max-width: 120px;
 }

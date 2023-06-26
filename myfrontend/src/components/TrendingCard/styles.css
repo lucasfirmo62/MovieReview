@@ -5,11 +5,20 @@
     align-items: center;
 }
 
+.trending-card-content .select-follow-unfollow {
+    margin-left: auto;
+}
+
 .trending-card-content img {
     max-height: 80px;
 }
 
+.trending-card-content h3 {
+    color: #fff;
+    cursor: pointer;
+}
+
 .trending-card-content h3:hover {
     color: #c6c6c6;
-    cursor: pointer;
+    text-decoration: underline;
 }

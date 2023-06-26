@@ -15,13 +15,32 @@ import { MdArrowBack } from "react-icons/md";
 
 import Pagination from "../../components/pagination";
 
+import api from "../../api";
+
 const Supercriticos = () => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [superReviewersCount, setSuperReviewersCount] = useState(0)
+    const [superReviewers, setSuperReviewers] = useState([])
 
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
     });
+
+    async function get_super_reviewers_data() {
+        try {
+            const response = await api.get(`/supercriticos/?page=${currentPage}`)
+            setSuperReviewers(response.data.results)
+            setSuperReviewersCount(response.data.count)
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        get_super_reviewers_data()
+    }, [currentPage])
 
     useEffect(() => {
         const handleResize = () => {
@@ -75,30 +94,22 @@ const Supercriticos = () => {
                         <h2>Super Críticos</h2>
                     </div>
                     
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
-                    <TrendingCard />
+                    {superReviewers.length > 0 && superReviewers.map((superReviewer, index) => {
+                        return(
+                            <TrendingCard 
+                                id={superReviewer.id}
+                                name={superReviewer.nickname}
+                                is_followed={superReviewer.is_followed}
+                                profile_image={superReviewer.profile_image}
+                                index={index}
+                                setSuperReviewers={setSuperReviewers}
+                            /> 
+                        )
+                    })}
 
                     <div className="supercriticos-pagination">
                         <Pagination
-                            totalPages={5}
+                            totalPages={Math.ceil(superReviewersCount / 10) > 7 ? 7 : Math.ceil(superReviewersCount/10)}
                             currentPage={1}
                             onPageChange={handlePageChange}
                         />
@@ -112,3 +123,6 @@ const Supercriticos = () => {
 }
 
 export default Supercriticos;
+
+
+                    {/* exibir uma mensagem caso não tenha supercriticos e não exibir o card caso não tenha supecriticos */}
