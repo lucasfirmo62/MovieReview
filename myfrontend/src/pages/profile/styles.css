@@ -28,11 +28,11 @@
     padding: 20px;
 }
 
-.image-user {
+/* .image-user {
     border-radius: 100%;
     width: 150px;
     padding: 20px;
-}
+} */
 
 .name-user {
     padding-top: 20px;
@@ -138,11 +138,11 @@
         max-width: 730px;
     }
 
-    .image-user {
+    /* .image-user {
         border-radius: 100%;
         width: 110px;
         padding: 20px;
-    }
+    } */
 
     .content-box-profile {
         width: 100%;

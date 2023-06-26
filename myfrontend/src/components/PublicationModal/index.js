@@ -171,29 +171,6 @@ const Publication = (props) => {
                     />
                 </div>
 
-                {/* <div className="content-post-review"> */}
-                {/* <div id="publication-movie-content" className="publication-movie-content"> */}
-                {/* {selectedMovie ? (
-                    <div style={{ width: "100%" }} className="adding-movie">
-                        <div className="selected-movie">
-                            <img
-                                width={80}
-                                height={120}
-                                className="movie-poster"
-                                src={`https://image.tmdb.org/t/p/w185${selectedMovie?.poster_path}`}
-                                alt={`Cartaz do filme ${selectedMovie?.title}`}
-                            />
-
-                            <div className="info-movie-holt">
-                                <p id="name-movie">{selectedMovie?.title}</p>
-                                <p>Lançado em {selectedMovie?.release_date.substring(0, 4)}</p>
-                            </div>
-                        </div>
-                    </div>
-                ) : true} */}
-                {/* </div> */}
-                {/* </div> */}
-
                 <div
                     id="align-post-review-modal"
                     className="align-post-review-modal"

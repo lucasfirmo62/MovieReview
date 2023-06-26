@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Menu from "../../components/menu";
 import api from "../../api";
 import Header from "../../components/header";
+import HeaderDesktop from "../../components/headerDesktop";
 import "./styles.css";
 
 import CardFollower from "../../components/CardFollower";
@@ -42,35 +43,17 @@ const Followers = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  var loginItem;
-
-  if (localStorage.getItem("tokenUser")) {
-    loginItem = localStorage
-      .getItem("tokenUser")
-      .substring(1, localStorage.getItem("tokenUser").length - 1);
-  }
-
+  
   var idUser = localStorage.getItem("idUser");
 
   useEffect(() => {
     async function userUtility() {
-
-      const headers = {
-        Authorization: `Bearer ${loginItem}`,
-        "Content-type": "application/json",
-      };
-
       try {
-        const userResponse = await api.get(`/usuarios/${id}/`, { headers });
+        const userResponse = await api.get(`/usuarios/${id}/`);
         
-        const followersResponse = await api.get(`/followers/${id}/`, {
-          headers,
-        });
+        const followersResponse = await api.get(`/followers/${id}/`);
 
-        const followingResponse = await api.get(`/usuarios/following/`, {
-          headers,
-        });
+        const followingResponse = await api.get(`/usuarios/following/`);
 
         setUser(userResponse.data);
         setFollowers(followersResponse.data);
@@ -85,7 +68,12 @@ const Followers = () => {
 
   return (
     <>
-      <Header />
+       {(window.innerWidth > 760) ?
+        <HeaderDesktop />
+        :
+
+        <Header />
+      }
       <div className="content-all">
         {windowSize.width < 680 ? (
           <Menu />
@@ -144,6 +132,7 @@ const Followers = () => {
                     id={follower.id}
                     nickname={follower.nickname}
                     isUser={follower.id == idUser}
+                    profile_image={follower.profile_image}
                   />
                 </div>
               ))}

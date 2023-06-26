@@ -64,20 +64,10 @@ const Search = () => {
     };
   }, []);
 
-  let loginItem;
-  if (localStorage.getItem('tokenUser')) {
-    loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-  }
-
   useEffect(() => {
     if (query === null) {
       const fetchData = async () => {
-        const headers = {
-          Authorization: `Bearer ${loginItem}`,
-          "Content-type": "application/json"
-        }
-        
-        const response = await api.get(`/usuarios/search/?nickname=${user}&page=${currentPage}`, { headers });
+        const response = await api.get(`/usuarios/search/?nickname=${user}&page=${currentPage}`);
   
         setUsers(response.data.results.results);
   
@@ -182,8 +172,10 @@ const Search = () => {
                         style={{ textDecoration: "none" }}
                       >
                         <img
-                          src={userImage}
+                          className="user-image"
+                          src={userData?.profile_image ? userData?.profile_image : userImage}
                           alt={userData.nickname}
+                          style={{ objectFit: "cover" }}
                         />
                         <div className="movie-details">
                           <h3>{userData.nickname}</h3>
@@ -219,6 +211,7 @@ const Search = () => {
                         style={{ textDecoration: "none" }}
                       >
                         <img
+                          className="movie-poster"
                           src={
                             movie.poster_path
                               ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}`

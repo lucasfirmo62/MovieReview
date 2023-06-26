@@ -8,14 +8,16 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
 
 from rest_framework.response import Response
+from django.db.models import Count
 from rest_framework import viewsets
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 
 from rest_framework.pagination import PageNumberPagination
-from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes
-from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer
+
+from .models import User, Publication, Connection, FavoritesList, Comment, Likes, Deslikes, WatchList, Notification
+from .serializers import UserSerializer, PublicationSerializer, FavoritesListSerializer, CommentSerializer, DeslikesSerializer, WatchlistSerializer, NotificationSerializer
 
 from rest_framework.pagination import PageNumberPagination
 from .authentication import MyJWTAuthentication
@@ -89,6 +91,16 @@ class UserViewSet(viewsets.ModelViewSet):
         connection = Connection(usuario_alpha=user, usuario_beta=user_to_follow)
         connection.save()
         
+        message = f'{user.nickname} seguiu você'
+        
+        Notification.objects.create(
+            sender=user,  
+            recipient=user_to_follow,  
+            notification_type='follow',
+            is_read=False,
+            message=message
+        )
+        
         return Response({'status': 'ok'})
     
     @action(detail=True, methods=['post'], url_path='unfollow', url_name='user-unfollow')
@@ -139,6 +151,54 @@ class UserViewSet(viewsets.ModelViewSet):
         followers = [connection.usuario_alpha for connection in connections]
         serializer = self.get_serializer(followers, many=True)
         return Response(serializer.data)
+    
+    def super_reviewers(self, request):
+        super_reviewers = User.objects.annotate(num_publications=Count('publication')).filter(num_publications__gte=5, super_reviewer=True).order_by('-num_publications')
+        paginator = UserPagination()
+        paginated_super_reviewers = paginator.paginate_queryset(super_reviewers, request)
+        
+        serializer = self.get_serializer(paginated_super_reviewers, many=True)
+        return paginator.get_paginated_response(serializer.data)
+    
+    def update(self, request, *args, **kwargs):
+        profile_image = request.data.get('profile_image')
+        nickname = request.data.get('nickname')
+        full_name = request.data.get('full_name')
+        bio_text = request.data.get('bio_text')
+
+        if not profile_image and not any([nickname, full_name, bio_text]):
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(user=request.user)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+        if profile_image == 'null':
+            profile_image = None
+
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            if profile_image:
+                temp_file.write(profile_image.read())
+                temp_file.flush()
+                imgur_link = upload_to_imgur(temp_file.name)
+            else:
+                imgur_link = request.user.profile_image 
+
+            user_data = {
+                "nickname": nickname or request.user.nickname,  
+                "full_name": full_name or request.user.full_name,  
+                "bio_text": bio_text or request.user.bio_text, 
+                "profile_image": imgur_link
+            }
+
+            serializer = self.get_serializer(instance=request.user, data=user_data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+        os.unlink(temp_file.name)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
     
 class LogoutView(APIView):
     authentication_classes = [MyJWTAuthentication]
@@ -191,6 +251,18 @@ class PublicationViewSet(viewsets.ModelViewSet):
             publication_id=publication,
             date=timezone.now()
         )
+        
+        if publication.user_id != user:
+            message = f'{user.nickname} curtiu sua publicação'
+            
+            Notification.objects.create(
+                sender=user,  
+                recipient=publication.user_id,  
+                publication=publication,
+                notification_type='like',
+                is_read=False,
+                message=message
+            )
 
         likes = Likes.objects.filter(user_id=user, publication_id=publication_id)
 
@@ -214,6 +286,18 @@ class PublicationViewSet(viewsets.ModelViewSet):
             publication_id=publication,
             comment_text=comment_text
         )
+        
+        if publication.user_id != user:
+            message = f'{user.nickname} comentou sua publicação'
+            
+            Notification.objects.create(
+                sender=user,  
+                recipient=publication.user_id,  
+                publication=publication,
+                notification_type='comment',
+                is_read=False,
+                message=message
+            )
 
         return Response({'success': 'Comentário feito com sucesso!'}, status=status.HTTP_201_CREATED)
     
@@ -240,7 +324,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
 
         publication = Publication.objects.filter(id=publication_id).first()
-
+        
         if Deslikes.objects.filter(user_id=user, publication_id=publication_id).exists():
             Deslikes.objects.filter(user_id=user, publication_id=publication_id).delete()
             return Response({'success': 'Deixando de dar o deslike.', 'is_desliked': False}, status=status.HTTP_201_CREATED)
@@ -306,7 +390,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         deslikes = Deslikes.objects.filter(publication_id=publication_id)
         user_ids = deslikes.values_list('user_id', flat=True)  
-        users = User.objects.filter(id__in=user_ids).order_by('-likes__date')
+        users = User.objects.filter(id__in=user_ids).order_by('-deslikes__date')
         
         page = self.paginate_queryset(users)  
 
@@ -385,11 +469,17 @@ class PublicationViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(publications, many=True)
         
         return Response(serializer.data)
+    
+class FavoritesPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesListSerializer
     authentication_classes = [MyJWTAuthentication]
     queryset = FavoritesList.objects.all()
+    pagination_class = FavoritesPagination
 
     def create(self, request):
         user = request.user
@@ -412,11 +502,22 @@ class FavoritesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def list(self, request):
-        user_id = request.user.id
+        user_id = request.user
         
         queryset = FavoritesList.objects.filter(user_id=user_id)
         serializer = FavoritesListSerializer(queryset, many=True)
         
+        return Response(serializer.data)
+    
+    def list_by_id(self, request, user_id=None):
+        queryset = FavoritesList.objects.filter(user_id=user_id).order_by('-date')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
     
     def destroy_by_movie_id(self, request, movie_id=None):
@@ -439,4 +540,95 @@ class FavoritesViewSet(viewsets.ModelViewSet):
             return Response({'is_favorite': True})
         else:
             return Response({'is_favorite': False}) 
+        
+class NotificationPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class WatchlistPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+        
+class WatchlistViewset(viewsets.ModelViewSet):
+    serializer_class = WatchlistSerializer
+    authentication_classes = [MyJWTAuthentication]
+    queryset = WatchList.objects.all()
+    pagination_class = WatchlistPagination
+
+    def create(self, request):
+        user = request.user
+        movie_id = request.data.get('movie_id')
+        poster_img = request.data.get('poster_img')
+        movie_title = request.data.get('movie_title')
+        
+        if WatchList.objects.filter(user_id=user, movie_id=movie_id).exists():
+            return Response({'error': 'Esse filme já foi adicionado à watchlist.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        watchlist = WatchList.objects.create(
+            user_id=user,
+            movie_id=movie_id,
+            poster_img=poster_img,
+            movie_title=movie_title
+        )
+        
+        serializer = WatchlistSerializer(watchlist, context={'request': request})
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
+    def list(self, request, user_id=None):
+        queryset = WatchList.objects.filter(user_id=user_id).order_by('-date')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def destroy_by_movie_id(self, request, movie_id=None):
+        user_id = request.user.id
+
+        watchlist = WatchList.objects.filter(user_id=user_id, movie_id=movie_id)
+
+        if not watchlist:
+            return Response({'error': 'Este filme não está na watchlist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        watchlist.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=True, methods=['get'])
+    def is_movie_on_watchlist(self, request, pk=None, movie_id=None):
+        user_id = request.user.id
+        
+        if WatchList.objects.filter(user_id=user_id, movie_id=movie_id).exists():
+            return Response({'is_movie_on_watchlist': True})
+        else:
+            return Response({'is_movie_on_watchlist': False}) 
+    
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.all()
+    pagination_class = NotificationPagination
+
+    def list(self, request):
+        queryset = self.filter_queryset(self.get_queryset().filter(recipient=request.user)).order_by('-created_at')
+        
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def mark_as_read(self, request, notification_id=None):
+        notification = get_object_or_404(Notification, id=notification_id)
+        notification.is_read = True
+        notification.save()
+    
+        serializer = self.get_serializer(notification)
+        return Response(serializer.data)
