@@ -35,7 +35,7 @@ function CardFollower(props) {
   return (
     <div className="card-follower-content">
         <div className="card" key={props.id}>
-          <img src="https://i.imgur.com/piVx6dg.png" alt={props.nickname} className="card-image" />
+        <img src={props.profile_image ? props.profile_image :"https://i.imgur.com/piVx6dg.png"} style={{ objectFit: "cover" }} alt={props.nickname} className="card-image" />
           <div className={props.isUser ? "card-details" : ""}>
             <Link
               className="card-follower-item"

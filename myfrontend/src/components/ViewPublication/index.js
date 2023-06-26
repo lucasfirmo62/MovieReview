@@ -119,6 +119,10 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
         readMoreComment.style.display = 'block'
     }
 
+    if (optPub) {
+        optPub.style.zIndex = '1';
+    }
+
 
     if (full) {
         full.style.display = 'block'
@@ -283,8 +287,9 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                     <div className="content-conf-review-write">
                         <img
                             className="user-image"
-                            src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
+                            src={user.profile_image ? user.profile_image : "https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"}
                             alt="user-photo"
+                            style={{ objectFit: "cover" }}
                         />
                     </div>
                     <div>
@@ -332,7 +337,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         <button className="comment-send-button-press">Postar Comentário<IoMdSend className="comment-send" /></button>
                     </div>
                 </div>
-                {(showComments.length > 1) ?
+                {/* {(showComments.length > 1) ?
                     <>
                         <div id={`single-comments-on-review-${idPost}`} className={`single-comments-on-review-${idPost}`}>
                             <div className="self-comment-on">
@@ -386,7 +391,7 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                             </div>
                         </div>
                     </>
-                }
+                } */}
                 
             </div>
         </>

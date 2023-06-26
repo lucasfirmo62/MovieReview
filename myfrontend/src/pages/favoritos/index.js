@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
+import HeaderDesktop from "../../components/headerDesktop";
 import Menu from '../../components/menu';
 
 import styles from './styles.css';
@@ -86,14 +87,18 @@ const Favoritos = () => {
 
   return (
     <>
-      <Header />
+      {(window.innerWidth > 760) ?
+        <HeaderDesktop />
+        :
+
+        <Header />
+      }
       <div className="content-page">
         <div className="left-content">
           <Menu />
         </div>
         <div className="center-content">
           <div className="title-content">
-            <div className="title-content">
               <Link
                 className="back-btn"
                 to={'/profile/'}
@@ -102,7 +107,6 @@ const Favoritos = () => {
                 <MdArrowBack size={32} className="back-icon" />
               </Link>
               <h1 className="title-component">Filmes Favoritos</h1>
-            </div>
           </div>
           <div className="favorite-content">
             {favoriteList.map((movie, index) =>

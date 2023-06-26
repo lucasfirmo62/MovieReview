@@ -1,0 +1,82 @@
+.trending-content-carousel {
+    background-color: #363636;
+    border-radius: 8px;
+    border: none;
+    max-width: 90%;
+    margin: auto;
+    margin-top: 16px;
+
+    display: flex;
+    overflow-x: scroll;
+    max-height: max-content;
+    padding: 8px;
+    margin-bottom: 32px;
+    gap: 16px;
+}
+
+.trending-content-carousel .trending-item p {
+    color: #fff;
+}
+
+.trending-content-carousel-title {
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.trending-content-carousel-title button {
+    border-radius: 16px;
+    background-color: var(--main-color);
+    color: #fff;
+    font-weight: bold;
+    width: max-content;
+    height: max-content;
+    border: none;
+}
+
+.trending-content-carousel::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.trending-content-carousel-title h2 {
+    margin-left: 16px;
+    text-overflow: ellipsis;
+}
+
+.trending-content-carousel .trending-item {
+    width: 100%;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-width: 120px;
+}
+
+.trending-content-carousel .trending-item img {
+    max-height: 120px;
+    width: auto;
+    border-radius: 4px;
+    padding: 0;
+}
+
+.trending-content-carousel .trending-item p {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media only screen and (min-width: 860px){
+    .trending-content-carousel {
+        display: none;
+    }
+
+    .trending-content-carousel-title{
+        display: none;
+    }
+}

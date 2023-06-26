@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User, Publication, FavoritesList, Comment, Likes, WatchList
+from .models import User, Publication, FavoritesList, Comment, Likes, WatchList, Notification, Connection
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +17,13 @@ class UserSerializer(serializers.ModelSerializer):
             'profile_image',
         ]
         extra_kwargs = {'password': {'write_only': True}}
+        
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        user_id = request.user.id
+        data['is_followed'] = Connection.objects.filter(usuario_alpha=user_id, usuario_beta=instance).exists()
+        return data
 
 class PublicationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,6 +48,14 @@ class WatchlistSerializer(serializers.ModelSerializer):
         model = WatchList
         fields = '__all__'
         
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        
+        user_id = request.user.id
+        data['watchlist'] = WatchList.objects.filter(user_id=user_id, movie_id=instance.movie_id).exists()
+        return data
+        
 class LikesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Likes
@@ -55,4 +70,18 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
+        
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+
+        user_id = request.user.id
+
+        data['not_read_count'] = Notification.objects.filter(recipient=user_id, is_read=False).count()
+        return data
 

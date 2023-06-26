@@ -3,6 +3,7 @@ import './styles.css'
 import api from "../../api";
 import Menu from '../../components/menu'
 import Header from '../../components/header'
+import HeaderDesktop from '../../components/headerDesktop'
 import { useNavigate } from 'react-router-dom';
 import SuperCritico from '../../components/SuperCritico'
 import FollowUnfollow from "../../components/Follow-Unfollow";
@@ -44,7 +45,7 @@ const User = () => {
     const [myfollowing, setMyFollowing] = useState([]);
     const [myfollowers, setMyFollowers] = useState([]);
     const [isFollowingLoaded, setIsFollowingLoaded] = useState(false);
-    
+
     const [page, setPage] = useState(1);
     const isFirstPageRef = useRef(false);
 
@@ -93,11 +94,11 @@ const User = () => {
 
             setIsFollowingLoaded(true)
         }
-        
+
         userUtility()
 
-    }, [idMyUser])
-    
+    }, [id])
+
     async function goEditProfile() {
         navigate("/edit-profile")
     }
@@ -108,7 +109,6 @@ const User = () => {
         }
 
         const response = await api.get(`/pubusuario/${id}/?page=${page}`);
-        console.log("pao doce", response.data.results)
         setPublications(prevPublications => [...prevPublications, ...response.data.results]);
     };
 
@@ -135,7 +135,12 @@ const User = () => {
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-all">
                 {windowSize.width < 680
                     ?
@@ -149,7 +154,12 @@ const User = () => {
 
                 <div className="content-box-profile">
                     <div className="profile-info">
-                        <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
+                        <img
+                            className="image-user"
+                            alt="user"
+                            src={user.profile_image ? user.profile_image : "https://i.imgur.com/piVx6dg.png"}
+                            style={{ objectFit: "cover" }}
+                        />
                         <div>
                             <p className="name-user">{user.full_name}</p>
                             <p className="username-text">@{user.nickname}</p>
@@ -160,12 +170,12 @@ const User = () => {
                             }
                             {(isFollowingLoaded && idMyUser != id) && (
                                 <>
-                                <FollowUnfollow
-                                    isFollower={myfollowing.some(
-                                        (followingUser) => followingUser.id === Number(id)
-                                    )}
-                                    id={user.id}
-                                />
+                                    <FollowUnfollow
+                                        isFollower={myfollowing.some(
+                                            (followingUser) => followingUser.id === Number(id)
+                                        )}
+                                        id={user.id}
+                                    />
                                 </>
                             )}
                             <p className="bio-text">{user.bio_text}</p>
@@ -207,6 +217,12 @@ const User = () => {
                             }}
                         >
                             <p className={'tab-profile'}>Favoritos</p>
+                        </Link>
+                        <Link
+                            to={`/watchlist/${id}/`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                        >
+                            <p className={'tab-profile'}>Assistir no futuro</p>
                         </Link>
                     </div>
                     {publications.map((publication) => (
