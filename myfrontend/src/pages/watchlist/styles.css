@@ -1,0 +1,41 @@
+.watchlistButton {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.center-content {
+    height: 100%;
+}
+
+.watchlistButton:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.watchlistButton .pink-eye {
+    color: #e90074;
+}
+
+.favoriteStarButton {
+    width: max-content;
+}
+
+.favoriteStarButton:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.title-content {
+    display: flex;
+    justify-content: flex-start;
+    gap: 32px;
+}
+
+.title-content .back-btn {
+    margin-left: 16px;
+}
+
+.title-component {
+    font-size: 24px;
+}

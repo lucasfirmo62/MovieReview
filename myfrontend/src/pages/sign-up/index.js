@@ -165,11 +165,7 @@ const SignUp = () => {
 
         try {
 
-            await api.post('/usuarios/', data, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            await api.post('/usuarios/', data);
 
             navigate('/login');
 
