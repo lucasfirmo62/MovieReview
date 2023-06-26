@@ -29,6 +29,7 @@ class PublicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publication
         fields = [
+            'id',
             'review',
             'pub_text',
             'user_id',
