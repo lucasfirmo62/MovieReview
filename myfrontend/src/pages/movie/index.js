@@ -91,7 +91,7 @@ const Movie = () => {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
+            const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=pt-BR`);
             setSimilarMovies(response.data.results);
         }
         fetchData();
@@ -368,7 +368,7 @@ const Movie = () => {
                 </div>
             </div>
             <div className="similar-movies">
-                {similarMovies.length > 0 && (<h2>Filmes Similares</h2>)}
+                {similarMovies.length > 0 && (<h2>Recomendações</h2>)}
                 <ul ref={listRef}>
                     {similarMovies.length > 0 && showArrowLeft && (
                         <div className="scroll-arrow-left" onClick={() => handleScrollLeft('prev')}>
