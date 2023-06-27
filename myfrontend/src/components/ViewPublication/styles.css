@@ -159,7 +159,8 @@
 }
 
 .review-full{
-    word-break: break-all;
+    text-align: justify;
+    word-break: break-word;
 }
 
 .movie-options {

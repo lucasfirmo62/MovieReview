@@ -11,6 +11,7 @@
 
 .trending-card-content img {
     max-height: 80px;
+    border-radius: 6px;
 }
 
 .trending-card-content h3 {

@@ -176,11 +176,7 @@ const Profile = () => {
                     {publications.map((publication) => (
                         <ViewPublication
                             userID={publication.user_id}
-<<<<<<< HEAD
                             idPost={publication?.id}
-=======
-                            idPost={publication.id}
->>>>>>> origin/development-3
                             idMovie={publication.movie_id}
                             rating={publication.review}
                             critic={publication.pub_text}
