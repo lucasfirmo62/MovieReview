@@ -23,7 +23,7 @@ const Publication = () => {
 
     const location = useLocation();
 
-    const backButtonRoute = location.state?.prevPath;
+    const backButtonRoute = location.state?.prevPath || '/';
 
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,

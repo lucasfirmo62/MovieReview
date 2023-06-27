@@ -5,7 +5,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import axios from 'axios';
 
-// caso mark_as_read seja false colocar uma cor diferente, senão colocar uma cor normal
 function FragmentDetailsNotification({ user_id, publication_id, message, notification_type, mark_as_read }) {
   const navigate = useNavigate();
   const location = useLocation();
