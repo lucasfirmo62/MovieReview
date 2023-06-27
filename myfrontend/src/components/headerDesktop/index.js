@@ -40,16 +40,19 @@ const HeaderDesktop = () => {
         }
     }
 
-    var galop = document.getElementById('content-notification');
-    var button = document.getElementById('more-notify');
+    let galop = document.getElementById('content-notification');
+    let button = document.getElementById('more-notify');
 
     if (galop) {
         galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
         galop.style.display = 'none'
     }
 
-    async function notificationNow() {
-        button.style.display = 'block'
+    async function notificationNow() {     
+        let galop = document.getElementById('content-notification');
+        let button = document.getElementById('more-notify');
+
+        button.style.display = 'block';
         galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
         if (galop.style.display === "block") {
             galop.style.display = 'none';
