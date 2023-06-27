@@ -162,12 +162,18 @@ const Profile = () => {
                         </Link>
                         <Link
                             to={`/favoritos`}
+                            state={{
+                                prevPath: '/profile'
+                            }}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>Favoritos</p>
                         </Link>
                         <Link
                             to={`/watchlist/${idUser}/`}
+                            state={{
+                                prevPath: '/profile'
+                            }}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <p className={'tab-profile'}>Assistir no futuro</p>
