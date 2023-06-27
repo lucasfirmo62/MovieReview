@@ -18,6 +18,7 @@ const ViewPublication = ({
   date,
   myPub,
 }) => {
+  
   const [movie, setMovie] = useState([]);
   const criticRef = useRef(null);
   const criticLimitedRef = useRef(null);
@@ -32,6 +33,7 @@ const ViewPublication = ({
   const [dislike, setDislike] = useState(false);
 
   let loginItem;
+
   if (localStorage.getItem("tokenUser")) {
     loginItem = localStorage
       .getItem("tokenUser")
@@ -245,14 +247,6 @@ const ViewPublication = ({
     commentPub.style.resize = "none";
   }
 
-  // if (likePub) {
-  //     likePub.style.color = 'white'
-  // }
-
-  // if (dislikePub) {
-  //     dislikePub.style.color = 'white'
-  // }
-
   function handleMouseEnter(idPost) {
     var imgHover = document.getElementById(`img-title-hover-${idPost}`);
 
@@ -279,14 +273,6 @@ const ViewPublication = ({
 
   async function handleProfile() {
     navigate(`/user/${userID}`);
-  }
-
-  async function editPub() {
-    optPub.style.display = "none";
-  }
-
-  async function deletPub() {
-    optPub.style.display = "none";
   }
 
   async function showCommentPost() {
@@ -317,7 +303,7 @@ const ViewPublication = ({
       Authorization: `Bearer ${loginItem}`,
       "Content-type": "application/json",
     };
-    
+
     console.log(dislike)
     if (dislike == true) {
       const response = await api
@@ -411,6 +397,22 @@ const ViewPublication = ({
     navigate(`/user/${profileUser}`);
   }
 
+  async function deletPub() {
+    optPub.style.display = 'none'
+
+    let id = localStorage.getItem("idUser");
+    id = id.substring(1, id.length - 1);
+    let token = localStorage.getItem("tokenUser");
+    token = token.substring(1, token.length - 1);
+
+    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+
+    api.delete(`/publicacoes/${idPost}/`, { headers })
+      .then(() => {
+        window.location.reload()
+      })
+  }
+
   return (
     <>
       <div className="publication-content">
@@ -418,70 +420,41 @@ const ViewPublication = ({
           <div className="content-conf-review-write">
             <img
               className="user-image"
-              src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
+              src={user.profile_image ? user.profile_image : "https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"}
               alt="user-photo"
+              style={{ objectFit: "cover" }}
             />
           </div>
           <div>
-            <div className="user-indice">
-              De{" "}
-              <div className="user-insert" onClick={handleProfile}>
-                {user.nickname}
-              </div>
-              <div className="date-release">{datePublication}</div>
+            <div className="user-indice">De <div className="user-insert" onClick={handleProfile}>{user?.nickname}</div><div className="date-release">{datePublication}</div></div>
+            <div className="movie-indice">Sobre <div className="movie-insert" onClick={handleTitle}
+              onMouseEnter={() => handleMouseEnter(idPost)} onMouseLeave={() => handleMouseLeave(idPost)}>
+              {movie?.title} de {(movie?.release_date) ? movie?.release_date.substr(0, 4) : movie?.release_date}
             </div>
-            <div className="movie-indice">
-              Sobre{" "}
-              <div
-                className="movie-insert"
-                onClick={handleTitle}
-                onMouseEnter={() => handleMouseEnter(idPost)}
-                onMouseLeave={() => handleMouseLeave(idPost)}
-              >
-                {movie?.title} de{" "}
-                {movie?.release_date
-                  ? movie?.release_date.substr(0, 4)
-                  : movie?.release_date}
-              </div>
             </div>
-            <img
-              id={`img-title-hover-${idPost}`}
-              className={`img-title-hover-${idPost}`}
-            />
-            <div
-              id={`review-full`}
-              className={`review-full`}
-              ref={criticRef}
-            ></div>
+            <img id={`img-title-hover-${idPost}`} className={`img-title-hover-${idPost}`} />
+            <div id={`review-full`} className={`review-full`} ref={criticRef}></div>
             <div className="rating-content">
               <div className="star-critic">
                 <div className="pub-star">{"★".repeat(rating)}</div>
-                <div className="no-star">{"★".repeat(5 - rating)}</div>
+                <div className="no-star">{"★".repeat((5 - rating))}</div>
               </div>
               <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
             </div>
             <img id="image-review" className="image-review" src={image} />
           </div>
-          {myPub === true ? (
+          {(myPub === true) ?
             <>
-              <FiMoreHorizontal
-                className="del-publication"
-                onClick={openOption}
-              />
-              <div
-                id={`option-publication-${idPost}`}
-                className={`option-publication-${idPost}`}
-              >
-                <div className="options-publication-inside" onClick={editPub}>
-                  Editar
-                </div>
-                <div className="options-publication-inside" onClick={deletPub}>
-                  Excluir
-                </div>
+              <FiMoreHorizontal className="del-publication" onClick={openOption} />
+              <div id={`option-publication-${idPost}`} className={`option-publication-${idPost}`}>
+                <div className="options-publication-inside" onClick={deletPub}>Excluir</div>
               </div>
             </>
-          ) : null}
+            :
+            null
+          }
         </div>
+
         <div className="zone-interactive-publication">
           <div className="interactive-into-likes">
             <div className="interactive-into" onClick={likeButton}>
@@ -496,8 +469,8 @@ const ViewPublication = ({
               <AiTwotoneDislike
                 id={`dislike-button-review-${idPost}`}
                 className="like-button"
-                />
-                <h1>{deslikeNum}</h1>
+              />
+              <h1>{deslikeNum}</h1>
             </div>
           </div>
           <div className="interactive-into" onClick={showCommentPost}>
@@ -505,26 +478,15 @@ const ViewPublication = ({
           </div>
         </div>
         <div id={`post-comment-${idPost}`} className={`post-comment-${idPost}`}>
-          <textarea
-            id={`comment-${idPost}`}
-            classname={`comment-${idPost}`}
-          ></textarea>
+          <textarea id={`comment-${idPost}`} classname={`comment-${idPost}`}></textarea>
           <div className="zone-interactive-publication-options">
-            <button className="comment-send-button" onClick={cancelCommentPost}>
-              Cancelar
-            </button>
-            <button className="comment-send-button-press">
-              Postar Comentário
-              <IoMdSend className="comment-send" />
-            </button>
+            <button className="comment-send-button" onClick={cancelCommentPost}>Cancelar</button>
+            <button className="comment-send-button-press">Postar Comentário<IoMdSend className="comment-send" /></button>
           </div>
         </div>
-        {showComments.length > 1 ? (
+        {(showComments.length > 1) ?
           <>
-            <div
-              id={`single-comments-on-review-${idPost}`}
-              className={`single-comments-on-review-${idPost}`}
-            >
+            <div id={`single-comments-on-review-${idPost}`} className={`single-comments-on-review-${idPost}`}>
               <div className="self-comment-on">
                 <div className="content-conf-review-write">
                   <img
@@ -534,20 +496,12 @@ const ViewPublication = ({
                   />
                 </div>
                 <div>
-                  <div
-                    className="user-insert"
-                    onClick={() => handleProfileInside(showComments[0]?.userID)}
-                  >
-                    {showComments[0]?.userName}
-                  </div>
+                  <div className="user-insert" onClick={() => handleProfileInside(showComments[0]?.userID)}>{showComments[0]?.userName}</div>
                   <div className="comment-view">{showComments[0]?.critic}</div>
                 </div>
               </div>
             </div>
-            <div
-              id={`all-comments-on-review-${idPost}`}
-              className={`all-comments-on-review-${idPost}`}
-            >
+            <div id={`all-comments-on-review-${idPost}`} className={`all-comments-on-review-${idPost}`}>
               {showComments.map((showCommentsAll) => (
                 <div className="self-comment-on">
                   <div className="content-conf-review-write">
@@ -558,28 +512,17 @@ const ViewPublication = ({
                     />
                   </div>
                   <div>
-                    <div
-                      className="user-insert"
-                      onClick={() =>
-                        handleProfileInside(showCommentsAll.userID)
-                      }
-                    >
-                      {showCommentsAll.userName}
-                    </div>
+                    <div className="user-insert" onClick={() => handleProfileInside(showCommentsAll.userID)}>{showCommentsAll.userName}</div>
                     <div className="comment-view">{showCommentsAll.critic}</div>
                   </div>
                 </div>
               ))}
             </div>
-            <div
-              id={`read-more-comments-${idPost}`}
-              className="read-more-comments"
-              onClick={showAllCommentsPublication}
-            >
+            <div id={`read-more-comments-${idPost}`} className="read-more-comments" onClick={showAllCommentsPublication}>
               Ver mais comentários
             </div>
           </>
-        ) : (
+          :
           <>
             <div className="self-comment-on">
               <div className="content-conf-review-write">
@@ -590,20 +533,200 @@ const ViewPublication = ({
                 />
               </div>
               <div>
-                <div
-                  className="user-insert"
-                  onClick={() => handleProfileInside(showComments[0]?.userID)}
-                >
-                  {showComments[0]?.userName}
-                </div>
+                <div className="user-insert" onClick={() => handleProfileInside(showComments[0]?.userID)}>{showComments[0]?.userName}</div>
                 <div className="comment-view">{showComments[0]?.critic}</div>
               </div>
             </div>
           </>
-        )}
+        }
       </div>
     </>
   );
 };
 
 export default ViewPublication;
+
+
+
+
+
+
+
+
+
+
+
+
+
+//         <div className="movie-indice">
+//         Sobre{" "}
+//         <div
+//           className="movie-insert"
+//           onClick={handleTitle}
+//           onMouseEnter={() => handleMouseEnter(idPost)}
+//           onMouseLeave={() => handleMouseLeave(idPost)}
+//         >
+//           {movie?.title} de{" "}
+//           {movie?.release_date
+//             ? movie?.release_date.substr(0, 4)
+//             : movie?.release_date}
+//         </div>
+//       </div>
+//       <img
+//         id={`img-title-hover-${idPost}`}
+//         className={`img-title-hover-${idPost}`}
+//       />
+//       <div
+//         id={`review-full`}
+//         className={`review-full`}
+//         ref={criticRef}
+//       ></div>
+//       <div className="rating-content">
+//         <div className="star-critic">
+//           <div className="pub-star">{"★".repeat(rating)}</div>
+//           <div className="no-star">{"★".repeat(5 - rating)}</div>
+//         </div>
+//         <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
+//       </div>
+//       <img id="image-review" className="image-review" src={image} />
+//     </div>
+//     {myPub === true ? (
+//       <>
+//         <FiMoreHorizontal
+//           className="del-publication"
+//           onClick={openOption}
+//         />
+//         <div
+//           id={`option-publication-${idPost}`}
+//           className={`option-publication-${idPost}`}
+//         >
+//           <div className="options-publication-inside" onClick={editPub}>
+//             Editar
+//           </div>
+//           <div className="options-publication-inside" onClick={deletPub}>
+//             Excluir
+//           </div>
+//         </div>
+//       </>
+//     ) : null}
+//   </div>
+//   <div className="zone-interactive-publication">
+//     <div className="interactive-into-likes">
+//       <div className="interactive-into" onClick={likeButton}>
+//         <AiTwotoneLike
+//           id={`like-button-review-${idPost}`}
+//           className="like-button"
+//         />
+//         <h1>{likeNum}</h1>
+
+//       </div>
+//       <div className="interactive-into" onClick={dislikeButton}>
+//         <AiTwotoneDislike
+//           id={`dislike-button-review-${idPost}`}
+//           className="like-button"
+//         />
+//         <h1>{deslikeNum}</h1>
+//       </div>
+//     </div>
+//     <div className="interactive-into" onClick={showCommentPost}>
+//       Comentar
+//     </div>
+//   </div>
+//   <div id={`post-comment-${idPost}`} className={`post-comment-${idPost}`}>
+//     <textarea
+//       id={`comment-${idPost}`}
+//       classname={`comment-${idPost}`}
+//     ></textarea>
+//     <div className="zone-interactive-publication-options">
+//       <button className="comment-send-button" onClick={cancelCommentPost}>
+//         Cancelar
+//       </button>
+//       <button className="comment-send-button-press">
+//         Postar Comentário
+//         <IoMdSend className="comment-send" />
+//       </button>
+//     </div>
+//   </div>
+//   {showComments.length > 1 ? (
+//     <>
+//       <div
+//         id={`single-comments-on-review-${idPost}`}
+//         className={`single-comments-on-review-${idPost}`}
+//       >
+//         <div className="self-comment-on">
+//           <div className="content-conf-review-write">
+//             <img
+//               className="user-image"
+//               src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
+//               alt="user-photo"
+//             />
+//           </div>
+//           <div>
+//             <div
+//               className="user-insert"
+//               onClick={() => handleProfileInside(showComments[0]?.userID)}
+//             >
+//               {showComments[0]?.userName}
+//             </div>
+//             <div className="comment-view">{showComments[0]?.critic}</div>
+//           </div>
+//         </div>
+//       </div>
+//       <div
+//         id={`all-comments-on-review-${idPost}`}
+//         className={`all-comments-on-review-${idPost}`}
+//       >
+//         {showComments.map((showCommentsAll) => (
+//           <div className="self-comment-on">
+//             <div className="content-conf-review-write">
+//               <img
+//                 className="user-image"
+//                 src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
+//                 alt="user-photo"
+//               />
+//             </div>
+//             <div>
+//               <div
+//                 className="user-insert"
+//                 onClick={() =>
+//                   handleProfileInside(showCommentsAll.userID)
+//                 }
+//               >
+//                 {showCommentsAll.userName}
+//               </div>
+//               <div className="comment-view">{showCommentsAll.critic}</div>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//       <div
+//         id={`read-more-comments-${idPost}`}
+//         className="read-more-comments"
+//         onClick={showAllCommentsPublication}
+//       >
+//         Ver mais comentários
+//       </div>
+//     </>
+//   ) : (
+//     <>
+//       <div className="self-comment-on">
+//         <div className="content-conf-review-write">
+//           <img
+//             className="user-image"
+//             src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
+//             alt="user-photo"
+//           />
+//         </div>
+//         <div>
+//           <div
+//             className="user-insert"
+//             onClick={() => handleProfileInside(showComments[0]?.userID)}
+//           >
+//             {showComments[0]?.userName}
+//           </div>
+//           <div className="comment-view">{showComments[0]?.critic}</div>
+//         </div>
+//       </div>
+//     </>
+//   )}
+// </div>

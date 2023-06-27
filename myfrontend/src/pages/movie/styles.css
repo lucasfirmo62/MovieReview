@@ -479,12 +479,8 @@
         position: fixed;
         z-index: 100;
         max-height: 577px;
-      }
+    }
 }
-
-
-
-
 
 .modal-overlay {
     position: fixed;
@@ -531,7 +527,6 @@
 .button-modal-critica:hover {
     color: rgb(93, 93, 93);
 }
-
 .favoritar-button {
     background-color: #ffffff;
     color: #000000;
