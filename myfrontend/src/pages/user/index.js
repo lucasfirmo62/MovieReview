@@ -221,6 +221,9 @@ const User = () => {
                         <Link
                             to={`/watchlist/${id}/`}
                             style={{ textDecoration: "none", color: "#fff" }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
                         >
                             <p className={'tab-profile'}>Assistir no futuro</p>
                         </Link>
