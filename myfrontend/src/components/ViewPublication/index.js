@@ -15,9 +15,9 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
     const navigate = useNavigate();
     const [user, setUser] = useState({})
     const [showComments, setShowComments] = useState({})
+    const [isLoading, setIsLoading] = useState(false);
     const [postComment, setPostComment] = useState('');
-    var showCommentsTrue = "nada";
-
+    const [commentVerify, setCommentVerify] = useState('');
 
     let loginItem;
     if (localStorage.getItem('tokenUser')) {
@@ -36,17 +36,12 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
             const response_user = await api.get(`usuarios/${userID}/`, { headers })
             setUser(response_user.data)
+
+            const response_comment_verify = await api.get(`comentarios/${id}/`, { headers });
+            setCommentVerify(response_comment_verify.data)
+
         };
 
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch("https://api.npoint.io/e1857903029c8c9a0f74");
-            const data = await response.json();
-            setShowComments(data.publications);
-        };
         fetchData();
     }, []);
 
@@ -67,41 +62,49 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
         }
     }, [critic]);
 
-    const currentDate = new Date();
-    const providedDate = new Date(date);
-    const isToday = currentDate.toDateString() === providedDate.toDateString();
-    const yesterday = new Date();
-    yesterday.setDate(currentDate.getDate() - 1);
-    const isYesterday = yesterday.toDateString() === providedDate.toDateString();
-    const isOlderThanYesterday = providedDate < yesterday;
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(currentDate.getDate() - 7);
-    const isOlderThanOneWeek = providedDate < oneWeekAgo;
-
+    timePubConcat(date)
     var datePublication;
-    const time = date.substr([11])
 
-    const hour = parseInt(time);
+    function timePubConcat(date){
 
-    const hourRt = hour - 3;
+        const currentDate = new Date();
+        const providedDate = new Date(date);
+        const isToday = currentDate.toDateString() === providedDate.toDateString();
+        const yesterday = new Date();
+        yesterday.setDate(currentDate.getDate() - 1);
+        const isYesterday = yesterday.toDateString() === providedDate.toDateString();
+        const isOlderThanYesterday = providedDate < yesterday;
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(currentDate.getDate() - 7);
+        const isOlderThanOneWeek = providedDate < oneWeekAgo;
+    
+        const time = date.substr([11])
+    
+        const hour = parseInt(time);
+    
+        const hourRt = hour - 3;
+    
+        if (isToday) {
+            datePublication = `- Hoje às ${hourRt}:${time[3] + time[4]}`
+        }
+    
+        if (isYesterday) {
+            datePublication = `- Ontem às ${hourRt}:${time[3] + time[4]}`
+        }
+    
+        if (isOlderThanYesterday) {
+            const weekdays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+            const dayOfWeek = weekdays[providedDate.getDay()];
+            datePublication = `- ${dayOfWeek} às ${hourRt}:${time[3] + time[4]}`
+        }
+        if (isOlderThanOneWeek) {
+            const formattedDate = providedDate.toLocaleDateString();
+            const formattedTime = providedDate.toLocaleTimeString();
+            datePublication = `- ${formattedDate} às ${hourRt}:${time[3] + time[4]}`
+        }
+        return datePublication
 
-    if (isToday) {
-        datePublication = `- Hoje às ${hourRt}:${time[3] + time[4]}`
-    }
 
-    if (isYesterday) {
-        datePublication = `- Ontem às ${hourRt}:${time[3] + time[4]}`
-    }
-
-    if (isOlderThanYesterday) {
-        const weekdays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-        const dayOfWeek = weekdays[providedDate.getDay()];
-        datePublication = `- ${dayOfWeek} às ${hourRt}:${time[3] + time[4]}`
-    }
-    if (isOlderThanOneWeek) {
-        const formattedDate = providedDate.toLocaleDateString();
-        const formattedTime = providedDate.toLocaleTimeString();
-        datePublication = `- ${formattedDate} às ${hourRt}:${time[3] + time[4]}`
     }
 
 
@@ -118,9 +121,6 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
     var dislikePub = document.getElementById(`dislike-button-review-${idPost}`)
 
 
-    if (commentAllPub) {
-        commentAllPub.style.display = 'none'
-    }
 
     if (commentSinglePub) {
         commentSinglePub.style.display = 'block'
@@ -235,19 +235,6 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
         showPost.style.display = 'none'
     }
 
-    async function showAllCommentsPublication() {
-        if (commentAllPub.style.display === 'none') {
-            showCommentsTrue = [...showComments]
-            commentAllPub.style.display = 'block'
-            commentSinglePub.style.display = 'none'
-            readMoreComment.innerHTML = "Ver menos comentários"
-        } else {
-            commentAllPub.style.display = 'none'
-            commentSinglePub.style.display = 'block'
-            readMoreComment.innerHTML = "Ver mais comentários"
-        }
-
-    }
 
     async function likeButton() {
         dislikePub.style.color = 'white'
@@ -295,10 +282,6 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
 
         var commentReview = textarea.value;
 
-        console.log(commentReview);
-
-        let id = localStorage.getItem("idUser");
-        id = id.substring(1, id.length - 1);
         let token = localStorage.getItem("tokenUser");
         token = token.substring(1, token.length - 1);
 
@@ -318,7 +301,97 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
             .catch(error => {
                 console.error('Erro:', error);
             });
+
+            setTimeout(function() {
+            window.location.reload();
+        }, 100);
+
     };
+
+    useEffect(() => {
+        if (isLoading) {
+          const fetchData = async () => {
+            let token = localStorage.getItem("tokenUser");
+            token = token.substring(1, token.length - 1);
+      
+            try {
+              const headers = {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              };
+      
+              const response = await api.get(`comentarios/${id}/`, { headers });
+      
+              if (response.status !== 200) {
+                throw new Error("Erro ao buscar os comentários");
+              }
+      
+              const data = response.data;
+              setShowComments(data.results);
+              setIsLoading(false);
+            } catch (error) {
+              console.error(error);
+              setIsLoading(false);
+            }
+          };
+          fetchData();
+        }
+      }, [isLoading]);
+      
+      
+
+    const handleButtonClick = () => {
+        setIsLoading(true);
+        if(readMoreComment.innerHTML === "Ver comentários"){
+            readMoreComment.innerHTML = "Ocutar comentários"
+        }
+        if (commentAllPub) {
+            if(commentAllPub.style.display === 'none'){
+                commentAllPub.style.display = 'block'
+            }else{
+                readMoreComment.innerHTML = "Ver comentários"
+                commentAllPub.style.display = 'none'
+            }
+        }
+
+    };
+
+    function UserGet({ idUSerComment, dateUserComment }) {
+        const [user, setUser] = useState(null);
+
+        useEffect(() => {
+          async function fetchData() {
+            try {
+              const headers = {
+                'Authorization': `Bearer ${loginItem}`,
+                'Content-Type': 'application/json',
+              };
+      
+              const response_user = await api.get(`usuarios/${idUSerComment}/`, { headers });
+              setUser(response_user.data);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+      
+          fetchData();
+        }, [loginItem, userID, setUser]);
+
+        var timeComment = timePubConcat(dateUserComment)
+      
+        if (user) {
+          return (
+            <div className="user-insert-comment" onClick={() => handleProfileInside(idUSerComment)}>
+              {user.nickname}
+              <div className="date-release">{timeComment}</div>
+            </div>
+          );
+        } else {
+          return null;
+        }
+      }
+      
+      
 
     return (
         <>
@@ -379,25 +452,10 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                         <button className="comment-send-button-press" onClick={handleSubmitComment}>Postar Comentário<IoMdSend className="comment-send" /></button>
                     </div>
                 </div>
-                {(showComments.length > 1) ?
+                {(showComments?.length > 0) ?
                     <>
-                        <div id={`single-comments-on-review-${idPost}`} className={`single-comments-on-review-${idPost}`}>
-                            <div className="self-comment-on">
-                                <div className="content-conf-review-write">
-                                    <img
-                                        className="user-image"
-                                        src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-                                        alt="user-photo"
-                                    />
-                                </div>
-                                <div>
-                                    <div className="user-insert" onClick={() => handleProfileInside(showComments[0]?.userID)}>{showComments[0]?.userName}</div>
-                                    <div className="comment-view">{showComments[0]?.critic}</div>
-                                </div>
-                            </div>
-                        </div>
                         <div id={`all-comments-on-review-${idPost}`} className={`all-comments-on-review-${idPost}`}>
-                            {showCommentsTrue.map((showCommentsAll) => (
+                            {showComments.map((showCommentsAll) => (
                                 <div className="self-comment-on">
                                     <div className="content-conf-review-write">
                                         <img
@@ -407,34 +465,28 @@ const ViewPublication = ({ userID, idPost, idMovie, rating, critic, image, date,
                                         />
                                     </div>
                                     <div>
-                                        <div className="user-insert" onClick={() => handleProfileInside(showCommentsAll.userID)}>{showCommentsAll.userName}</div>
-                                        <div className="comment-view">{showCommentsAll.critic}</div>
+                                        <UserGet 
+                                            idUSerComment={showCommentsAll.user_id} 
+                                            dateUserComment={showCommentsAll.date} 
+                                        />
+                                        <div className="comment-view">{showCommentsAll.comment_text}</div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <div id={`read-more-comments-${idPost}`} className="read-more-comments" onClick={showAllCommentsPublication}>
-                            Ver mais comentários
-                        </div>
+
                     </>
                     :
-                    <>
-                        <div className="self-comment-on">
-                            <div className="content-conf-review-write">
-                                <img
-                                    className="user-image"
-                                    src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-                                    alt="user-photo"
-                                />
-                            </div>
-                            <div>
-                                <div className="user-insert" onClick={() => handleProfileInside(showComments[0]?.userID)}>{showComments[0]?.userName}</div>
-                                <div className="comment-view">{showComments[0]?.critic}</div>
-                            </div>
-                        </div>
-                    </>
+                    null
 
                 }
+                {(commentVerify?.count > 0)?
+                <div id={`read-more-comments-${idPost}`} className="read-more-comments" onClick={handleButtonClick}>
+                    Ver comentários
+                </div>
+                    :
+                    null
+            }
             </div>
         </>
     )

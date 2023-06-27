@@ -27,6 +27,7 @@ const User = () => {
             });
         };
 
+
         window.addEventListener('resize', handleResize);
 
         return () => {
@@ -44,7 +45,7 @@ const User = () => {
     const [myfollowing, setMyFollowing] = useState([]);
     const [myfollowers, setMyFollowers] = useState([]);
     const [isFollowingLoaded, setIsFollowingLoaded] = useState(false);
-    
+
     const [page, setPage] = useState(1);
     const isFirstPageRef = useRef(false);
 
@@ -124,11 +125,11 @@ const User = () => {
 
             setIsFollowingLoaded(true)
         }
-        
+
         userUtility()
 
     }, [idMyUser, loginItem])
-    
+
     async function goEditProfile() {
         navigate("/edit-profile")
     }
@@ -196,12 +197,12 @@ const User = () => {
                             }
                             {(isFollowingLoaded && idMyUser != id) && (
                                 <>
-                                <FollowUnfollow
-                                    isFollower={myfollowing.some(
-                                        (followingUser) => followingUser.id === Number(id)
-                                    )}
-                                    id={user.id}
-                                />
+                                    <FollowUnfollow
+                                        isFollower={myfollowing.some(
+                                            (followingUser) => followingUser.id === Number(id)
+                                        )}
+                                        id={user.id}
+                                    />
                                 </>
                             )}
                             <p className="bio-text">{user.bio_text}</p>
@@ -245,6 +246,8 @@ const User = () => {
                             critic={publication.pub_text}
                             image={publication?.imgur_link}
                             date={publication.date}
+                            myPub={(publication.user_id === parseInt(idMyUser)) ? true : false}
+                            id={publication.id}
                         />
                     ))}
                 </div>
