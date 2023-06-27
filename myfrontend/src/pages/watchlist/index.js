@@ -7,7 +7,7 @@ import styles from './styles.css';
 
 import api from "../../api";
 
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 
 import { FaTimes, FaStar } from 'react-icons/fa';
 import { MdArrowBack } from "react-icons/md";
@@ -16,9 +16,13 @@ import { AiFillEye } from 'react-icons/ai';
 const Watchlist = () => {
     const { id } = useParams();
 
+    const location = useLocation()
+
     var [Watchlist, setWatchlist] = useState([]);
     var [page, setPage] = useState(1);
     const isFirstPageRef = useRef(false);
+
+    const backButtonRoute = location.state?.prevPath;
 
     const getMovies = async () => {
         if (page === 1) {
@@ -130,7 +134,7 @@ const Watchlist = () => {
                     <div className="title-content">
                         <Link
                             className="back-btn"
-                            to={'/profile/'}
+                            to={backButtonRoute}
                             style={{ textDecoration: "none", color: "#fff" }}
                         >
                             <MdArrowBack size={32} className="back-icon" />

@@ -19,7 +19,8 @@ import Pagination from "../../components/pagination";
 const FavoritosUsers = () => {
     let [favoriteList, setFavoriteList] = useState([]);
     let [favoriteUserList, setFavoriteUserList] = useState([]);
-    const [favoriteMovieIds, setFavoriteMoviesIds] = useState([])
+
+    const [favoriteMovieIds, setFavoriteMoviesIds] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -42,7 +43,6 @@ const FavoritosUsers = () => {
             const response_favorites = await api.get(`favoritos/`, { headers })
 
             setFavoriteMoviesIds(response_favorites.data.map(movie => movie.movie_id));
-            console.log(response_favorites.data)
 
             const favoriteMovies = response_favorites.data.map(movie => ({
                 ...movie,

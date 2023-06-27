@@ -21,6 +21,7 @@ import Publication from './pages/publication';
 import Supercriticos from './pages/supercriticos';
 import FilmReviews from './pages/FilmReviews';
 import Notifications from './pages/notifications';
+import FavoritosUsers from './pages/favoritosUsers';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -71,6 +72,10 @@ export default function Router() {
                 <Route 
                     path="/favoritos" 
                     element={<PrivateRoute> <Favoritos /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/favoritos/:id" 
+                    element={<PrivateRoute> <FavoritosUsers /> </PrivateRoute>}
                 />
                 <Route 
                     path="/followers/:id" 
