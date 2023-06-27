@@ -1,0 +1,9 @@
+.movie-critic-info .movie-details-container {
+    position: relative;
+}
+
+.movie-critic-info .title {
+    position: absolute;
+    z-index: 2;
+    margin-left: 32px;
+}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import './styles.css';
-
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { FaSpinner } from 'react-icons/fa';
 
@@ -126,6 +125,12 @@ const Publication = (props) => {
         }
         window.location.reload();
     };
+
+    // function handle(event, movie) {
+    //     setSelectedMovie(movie);
+
+    //     handleMovieSelect(event)
+    // }
 
     return (
         <>

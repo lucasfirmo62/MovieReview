@@ -371,14 +371,14 @@ class PublicationTestCase(TestCase):
         
         response = self.client.post(f'/likes/{self.publication.id}/')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {'success': 'Like feito com sucesso!'})
+        self.assertEqual(response.data, {'success': 'Like feito com sucesso!', 'is_liked': True})
         
         response = self.client.get(f'/likes/{self.publication.id}/')
         self.assertEqual(response.data['count'], 1)
         
         response = self.client.post(f'/likes/{self.publication.id}/')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {'success': 'Deixando de dar o like!'})
+        self.assertEqual(response.data, {'success': 'Deixando de dar o like!', 'is_liked': False})
         
         response = self.client.get(f'/likes/{self.publication.id}/')
         self.assertEqual(response.data['count'], 0)
@@ -391,14 +391,14 @@ class PublicationTestCase(TestCase):
         
         response = self.client.post(f'/deslikes/{self.publication.id}/')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {'success': 'Deslike feito com sucesso!'})
+        self.assertEqual(response.data, {'success': 'Deslike feito com sucesso!', 'is_desliked': True})
         
         response = self.client.get(f'/deslikes/{self.publication.id}/')
         self.assertEqual(response.data['count'], 1)
         
         response = self.client.post(f'/deslikes/{self.publication.id}/')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {'success': 'Deixando de dar o deslike.'})
+        self.assertEqual(response.data, {'success': 'Deixando de dar o deslike.', 'is_desliked': False})
         
         response = self.client.get(f'/deslikes/{self.publication.id}/')
         self.assertEqual(response.data['count'], 0)

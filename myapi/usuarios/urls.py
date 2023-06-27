@@ -34,4 +34,8 @@ urlpatterns = [
     path('following/<int:user_id>/', UserViewSet.as_view({'get': 'following_by_id'}), name='following'),
     path('followers/<int:user_id>/', UserViewSet.as_view({'get': 'followers_by_id'}), name='followers'),
     path('usuarios/search/', UserViewSet.as_view({'get': 'search'}), name='user-search'),
+
+    path('is_liked/<int:publication_id>/', PublicationViewSet.as_view({'get': 'is_liked'})),
+    path('is_desliked/<int:publication_id>/', PublicationViewSet.as_view({'get': 'is_disliked'})),
+
 ]

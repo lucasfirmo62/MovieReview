@@ -245,7 +245,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         if Likes.objects.filter(user_id=user, publication_id=publication_id).exists():
             Likes.objects.filter(user_id=user, publication_id=publication_id).delete()
-            return Response({'success': 'Deixando de dar o like!'}, status=status.HTTP_201_CREATED)
+            return Response({'success': 'Deixando de dar o like!', 'is_liked': False}, status=status.HTTP_201_CREATED)
 
         like = Likes.objects.create(
             user_id=user,
@@ -265,7 +265,9 @@ class PublicationViewSet(viewsets.ModelViewSet):
                 message=message
             )
 
-        return Response({'success': 'Like feito com sucesso!'}, status=status.HTTP_201_CREATED)
+        likes = Likes.objects.filter(user_id=user, publication_id=publication_id)
+
+        return Response({'success': 'Like feito com sucesso!', 'is_liked': True}, status=status.HTTP_201_CREATED)
     
     def add_comment(self, request, publication_id=None):
         user = request.user
@@ -326,15 +328,15 @@ class PublicationViewSet(viewsets.ModelViewSet):
         
         if Deslikes.objects.filter(user_id=user, publication_id=publication_id).exists():
             Deslikes.objects.filter(user_id=user, publication_id=publication_id).delete()
-            return Response({'success': 'Deixando de dar o deslike.'}, status=status.HTTP_201_CREATED)
-        
-        deslike = Deslikes.objects.create(
+            return Response({'success': 'Deixando de dar o deslike.', 'is_desliked': False}, status=status.HTTP_201_CREATED)
+
+        like = Deslikes.objects.create(
             user_id=user,
             publication_id=publication,
             date=timezone.now()
         )
 
-        return Response({'success': 'Deslike feito com sucesso!'}, status=status.HTTP_201_CREATED)
+        return Response({'success': 'Deslike feito com sucesso!', 'is_desliked': True}, status=status.HTTP_201_CREATED)
 
     def likes_by_publication(self, request, publication_id=None):
         try:
@@ -351,6 +353,36 @@ class PublicationViewSet(viewsets.ModelViewSet):
         serializer = UserSerializer(page, many=True, context={'request': request})
         return self.get_paginated_response(serializer.data)
     
+    def is_liked(self, request, publication_id=None):
+        user = request.user
+
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+        
+        likes = Likes.objects.filter(user_id=user, publication_id=publication_id)
+
+        if len(likes) > 0:
+            return Response({'is_liked': True})
+        else:
+            return Response({'is_liked': False})
+
+    def is_disliked(self, request, publication_id=None):
+        user = request.user
+
+        try:
+            publication = Publication.objects.get(id=publication_id)
+        except Publication.DoesNotExist:
+            return Response({'error': 'Publicacao nao existe!'}, status=status.HTTP_404_NOT_FOUND)
+
+        deslikes = Deslikes.objects.filter(user_id=user, publication_id=publication_id)
+
+        if len(deslikes) > 0:
+            return Response({'is_desliked': True})
+        else:
+            return Response({'is_desliked': False})
+
     def deslikes_by_publication(self, request, publication_id=None):
         try:
             publication = Publication.objects.get(id=publication_id)
