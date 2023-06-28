@@ -227,10 +227,10 @@ const Header = () => {
                             </>
                         )}
                     </form>
-                    <div className="ntf-cation-mobile" onClick={notificationNow}>
+                    {notifications.length > 0 && (<div className="ntf-cation-mobile" onClick={notificationNow}>
                         <MdNotifications className="notification-mobile" />
                         {notReadNotificationsNumber != 0 && (<div className="ntf-number">{notReadNotificationsNumber}</div>)}
-                    </div>
+                    </div>)}
                     {notifications.length > 0 ? (
                     <div id="content-notification" className="content-notification-mobile">
                         <MdArrowBack id="back-notification" className="back-notification" onClick={notificationNow} />
@@ -255,13 +255,7 @@ const Header = () => {
                             <div id="more-notify" className="more-notify-mobile"><p>Ver mais</p></div>
                         </Link>
                     </div>)
-                    :
-                    (<div id="content-notification" className="content-notification-mobile">
-                        <div className="nofitify-content-inside-mobile">
-                            <p>Não há notificações</p>
-                        </div>
-                    </div>
-                    )}
+                    : true}
                 </div>
             </header>
         </>
