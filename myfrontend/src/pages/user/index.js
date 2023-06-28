@@ -3,6 +3,7 @@ import './styles.css'
 import api from "../../api";
 import Menu from '../../components/menu'
 import Header from '../../components/header'
+import HeaderDesktop from '../../components/headerDesktop'
 import { useNavigate } from 'react-router-dom';
 import SuperCritico from '../../components/SuperCritico'
 import FollowUnfollow from "../../components/Follow-Unfollow";
@@ -51,31 +52,15 @@ const User = () => {
 
     const navigate = useNavigate();
 
-    var loginItem;
-
-    if (localStorage.getItem('tokenUser')) {
-        loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
-    }
-
     var idMyUser = localStorage.getItem('idUser');
 
     useEffect(() => {
         async function userUtility() {
-            await api.get(`/usuarios/${id}/`, {
-                headers: {
-                    Authorization: `Bearer ${loginItem}`,
-                    "Content-type": "application/json"
-                },
-            })
+            await api.get(`/usuarios/${id}/`)
                 .then(response => { setUser(response.data) })
 
             try {
-                const responseFollowing = await api.get(`/following/${id}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowing = await api.get(`/following/${id}/`)
 
                 setFollowing(responseFollowing.data)
             } catch (error) {
@@ -83,12 +68,7 @@ const User = () => {
             }
 
             try {
-                const responseFollowers = await api.get(`/followers/${id}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowers = await api.get(`/followers/${id}/`)
 
                 setFollowers(responseFollowers.data)
 
@@ -97,12 +77,7 @@ const User = () => {
             }
 
             try {
-                const responseFollowing = await api.get(`/following/${idMyUser}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowing = await api.get(`/following/${idMyUser}/`)
 
                 setMyFollowing(responseFollowing.data)
             } catch (error) {
@@ -110,12 +85,7 @@ const User = () => {
             }
 
             try {
-                const responseFollowers = await api.get(`/followers/${idMyUser}/`, {
-                    headers: {
-                        Authorization: `Bearer ${loginItem}`,
-                        "Content-type": "application/json"
-                    },
-                })
+                const responseFollowers = await api.get(`/followers/${idMyUser}/`)
 
                 setMyFollowers(responseFollowers.data)
 
@@ -128,7 +98,7 @@ const User = () => {
 
         userUtility()
 
-    }, [idMyUser, loginItem])
+    }, [id])
 
     async function goEditProfile() {
         navigate("/edit-profile")
@@ -139,13 +109,7 @@ const User = () => {
             isFirstPageRef.current = true;
         }
 
-        const headers = {
-            Authorization: `Bearer ${loginItem}`,
-            "Content-type": "application/json"
-        };
-
-        const response = await api.get(`/pubusuario/${id}/?page=${page}`, { headers });
-        console.log("pao doce", response.data.results)
+        const response = await api.get(`/pubusuario/${id}/?page=${page}`);
         setPublications(prevPublications => [...prevPublications, ...response.data.results]);
     };
 
@@ -172,7 +136,12 @@ const User = () => {
 
     return (
         <>
-            <Header />
+            {(window.innerWidth > 760) ?
+                <HeaderDesktop />
+                :
+
+                <Header />
+            }
             <div className="content-all">
                 {windowSize.width < 680
                     ?
@@ -186,7 +155,12 @@ const User = () => {
 
                 <div className="content-box-profile">
                     <div className="profile-info">
-                        <img className="image-user" alt="user" src="https://i.imgur.com/piVx6dg.png" />
+                        <img
+                            className="image-user"
+                            alt="user"
+                            src={user.profile_image ? user.profile_image : "https://i.imgur.com/piVx6dg.png"}
+                            style={{ objectFit: "cover" }}
+                        />
                         <div>
                             <p className="name-user">{user.full_name}</p>
                             <p className="username-text">@{user.nickname}</p>
@@ -236,11 +210,29 @@ const User = () => {
                         >
                             <p className={'tab-profile'}>{following.length} Seguindo</p>
                         </Link>
+                        <Link
+                            to={`/favoritos/${id}`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
+                        >
+                            <p className={'tab-profile'}>Favoritos</p>
+                        </Link>
+                        <Link
+                            to={`/watchlist/${id}/`}
+                            style={{ textDecoration: "none", color: "#fff" }}
+                            state={{
+                                prevPath: location.pathname
+                            }}
+                        >
+                            <p className={'tab-profile'}>Assistir no futuro</p>
+                        </Link>
                     </div>
                     {publications.map((publication) => (
                         <ViewPublication
                             userID={publication.user_id}
-                            idPost={publication?.date?.slice(20) + publication?.movie_id}
+                            idPost={publication?.id}
                             idMovie={publication.movie_id}
                             rating={publication.review}
                             critic={publication.pub_text}

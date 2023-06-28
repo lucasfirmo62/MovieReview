@@ -16,6 +16,12 @@ import User from './pages/user';
 import Favoritos from './pages/favoritos';
 import Followers from './pages/followers';
 import Following from './pages/following';
+import Watchlist from './pages/watchlist';
+import Publication from './pages/publication';
+import Supercriticos from './pages/supercriticos';
+import FilmReviews from './pages/FilmReviews';
+import Notifications from './pages/notifications';
+import FavoritosUsers from './pages/favoritosUsers';
 
 const PrivateRoute = ({ children }) => {
     const isAuthenticated = localStorage.getItem('tokenUser');
@@ -59,7 +65,6 @@ export default function Router() {
                     path="/edit-profile" 
                     element={<PrivateRoute> <EditProfile /> </PrivateRoute>}
                 />
-                
                 <Route
                     path="/user/:id"
                     element={<PrivateRoute> <User/> </PrivateRoute>}
@@ -69,12 +74,36 @@ export default function Router() {
                     element={<PrivateRoute> <Favoritos /> </PrivateRoute>}
                 />
                 <Route 
+                    path="/favoritos/:id" 
+                    element={<PrivateRoute> <FavoritosUsers /> </PrivateRoute>}
+                />
+                <Route 
                     path="/followers/:id" 
                     element={<PrivateRoute> <Followers /> </PrivateRoute>}
                 />
                 <Route 
                     path="/following/:id" 
                     element={<PrivateRoute> <Following /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/watchlist/:id" 
+                    element={<PrivateRoute> <Watchlist /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/reviews/:id" 
+                    element={<PrivateRoute> <FilmReviews /> </PrivateRoute>}
+                />
+                 <Route 
+                    path="/supercriticos/" 
+                    element={<PrivateRoute> <Supercriticos /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/publication/:id" 
+                    element={<PrivateRoute> <Publication /> </PrivateRoute>}
+                />
+                <Route 
+                    path="/notifications/:id" 
+                    element={<PrivateRoute> <Notifications /> </PrivateRoute>}
                 />
             </Routes>
         </BrowserRouter>

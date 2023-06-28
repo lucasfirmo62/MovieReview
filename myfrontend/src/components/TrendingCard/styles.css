@@ -1,0 +1,25 @@
+.trending-card-content {
+    display: flex;
+    padding: 16px 32px 16px 32px;
+    gap: 16px;
+    align-items: center;
+}
+
+.trending-card-content .select-follow-unfollow {
+    margin-left: auto;
+}
+
+.trending-card-content img {
+    max-height: 80px;
+    border-radius: 6px;
+}
+
+.trending-card-content h3 {
+    color: #fff;
+    cursor: pointer;
+}
+
+.trending-card-content h3:hover {
+    color: #c6c6c6;
+    text-decoration: underline;
+}

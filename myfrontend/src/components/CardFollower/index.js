@@ -13,14 +13,8 @@ function CardFollower(props) {
   },[])
 
   async function unfollow(){
-    let token = localStorage.getItem('tokenUser')
-  
-    token = token.substring(1,token.length-1)
-    
-    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
     try {
-      const response = await api.post(`/usuarios/${props.id}/unfollow/`, null, {headers})
+      const response = await api.post(`/usuarios/${props.id}/unfollow/`, null)
     
       setIsFollowing(false)
     } catch (error) {
@@ -29,14 +23,8 @@ function CardFollower(props) {
   }
 
   async function follow(){
-    let token = localStorage.getItem('tokenUser')
-  
-    token = token.substring(1,token.length-1)  
-
-    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
     try {
-      const response = await api.post(`/usuarios/${props.id}/follow/`, null, {headers})
+      const response = await api.post(`/usuarios/${props.id}/follow/`, null)
 
       setIsFollowing(true)
     } catch (error) {
@@ -47,7 +35,7 @@ function CardFollower(props) {
   return (
     <div className="card-follower-content">
         <div className="card" key={props.id}>
-          <img src="https://i.imgur.com/piVx6dg.png" alt={props.nickname} className="card-image" />
+        <img src={props.profile_image ? props.profile_image :"https://i.imgur.com/piVx6dg.png"} style={{ objectFit: "cover" }} alt={props.nickname} className="card-image" />
           <div className={props.isUser ? "card-details" : ""}>
             <Link
               className="card-follower-item"

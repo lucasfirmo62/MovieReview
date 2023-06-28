@@ -18,9 +18,10 @@
   flex: auto;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100px;
   background-color: #313131;
+  padding: 16px;
 }
 
 .movie-favorite-item {
@@ -35,16 +36,19 @@
 .title-component {
   font-size: 40px;
   color: #ffffff;
+  margin: 10px;
 }
 
 .favorite-content {
-  height: 95%;
-  overflow: auto;
-  justify-content: center;
+  height: 100%;
+  min-height: 100vh;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   background: #313131;
   display: flex;
+  overflow: hidden;
+  padding-bottom: 20px;
 }
 
 .favoriteMovie-component {
@@ -77,9 +81,13 @@
 
 .movieTitle {
   font-weight: bold;
-  color: rgb(42, 42, 42);
   cursor: pointer;
-  font-size: 24px;
+  font-size: 18px;
+  color: #fff;
+}
+
+.movieTitle:hover {
+  color: #dad8d8;
 }
 
 .movieDesc {
