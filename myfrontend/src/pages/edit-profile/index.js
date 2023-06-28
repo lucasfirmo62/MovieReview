@@ -7,7 +7,9 @@ import ImageUpload from '../../components/ImageUpload';
 
 import api from '../../api';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+
+import { MdArrowBack } from "react-icons/md";
 
 import { FaCheck } from 'react-icons/fa';
 
@@ -45,6 +47,7 @@ const EditProfile = () => {
                 console.error('Erro ao carregar os dados do usuário:', error);
             }
         };
+        
         fetchUser();
     }, [])
 
@@ -114,6 +117,8 @@ return (
                 <div className="loading-overlay">
                     <div className="loading-indicator"></div>
                 </div>
+ 
+                
             ) : showConfirmation ? (
                 <div className="confirmation-overlay">
                     <div className="confirmation-icon">
@@ -126,23 +131,39 @@ return (
                 <Menu />
             </div>
             <div className="content-box-profile">
-                <div className='content-edit-space'>
-                    <h2>Editar Perfil</h2>
+                    <div className='content-edit-space'>
+                        <div className="followers-info">
+                            <Link
+                                className="back-btn"
+                                to={`/profile`}
+                                style={{ textDecoration: "none", color: "#fff" }}
+                            >
+                                <MdArrowBack size={32} className="back-icon" />
+                            </Link>
 
-                    <div className="conf-profile">
-                        <div className='row'>
-                            <p>Seu nome</p>
-                            <input maxLength={240} placeholder={user.full_name} id='name' className="content-input-edit" value={user.full_name} onChange={(event) => setUser({ ...user, full_name: event.target.value })} />
+                            <p>Editar Perfil</p>
                         </div>
-                        <div className='row'>
-                            <p>Seu username</p>
-                            <input maxLength={55} placeholder={user.nickname} id='username' className="content-input-edit" value={user.nickname} onChange={(event) => setUser({ ...user, nickname: event.target.value })} />
+
+                        {/* <div className="profile-info">
+                            <img className="image-user" alt='image-user' src="https://i.imgur.com/piVx6dg.png" />
+                            <p className="name-user">{user.name}</p>
+                        </div> */}
+
+                        <div className="conf-profile">
+                            <div className='row'>
+                                <p>Seu nome</p>
+                                <input maxLength={240} placeholder={user.full_name} id='name' className="content-input-edit" value={user.full_name} onChange={(event) => setUser({ ...user, full_name: event.target.value })} />
+                            </div>
+                            <div className='row'>
+                                <p>Seu username</p>
+                                <input maxLength={55} placeholder={user.nickname} id='username' className="content-input-edit" value={user.nickname} onChange={(event) => setUser({ ...user, nickname: event.target.value })} />
+                            </div>
+                            <div className='row-textarea'>
+                                <p>Sobre você</p>
+                                <textarea maxLength={220} placeholder={user.bio_text} id="w3review" rows="4" cols="50" className="content-input-edit-about" value={user.bio_text} onChange={(event) => setUser({ ...user, bio_text: event.target.value })}> </textarea>
+                            </div>
                         </div>
-                        <div className='row'>
-                            <p>Sobre você</p>
-                            <textarea maxLength={220} placeholder={user.bio_text} id="w3review" rows="4" cols="50" className="content-input-edit" value={user.bio_text} onChange={(event) => setUser({ ...user, bio_text: event.target.value })}> </textarea>
-                        </div>
-                        <div className='row image-field'>
+                        <div className='row-textarea image'>
                             <div className='image-block'>
                                 <p>Alterar Avatar</p>
                                 {!selectedFile && (<img className="image-user" alt='image-user' src={user?.profile_image ? user?.profile_image : "https://i.imgur.com/piVx6dg.png"} style={{ objectFit: "cover" }} />)}
@@ -153,10 +174,11 @@ return (
                                 setSelectedFile={setSelectedFile}
                             />
                         </div>
+                        <div className='row-button'>
+                            <button className='button-simple-edit' onClick={handleSaveChanges}><p>Concluir alterações</p></button>
+                        </div>
                     </div>
-                    <button className='button-simple' onClick={handleSaveChanges}><p>Concluir alterações</p></button>
                 </div>
-            </div>
             <div className="right-content">
 
             </div>
@@ -166,3 +188,35 @@ return (
 }
 
 export default EditProfile;
+
+
+
+
+
+
+
+
+
+
+{/* <div className="content-box-profile">
+<div className='content-edit-space'>
+    <h2>Editar Perfil</h2>
+
+    <div className="conf-profile">
+        <div className='row'>
+            <p>Seu nome</p>
+            <input maxLength={240} placeholder={user.full_name} id='name' className="content-input-edit" value={user.full_name} onChange={(event) => setUser({ ...user, full_name: event.target.value })} />
+        </div>
+        <div className='row'>
+            <p>Seu username</p>
+            <input maxLength={55} placeholder={user.nickname} id='username' className="content-input-edit" value={user.nickname} onChange={(event) => setUser({ ...user, nickname: event.target.value })} />
+        </div>
+        <div className='row'>
+            <p>Sobre você</p>
+            <textarea maxLength={220} placeholder={user.bio_text} id="w3review" rows="4" cols="50" className="content-input-edit" value={user.bio_text} onChange={(event) => setUser({ ...user, bio_text: event.target.value })}> </textarea>
+        </div>
+        
+    </div>
+    <button className='button-simple' onClick={handleSaveChanges}><p>Concluir alterações</p></button>
+</div>
+</div> */}
