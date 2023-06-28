@@ -28,6 +28,7 @@ const User = () => {
             });
         };
 
+
         window.addEventListener('resize', handleResize);
 
         return () => {
@@ -237,6 +238,8 @@ const User = () => {
                             critic={publication.pub_text}
                             image={publication?.imgur_link}
                             date={publication.date}
+                            myPub={(publication.user_id === parseInt(idMyUser)) ? true : false}
+                            id={publication.id}
                         />
                     ))}
                 </div>

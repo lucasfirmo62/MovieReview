@@ -5,6 +5,7 @@ import { FiMoreHorizontal } from "react-icons/fi";
 import { IoMdSend } from "react-icons/io";
 import { AiTwotoneLike, AiTwotoneDislike } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import UserGet from "../UserGet"
 
 import api from "../../api";
 
@@ -18,19 +19,22 @@ const ViewPublication = ({
   date,
   myPub,
 }) => {
-  
+
   const [movie, setMovie] = useState([]);
   const criticRef = useRef(null);
   const criticLimitedRef = useRef(null);
   const navigate = useNavigate();
   const [user, setUser] = useState({});
-  const [showComments, setShowComments] = useState({});
 
   const [likeNum, setLikeNum] = useState(0)
   const [deslikeNum, setDeslikeNum] = useState(0)
 
   const [like, setLike] = useState(false);
   const [dislike, setDislike] = useState(false);
+
+  const [showComments, setShowComments] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [commentVerify, setCommentVerify] = useState('');
 
   let loginItem;
 
@@ -92,19 +96,11 @@ const ViewPublication = ({
 
       const response_user = await api.get(`usuarios/${userID}/`, { headers });
       setUser(response_user.data);
+
+      const response_comment_verify = await api.get(`comentarios/${idPost}/`, { headers });
+      setCommentVerify(response_comment_verify.data)
     };
 
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        "https://api.npoint.io/e1857903029c8c9a0f74"
-      );
-      const data = await response.json();
-      setShowComments(data.publications);
-    };
     fetchData();
   }, []);
 
@@ -125,49 +121,48 @@ const ViewPublication = ({
     }
   }, [critic]);
 
-  const currentDate = new Date();
-  const providedDate = new Date(date);
-  const isToday = currentDate.toDateString() === providedDate.toDateString();
-  const yesterday = new Date();
-  yesterday.setDate(currentDate.getDate() - 1);
-  const isYesterday = yesterday.toDateString() === providedDate.toDateString();
-  const isOlderThanYesterday = providedDate < yesterday;
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(currentDate.getDate() - 7);
-  const isOlderThanOneWeek = providedDate < oneWeekAgo;
+  let datePublication;
 
-  var datePublication;
-  const time = date.substr([11]);
+  timePubConcat(date)
 
-  const hour = parseInt(time);
+  function timePubConcat(date) {
 
-  const hourRt = hour - 3;
+    const currentDate = new Date();
+    const providedDate = new Date(date);
+    const isToday = currentDate.toDateString() === providedDate.toDateString();
+    const yesterday = new Date();
+    yesterday.setDate(currentDate.getDate() - 1);
+    const isYesterday = yesterday.toDateString() === providedDate.toDateString();
+    const isOlderThanYesterday = providedDate < yesterday;
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(currentDate.getDate() - 7);
+    const isOlderThanOneWeek = providedDate < oneWeekAgo;
 
-  if (isToday) {
-    datePublication = `- Hoje às ${hourRt}:${time[3] + time[4]}`;
-  }
+    const time = date.substr([11])
 
-  if (isYesterday) {
-    datePublication = `- Ontem às ${hourRt}:${time[3] + time[4]}`;
-  }
+    const hour = parseInt(time);
 
-  if (isOlderThanYesterday) {
-    const weekdays = [
-      "Domingo",
-      "Segunda-feira",
-      "Terça-feira",
-      "Quarta-feira",
-      "Quinta-feira",
-      "Sexta-feira",
-      "Sábado",
-    ];
-    const dayOfWeek = weekdays[providedDate.getDay()];
-    datePublication = `- ${dayOfWeek} às ${hourRt}:${time[3] + time[4]}`;
-  }
-  if (isOlderThanOneWeek) {
-    const formattedDate = providedDate.toLocaleDateString();
-    const formattedTime = providedDate.toLocaleTimeString();
-    datePublication = `- ${formattedDate} às ${hourRt}:${time[3] + time[4]}`;
+    const hourRt = hour - 3;
+
+    if (isToday) {
+      datePublication = `- Hoje às ${hourRt}:${time[3] + time[4]}`
+    }
+
+    if (isYesterday) {
+      datePublication = `- Ontem às ${hourRt}:${time[3] + time[4]}`
+    }
+
+    if (isOlderThanYesterday) {
+      const weekdays = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+      const dayOfWeek = weekdays[providedDate.getDay()];
+      datePublication = `- ${dayOfWeek} às ${hourRt}:${time[3] + time[4]}`
+    }
+    if (isOlderThanOneWeek) {
+      const formattedDate = providedDate.toLocaleDateString();
+      const formattedTime = providedDate.toLocaleTimeString();
+      datePublication = `- ${formattedDate} às ${hourRt}:${time[3] + time[4]}`
+    }
+    return datePublication
   }
 
   var full = document.getElementById(`review-full`);
@@ -185,10 +180,6 @@ const ViewPublication = ({
   var readMoreComment = document.getElementById(`read-more-comments-${idPost}`);
   var likePub = document.getElementById(`like-button-review-${idPost}`);
   var dislikePub = document.getElementById(`dislike-button-review-${idPost}`);
-
-  if (commentAllPub) {
-    commentAllPub.style.display = "none";
-  }
 
   if (commentSinglePub) {
     commentSinglePub.style.display = "block";
@@ -281,18 +272,6 @@ const ViewPublication = ({
 
   async function cancelCommentPost() {
     showPost.style.display = "none";
-  }
-
-  async function showAllCommentsPublication() {
-    if (commentAllPub.style.display === "none") {
-      commentAllPub.style.display = "block";
-      commentSinglePub.style.display = "none";
-      readMoreComment.innerHTML = "Ver menos comentários";
-    } else {
-      commentAllPub.style.display = "none";
-      commentSinglePub.style.display = "block";
-      readMoreComment.innerHTML = "Ver mais comentários";
-    }
   }
 
   async function likeButton() {
@@ -413,6 +392,83 @@ const ViewPublication = ({
       })
   }
 
+  async function handleSubmitComment() {
+    var textarea = document.getElementById(`comment-${idPost}`);
+
+    var commentReview = textarea.value;
+
+    let token = localStorage.getItem("tokenUser");
+    token = token.substring(1, token.length - 1);
+
+    const commentText = {
+      'comment_text': commentReview
+    };
+
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
+    api.post(`/comentarios/${idPost}/`, commentText, { headers })
+      .then(response => {
+        console.log('Resposta:', response.data);
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+      });
+
+    setTimeout(function () {
+      window.location.reload();
+    }, 100);
+
+  };
+
+  useEffect(() => {
+    if (isLoading) {
+      const fetchData = async () => {
+        let token = localStorage.getItem("tokenUser");
+        token = token.substring(1, token.length - 1);
+
+        try {
+          const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          };
+
+          const response = await api.get(`comentarios/${idPost}/`, { headers });
+
+          if (response.status !== 200) {
+            throw new Error("Erro ao buscar os comentários");
+          }
+
+          const data = response.data;
+          setShowComments(data.results);
+
+          setIsLoading(false);
+        } catch (error) {
+          console.error(error);
+          setIsLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [isLoading]);
+
+  const handleButtonClick = () => {
+    setIsLoading(true);
+    if (readMoreComment.innerHTML === "Ver comentários") {
+      readMoreComment.innerHTML = "Ocultar comentários"
+    }
+    if (commentAllPub) {
+      if (commentAllPub.style.display === 'none') {
+        commentAllPub.style.display = 'block'
+      } else {
+        readMoreComment.innerHTML = "Ver comentários"
+        commentAllPub.style.display = 'none'
+      }
+    }
+  };
+
   return (
     <>
       <div className="publication-content">
@@ -478,66 +534,38 @@ const ViewPublication = ({
           </div>
         </div>
         <div id={`post-comment-${idPost}`} className={`post-comment-${idPost}`}>
-          <textarea id={`comment-${idPost}`} classname={`comment-${idPost}`}></textarea>
+          <textarea id={`comment-${idPost}`} classname={`comment-${idPost}`} placeholder="Escreva um comentário sobre a crítica"></textarea>
           <div className="zone-interactive-publication-options">
             <button className="comment-send-button" onClick={cancelCommentPost}>Cancelar</button>
-            <button className="comment-send-button-press">Postar Comentário<IoMdSend className="comment-send" /></button>
+            <button className="comment-send-button-press" onClick={handleSubmitComment}>Postar Comentário<IoMdSend className="comment-send" /></button>
           </div>
         </div>
-        {(showComments.length > 1) ?
+        {(showComments?.length > 0) ?
           <>
-            <div id={`single-comments-on-review-${idPost}`} className={`single-comments-on-review-${idPost}`}>
-              <div className="self-comment-on">
-                <div className="content-conf-review-write">
-                  <img
-                    className="user-image"
-                    src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-                    alt="user-photo"
-                  />
-                </div>
-                <div>
-                  <div className="user-insert" onClick={() => handleProfileInside(showComments[0]?.userID)}>{showComments[0]?.userName}</div>
-                  <div className="comment-view">{showComments[0]?.critic}</div>
-                </div>
-              </div>
-            </div>
             <div id={`all-comments-on-review-${idPost}`} className={`all-comments-on-review-${idPost}`}>
               {showComments.map((showCommentsAll) => (
                 <div className="self-comment-on">
-                  <div className="content-conf-review-write">
-                    <img
-                      className="user-image"
-                      src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-                      alt="user-photo"
+                    <UserGet
+                      idUSerComment={showCommentsAll.user_id}
+                      dateUserComment={showCommentsAll.date}
+                      userID={userID}
+                      setUser={setUser}
+                      comment={showCommentsAll.comment_text}
                     />
-                  </div>
-                  <div>
-                    <div className="user-insert" onClick={() => handleProfileInside(showCommentsAll.userID)}>{showCommentsAll.userName}</div>
-                    <div className="comment-view">{showCommentsAll.critic}</div>
-                  </div>
                 </div>
               ))}
             </div>
-            <div id={`read-more-comments-${idPost}`} className="read-more-comments" onClick={showAllCommentsPublication}>
-              Ver mais comentários
-            </div>
+
           </>
           :
-          <>
-            <div className="self-comment-on">
-              <div className="content-conf-review-write">
-                <img
-                  className="user-image"
-                  src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-                  alt="user-photo"
-                />
-              </div>
-              <div>
-                <div className="user-insert" onClick={() => handleProfileInside(showComments[0]?.userID)}>{showComments[0]?.userName}</div>
-                <div className="comment-view">{showComments[0]?.critic}</div>
-              </div>
-            </div>
-          </>
+          null
+        }
+        {(commentVerify?.count > 0) ?
+          <div id={`read-more-comments-${idPost}`} className="read-more-comments" onClick={handleButtonClick}>
+            Ver comentários
+          </div>
+          :
+          null
         }
       </div>
     </>
@@ -545,188 +573,3 @@ const ViewPublication = ({
 };
 
 export default ViewPublication;
-
-
-
-
-
-
-
-
-
-
-
-
-
-//         <div className="movie-indice">
-//         Sobre{" "}
-//         <div
-//           className="movie-insert"
-//           onClick={handleTitle}
-//           onMouseEnter={() => handleMouseEnter(idPost)}
-//           onMouseLeave={() => handleMouseLeave(idPost)}
-//         >
-//           {movie?.title} de{" "}
-//           {movie?.release_date
-//             ? movie?.release_date.substr(0, 4)
-//             : movie?.release_date}
-//         </div>
-//       </div>
-//       <img
-//         id={`img-title-hover-${idPost}`}
-//         className={`img-title-hover-${idPost}`}
-//       />
-//       <div
-//         id={`review-full`}
-//         className={`review-full`}
-//         ref={criticRef}
-//       ></div>
-//       <div className="rating-content">
-//         <div className="star-critic">
-//           <div className="pub-star">{"★".repeat(rating)}</div>
-//           <div className="no-star">{"★".repeat(5 - rating)}</div>
-//         </div>
-//         <div className="rating-text">{`Avaliação ${rating} de 5`}</div>
-//       </div>
-//       <img id="image-review" className="image-review" src={image} />
-//     </div>
-//     {myPub === true ? (
-//       <>
-//         <FiMoreHorizontal
-//           className="del-publication"
-//           onClick={openOption}
-//         />
-//         <div
-//           id={`option-publication-${idPost}`}
-//           className={`option-publication-${idPost}`}
-//         >
-//           <div className="options-publication-inside" onClick={editPub}>
-//             Editar
-//           </div>
-//           <div className="options-publication-inside" onClick={deletPub}>
-//             Excluir
-//           </div>
-//         </div>
-//       </>
-//     ) : null}
-//   </div>
-//   <div className="zone-interactive-publication">
-//     <div className="interactive-into-likes">
-//       <div className="interactive-into" onClick={likeButton}>
-//         <AiTwotoneLike
-//           id={`like-button-review-${idPost}`}
-//           className="like-button"
-//         />
-//         <h1>{likeNum}</h1>
-
-//       </div>
-//       <div className="interactive-into" onClick={dislikeButton}>
-//         <AiTwotoneDislike
-//           id={`dislike-button-review-${idPost}`}
-//           className="like-button"
-//         />
-//         <h1>{deslikeNum}</h1>
-//       </div>
-//     </div>
-//     <div className="interactive-into" onClick={showCommentPost}>
-//       Comentar
-//     </div>
-//   </div>
-//   <div id={`post-comment-${idPost}`} className={`post-comment-${idPost}`}>
-//     <textarea
-//       id={`comment-${idPost}`}
-//       classname={`comment-${idPost}`}
-//     ></textarea>
-//     <div className="zone-interactive-publication-options">
-//       <button className="comment-send-button" onClick={cancelCommentPost}>
-//         Cancelar
-//       </button>
-//       <button className="comment-send-button-press">
-//         Postar Comentário
-//         <IoMdSend className="comment-send" />
-//       </button>
-//     </div>
-//   </div>
-//   {showComments.length > 1 ? (
-//     <>
-//       <div
-//         id={`single-comments-on-review-${idPost}`}
-//         className={`single-comments-on-review-${idPost}`}
-//       >
-//         <div className="self-comment-on">
-//           <div className="content-conf-review-write">
-//             <img
-//               className="user-image"
-//               src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-//               alt="user-photo"
-//             />
-//           </div>
-//           <div>
-//             <div
-//               className="user-insert"
-//               onClick={() => handleProfileInside(showComments[0]?.userID)}
-//             >
-//               {showComments[0]?.userName}
-//             </div>
-//             <div className="comment-view">{showComments[0]?.critic}</div>
-//           </div>
-//         </div>
-//       </div>
-//       <div
-//         id={`all-comments-on-review-${idPost}`}
-//         className={`all-comments-on-review-${idPost}`}
-//       >
-//         {showComments.map((showCommentsAll) => (
-//           <div className="self-comment-on">
-//             <div className="content-conf-review-write">
-//               <img
-//                 className="user-image"
-//                 src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-//                 alt="user-photo"
-//               />
-//             </div>
-//             <div>
-//               <div
-//                 className="user-insert"
-//                 onClick={() =>
-//                   handleProfileInside(showCommentsAll.userID)
-//                 }
-//               >
-//                 {showCommentsAll.userName}
-//               </div>
-//               <div className="comment-view">{showCommentsAll.critic}</div>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//       <div
-//         id={`read-more-comments-${idPost}`}
-//         className="read-more-comments"
-//         onClick={showAllCommentsPublication}
-//       >
-//         Ver mais comentários
-//       </div>
-//     </>
-//   ) : (
-//     <>
-//       <div className="self-comment-on">
-//         <div className="content-conf-review-write">
-//           <img
-//             className="user-image"
-//             src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-//             alt="user-photo"
-//           />
-//         </div>
-//         <div>
-//           <div
-//             className="user-insert"
-//             onClick={() => handleProfileInside(showComments[0]?.userID)}
-//           >
-//             {showComments[0]?.userName}
-//           </div>
-//           <div className="comment-view">{showComments[0]?.critic}</div>
-//         </div>
-//       </div>
-//     </>
-//   )}
-// </div>
