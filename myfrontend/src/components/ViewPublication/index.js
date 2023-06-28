@@ -162,6 +162,25 @@ const ViewPublication = ({
       const formattedTime = providedDate.toLocaleTimeString();
       datePublication = `- ${formattedDate} às ${hourRt}:${time[3] + time[4]}`
     }
+
+    let verifyTimer = datePublication.slice(-5)
+    verifyTimer = parseInt(verifyTimer);
+
+    let verifyTimerMin = datePublication.slice(-2)
+    verifyTimerMin = parseInt(verifyTimerMin);
+
+
+    if (verifyTimer < 0) {
+      verifyTimer += 24;
+      datePublication = datePublication.substring(0, 10)
+      if (verifyTimerMin === 0) {
+        datePublication = `${datePublication} ${verifyTimer}`
+      } else {
+        datePublication = `${datePublication} ${verifyTimer}:${verifyTimerMin}`
+      }
+
+    }
+
     return datePublication
   }
 
@@ -412,14 +431,14 @@ const ViewPublication = ({
     api.post(`/comentarios/${idPost}/`, commentText, { headers })
       .then(response => {
         console.log('Resposta:', response.data);
+        setTimeout(function () {
+          window.location.reload();
+        }, 100);
       })
       .catch(error => {
         console.error('Erro:', error);
       });
 
-    setTimeout(function () {
-      window.location.reload();
-    }, 100);
 
   };
 

@@ -56,10 +56,10 @@ const UserGet = ({ idUSerComment, dateUserComment, userID, comment }) => {
       datePublication = `- ${formattedDate} às ${hourRt}:${time[3] + time[4]}`
     }
 
-    let verifyTimer = datePublication.substring(10)
+    let verifyTimer = datePublication.slice(-5)
     verifyTimer = parseInt(verifyTimer);
 
-    let verifyTimerMin = datePublication.substring(13, 15)
+    let verifyTimerMin = datePublication.slice(-2)
     verifyTimerMin = parseInt(verifyTimerMin);
 
     if (verifyTimer < 0) {
@@ -72,7 +72,6 @@ const UserGet = ({ idUSerComment, dateUserComment, userID, comment }) => {
       }
 
     }
-
 
     return datePublication
   }
