@@ -3,14 +3,30 @@ import './styles.css';
 
 import { FaSearch } from 'react-icons/fa';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 import logo from '../../assets/logotype.png'
 
+import { MdNotifications } from 'react-icons/md';
+
+import axios from "axios";
+
+import FragmentDetailsNotification from "../FragmentDetailsNotification";
+
+import api from '../../api';
+
 const HeaderDesktop = () => {
     const navigate = useNavigate();
-    const [searchType, setSearchType] = useState("movies");
+    const location = useLocation();
 
+    const [searchType, setSearchType] = useState("movies");
+    const [notifications, setNotifications] = useState([]);
+
+    const [notReadNotifications, setNotReadNotifications] = useState([]);
+    const [notReadNotificationsNumber, setNotReadNotificationsNumber] = useState([]);
+
+    let id = localStorage.getItem("idUser");
+    id = id.substring(1, id.length - 1);
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -23,6 +39,51 @@ const HeaderDesktop = () => {
             navigate(`/search?query=${query}`);
         }
     }
+
+    let galop = document.getElementById('content-notification');
+    let button = document.getElementById('more-notify');
+
+    if (galop) {
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0)'
+        galop.style.display = 'none'
+    }
+
+    async function notificationNow() {     
+        let galop = document.getElementById('content-notification');
+        let button = document.getElementById('more-notify');
+
+        button.style.display = 'block';
+        galop.style.backgroundColor = 'rgba(255, 255, 255, 0.89)'
+        if (galop.style.display === "block") {
+            galop.style.display = 'none';
+        }
+        else if (galop.style.display === "none") {
+            galop.style.display = 'block';
+        }
+
+        try {
+            await api.post('/notificacoes/mark_as_read/')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        api.get('/notificacoes/')
+            .then(response => {
+                setNotifications(response.data.results);
+
+                const unreadNotifications = response.data.results.filter((notification) => notification.is_read == false);
+
+                setNotReadNotifications(unreadNotifications);
+
+                if (response.data.results.length > 0)
+                    setNotReadNotificationsNumber(response.data.results[0].not_read_count);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
 
     useEffect(() => {
         const addEventListeners = () => {
@@ -164,6 +225,39 @@ const HeaderDesktop = () => {
                             </label>
                         </div>
                     </form>
+                    <div className="ntf-cation" onClick={notificationNow}>
+                        <MdNotifications className="notification" />
+                        {notReadNotificationsNumber != 0 && notReadNotificationsNumber > 10 && (<div className="ntf-number">10+</div>)}
+                        {notReadNotificationsNumber != 0 && notReadNotificationsNumber <= 10 && (<div className="ntf-number">{notReadNotificationsNumber}</div>)}
+                    </div>
+                    {notifications.length > 0 ? (
+                        <div id="content-notification" className="content-notification">
+                            {notifications.map((notification) => (
+                                <div key={notification.idPost} className="nofitify-content-inside">
+                                    <FragmentDetailsNotification
+                                        publication_id={notification.publication}
+                                        user_id={notification.sender}
+                                        message={notification.message}
+                                        notification_type={notification.notification_type}
+                                        mark_as_read={notification.is_read}
+                                    />
+                                </div>
+                            ))}
+                            <Link
+                                to={`/notifications/${id}`}
+                                state={{
+                                    prevPath: location.pathname
+                                }}
+                                style={{ textDecoration: "none", color: "#000" }}
+                            >
+                                <div id="more-notify" className="more-notify"><p>Ver mais</p></div>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div id="content-notification" className="content-notification">
+                            <div id="more-notify" className="more-notify no-notification"><p>Não há notificações!</p></div>
+                        </div>
+                    )}
                 </div>
             </header>
         </>

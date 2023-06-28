@@ -15,6 +15,31 @@ api.interceptors.request.use(
     access = access.substring(1, access.length - 1)
     refresh = refresh.substring(1, refresh.length - 1)
 
+    let id = localStorage.getItem('idUser');
+    id = id.substring(1, id.length - 1)
+
+    if (access) {
+      const headers = {
+        ...config.headers,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access}`,
+      };
+
+      config.headers = headers;
+    }
+
+    if (config.url.endsWith('/publicacoes/') || (config.url.endsWith(`/usuarios/${id}/`) && config.method === 'patch')) {
+      const headers = {
+        ...config.headers,
+        'Content-Type': 'multipart/form-data',
+      };
+
+      config.headers = headers;
+      console.log("paodoce123")
+    }
+
+    console.log("paodoce")
+
     const headers = {
       'Content-Type': 'application/json',
     };

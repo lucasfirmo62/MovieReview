@@ -1,0 +1,261 @@
+.publication-content-modal {
+    width: 100%;
+    background-color: #272727;
+    border-radius: 5px;
+    margin-top: 12px;
+}
+
+.publication-content-modal .publication-text-content {
+    display: flex;
+}
+
+.publication-content-modal .publication-text-content textarea {
+    height: 20px;
+    resize: none;
+    border: none;
+}
+
+.publication-content-modal .content-conf-review-write {
+    display: block;
+}
+
+.publication-content-modal .button-movie-search {
+    background: #9d9097;
+}
+
+.publication-content-modal .button-add-movie {
+    background-color: rgba(0, 0, 0, 0);
+    transition: 0.2s;
+}
+
+.publication-content-modal .button-add-movie:hover {
+    background-color: rgba(110, 110, 110, 0.527);
+    transition: 0.2s;
+}
+
+.publication-content-modal .publication-movie-content {
+    width: 100%;
+}
+
+.publication-content-modal .content-add-movie {
+    display: flex;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 10px;
+}
+
+.publication-content-modal .content-reloaded {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.publication-content-modal .plus-icon {
+    font-size: 20px;
+    margin-bottom: -5px;
+    padding-right: 10px;
+}
+
+.publication-content-modal .info-movie-holt {
+    margin-left: 8px;
+}
+
+.publication-content-modal .movie-options-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.publication-content-modal .movie-options {
+    position: absolute;
+    z-index: 10000;
+    background-color: #f9f9f9;
+    overflow: auto;
+    background-color: #494949;
+    color: rgb(255, 255, 255);
+    border-radius: 0 0 8px 8px;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.publication-content-modal .movie-option {
+    padding: 4px;
+}
+
+.publication-content-modal .movie-option:hover {
+    background-color: #6e6e6e;
+    cursor: pointer;
+}
+
+.publication-content-modal .input-search-movie-selected {
+    background-color: #6e6e6e;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+.publication-content-modal .loading-icon {
+    position: absolute;
+    top: 30%;
+    right: 18%;
+    color: #f808d4;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+}
+
+
+.publication-content-modal .image-container {
+    position: relative;
+}
+
+
+.publication-content-modal .movie-poster {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.publication-content-modal .image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.publication-content-modal .image-container:hover .delete-button {
+    display: block;
+}
+
+.publication-content-modal .selected-movie {
+    position: relative;
+}
+
+.publication-content-modal .selected-movie img {
+    border-radius: 8px;
+}
+
+.publication-content-modal select {
+    padding: 5px;
+    border-radius: 16px;
+}
+
+.publication-content-modal .post-review-conf {
+    padding-top: 8px;
+    width: 80%;
+    margin: auto;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.publication-content-modal .post-review-conf p {
+    font-size: 14px;
+}
+
+.publication-content-modal .post-review-conf #review {
+    margin: 8px;
+    max-width: 148px;
+}
+
+.publication-content-modal .align-post-review-modal button {
+    background-color: #D30069;
+    border: none;
+    transition: 0.2s;
+}
+
+.publication-content-modal .align-post-review-modal button:hover {
+    background-color: #ff0381;
+    border: none;
+    transition: 0.2s;
+}
+
+.publication-content-modal .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.publication-content-modal .loading-indicator {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #ff0381;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+}
+
+.publication-content-modal #button-handleSubmit {
+    padding: 8px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.publication-content-modal #button-handleSubmit:hover {
+    background-color: #ff0381;
+}
+
+.publication-content-modal .confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+@media only screen and (max-width: 768px) {
+    .publication-content-modal {
+        width: 100%;
+        display: flex;
+        padding: 0px;
+        padding-bottom: 16px;
+        flex-direction: column;
+    }
+
+    .publication-content-modal .publication-text-content {
+        padding: 5px;
+        display: flex;
+    }
+
+    .publication-content-modal .content-post-review {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .publication-content-modal .align-post-review-modal {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .publication-content-modal .input-search-movie {
+        font-size: 14px;
+    }
+
+    .publication-content-modal textarea {
+        font-size: 17px;
+        height: auto;
+    }
+}

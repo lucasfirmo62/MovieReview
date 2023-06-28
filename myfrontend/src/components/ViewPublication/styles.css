@@ -34,6 +34,10 @@
     background: #9d9097;
 }
 
+.interactive-into h1 {
+    font-size: 14px;
+}
+
 .button-cancel {
     display: none;
     font-weight: bold;
@@ -155,7 +159,8 @@
 }
 
 .review-full{
-    word-break: break-all;
+    text-align: justify;
+    word-break: break-word;
 }
 
 .movie-options {
@@ -182,6 +187,10 @@
 
 .input-search-movie-selected {
     background-color: #6e6e6e;
+}
+
+.like-button{
+    font-size: 20px;
 }
 
 @keyframes spin {
@@ -361,6 +370,26 @@ select {
     transition: 0.2s;
 }
 
+.user-insert-comment{
+    padding-left: 5px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    display:flex;
+}
+
+.user-insert-comment:hover{
+    color: #ff0381;
+    transition: 0.2s;
+}
+
+.date-release{
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.562);
+    margin-top: 3px;
+    margin-left: 5px;
+}
+
 .date-release{
     font-size: 13px;
     color: rgba(255, 255, 255, 0.562);
@@ -432,6 +461,100 @@ div .no-star{
     transition: 0.1s;
 }
 
+.zone-interactive-publication{
+    display: flex;
+    padding-bottom: 10px;
+}
+
+.interactive-into{
+    width: 50%;
+    text-align-last: center;
+    padding: 10px;
+    transition: 0.2s;
+    border-radius: 6px;
+    background-color: #00000000;
+}
+
+.interactive-into:hover{
+    transition: 0.2s;
+    background-color: rgba(110, 110, 110, 0.527);
+    cursor: pointer;
+}
+
+.interactive-into-likes{
+    width: 50%;
+    display: flex;
+}
+
+.comment-send-button{
+    background-color: #00000000;
+}
+
+.zone-interactive-publication-options{
+    display: flex;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 10px;
+}
+
+.comment-send{
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.comment-send-button{
+    padding: 5px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.comment-send-button:hover{
+    background-color: rgba(110, 110, 110, 0.527);
+    transition: 0.2s;
+}
+
+.comment-send-button-press{
+    transition: 0.2s;
+    background-color: #ff0381b5;
+}
+
+.comment-send-button-press:hover{
+    transition: 0.2s;
+    background-color: #ff1c8db5;
+}
+
+.self-comment-on{
+    display: flex;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: solid 1px rgba(255, 255, 255, 0.034);
+    border-radius: 8px;
+}
+
+.self-comment-on:hover{
+    border: solid 1px rgba(255, 255, 255, 0.068);
+}
+
+.read-more-comments{
+    padding: 5px;
+}
+
+.read-more-comments:hover{
+    width: auto;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.comment-view{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -470,6 +593,21 @@ div .no-star{
         padding: 3px;
         transition: 0.2s;
         cursor: pointer;
+    }
+    .comment-view{
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+    .self-comment-on{
+        display: flex;
+        padding-left: 35px;
+        padding-right: 35px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border: solid 1px rgba(255, 255, 255, 0.034);
+        border-radius: 8px;
     }
 }
 

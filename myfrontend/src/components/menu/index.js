@@ -20,22 +20,15 @@ const Menu = () => {
     }
 
     const handleLogout = () => {
-        let access = localStorage.getItem("tokenUser")
         let refresh = localStorage.getItem("refreshTokenUser")
 
-        access = access.substring(1, access.length - 1);
         refresh = refresh.substring(1, refresh.length - 1);
 
-        const headers = {
-            'Authorization': 'Bearer ' + access,
-            'Content-Type': 'application/json'
-        }
-        
         const body = {
             "refresh": refresh
         }
 
-        api.post("/logout/", body, { headers })
+        api.post("/logout/", body)
             .then((res) => {
                 localStorage.setItem("tokenUser", "")
                 localStorage.setItem("refreshTokenUser", "")

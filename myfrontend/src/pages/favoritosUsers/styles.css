@@ -1,0 +1,7 @@
+.favorite-pagination .pagination-content button {
+    color: #fff;
+}
+
+.favorite-pagination .pagination-content button:hover {
+    color: #D30069;
+}

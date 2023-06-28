@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from '../../components/header';
+import HeaderDesktop from "../../components/headerDesktop";
 import Menu from '../../components/menu';
 
 import styles from './styles.css';
@@ -7,61 +8,105 @@ import styles from './styles.css';
 import api from "../../api";
 
 import { Link } from "react-router-dom";
+import { MdArrowBack } from "react-icons/md";
+import { FaTimes, FaStar } from 'react-icons/fa';
 
 const Favoritos = () => {
   var [favoriteList, setFavoriteList] = useState([]);
 
   useEffect(() => {
     async function getMovies() {
-      let id = localStorage.getItem('idUser')
-      let token = localStorage.getItem('tokenUser')
+      const response = await api.get('/favoritos/')
 
-      id = id.substring(1, id.length - 1)
-      token = token.substring(1, token.length - 1)
 
-      const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+      const favoriteMovies = response.data.map(movie => ({
+        ...movie,
+        favorito: true
+      }));
 
-      const response = await api.get('/favoritos/', { headers })
-
-      await setFavoriteList(response.data)
+      await setFavoriteList(favoriteMovies);
     }
     getMovies()
   }, [])
 
-  async function clickDesfavoritar(index) {
-    let id = localStorage.getItem('idUser');
-    let token = localStorage.getItem('tokenUser');
-
-    id = id.substring(1, id.length - 1);
-    token = token.substring(1, token.length - 1);
-
-    const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
-
+  async function clickDesfavoritar(movieId) {
     try {
-      await api.delete(`/favoritos/${index}/`, { headers });
+      const index = favoriteList.findIndex(movie => movie.movie_id === movieId);
 
-      setFavoriteList(prevList => {
-        const updatedList = [...prevList];
-        updatedList.splice(index, 1);
-        return updatedList;
-      });
+      if (index !== -1) {
+        setFavoriteList(prevList => {
+          const updatedList = [...prevList];
+          updatedList[index].favorito = false;
+          return updatedList;
+        });
+
+        await api.delete(`/favoritos/${movieId}/`);
+      }
     } catch (error) {
       console.log('Ocorreu um erro ao remover o favorito:', error);
     }
 
-    window.location.reload();
+  }
+
+  async function clickFavoritar(movie) {
+    let id = movie.movie_id
+    const data = {
+      "user_id": localStorage.getItem('idUser'),
+      "movie_id": movie.movie_id,
+      "poster_img": `https://image.tmdb.org/t/p/w500/${movie.poster_img}`,
+      "movie_title": movie.movie_title
+    }
+
+    let loginItem;
+
+    if (localStorage.getItem('tokenUser')) {
+      loginItem = localStorage.getItem('tokenUser').substring(1, localStorage.getItem('tokenUser').length - 1);
+    }
+
+    const headers = {
+      Authorization: `Bearer ${loginItem}`,
+      "Content-type": "application/json"
+    };
+
+    try {
+      const index = favoriteList.findIndex(movie => movie.movie_id === id);
+
+      await api.post('/favoritos/', data, { headers })
+
+      if (index !== -1) {
+        setFavoriteList(prevList => {
+          const updatedList = [...prevList];
+          updatedList[index].favorito = true;
+          return updatedList;
+        });
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
     <>
-      <Header />
+      {(window.innerWidth > 760) ?
+        <HeaderDesktop />
+        :
+
+        <Header />
+      }
       <div className="content-page">
         <div className="left-content">
           <Menu />
         </div>
         <div className="center-content">
           <div className="title-content">
-            <big className="title-component">Meus Filmes Favoritos</big>
+              <Link
+                className="back-btn"
+                to={'/profile/'}
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
+                <MdArrowBack size={32} className="back-icon" />
+              </Link>
+              <h1 className="title-component">Filmes Favoritos</h1>
           </div>
           <div className="favorite-content">
             {favoriteList.map((movie, index) =>
@@ -73,12 +118,33 @@ const Favoritos = () => {
                     <Link
                       className="movie-favorite-item"
                       to={`/movie/${movie.movie_id}`}
+                      style={{ textDecoration: "none", color: "#fff" }}
                     >
                       <p className="movieTitle">{movie.movie_title}</p>
                     </Link>
                   </div>
                   <div className="button-content">
-                    <button className="favoriteButton" onClick={() => clickDesfavoritar(movie.movie_id)} >Desfavoritar</button>
+                    {movie.favorito ? (
+
+                      <button
+                        className="watchlistButton favoriteStarButton"
+                        onClick={() => clickDesfavoritar(movie.movie_id)}
+                      >
+                        <span className="starIcon">
+                          <FaStar size={16} color="#eecf08" />
+                        </span>
+                      </button>
+                    ) : (
+
+                      <button
+                        className="watchlistButton favoriteStarButton"
+                        onClick={() => clickFavoritar(movie)}
+                      >
+                        <span className="starIcon">
+                          <FaStar size={16} color="#fff" />
+                        </span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
