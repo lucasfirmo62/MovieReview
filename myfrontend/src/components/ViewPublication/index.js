@@ -545,22 +545,13 @@ const ViewPublication = ({
             <div id={`all-comments-on-review-${idPost}`} className={`all-comments-on-review-${idPost}`}>
               {showComments.map((showCommentsAll) => (
                 <div className="self-comment-on">
-                  <div className="content-conf-review-write">
-                    <img
-                      className="user-image"
-                      src="https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"
-                      alt="user-photo"
-                    />
-                  </div>
-                  <div>
                     <UserGet
                       idUSerComment={showCommentsAll.user_id}
                       dateUserComment={showCommentsAll.date}
                       userID={userID}
                       setUser={setUser}
+                      comment={showCommentsAll.comment_text}
                     />
-                    <div className="comment-view">{showCommentsAll.comment_text}</div>
-                  </div>
                 </div>
               ))}
             </div>
