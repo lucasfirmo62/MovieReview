@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from "react";
 import './styles.css';
-
+import { MdNotifications } from 'react-icons/md';
 import { FaSearch } from 'react-icons/fa';
+import { MdArrowBack } from "react-icons/md";
+import axios from "axios";
+import FragmentDetailsNotification from "../FragmentDetailsNotification";
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
-import { Link, useNavigate } from 'react-router-dom';
+import api from "../../api";
 
 import logo from '../../assets/logotype.png'
 
 const Header = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchType, setSearchType] = useState("movies");
+    const [notifications, setNotifications] = useState([]);
+    const [notReadNotifications, setNotReadNotifications] = useState([]);
+    const [notReadNotificationsNumber, setNotReadNotificationsNumber] = useState([]);
 
     const handleSearchIconClick = () => {
         setIsSearchOpen(!isSearchOpen);
     };
 
-    if(window.innerWidth > 660){
+    let id = localStorage.getItem("idUser");
+    id = id.substring(1, id.length - 1);
 
-    }
-    
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -74,9 +82,9 @@ const Header = () => {
         let checkedId = null;
 
         var checkedM = document.getElementById(`moviesL`);
-        checkedM.style.backgroundColor = "rgba(119, 119, 119, 0)";
+        checkedM.style.backgroundColor = "#dedede";
         var checkedU = document.getElementById(`usersL`);
-        checkedU.style.backgroundColor = "rgba(119, 119, 119, 0)";
+        checkedU.style.backgroundColor = "#dedede";
 
         radioButtons.forEach(radioButton => {
             if (radioButton.checked) {
@@ -98,7 +106,7 @@ const Header = () => {
         radioButton.addEventListener('change', handleRadioButtonChange);
     });
 
-    async function selectSearch(){
+    async function selectSearch() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
         setTimeout(function () {
@@ -109,13 +117,56 @@ const Header = () => {
         }, 100);
     }
 
-    async function closeOptions(){
+    async function closeOptions() {
         var filterOptions = document.getElementById('option-conf-search-back');
         filterOptions.style.display = "block";
-        if(filterOptions.style.display === "block"){
+        if (filterOptions.style.display === "block") {
             filterOptions.style.display = 'none';
         }
     }
+
+    var galop = document.getElementById('content-notification');
+    var button = document.getElementById('more-notify');
+    var backButton = document.getElementById('back-notification');
+
+    if (galop && button && backButton) {
+        galop.style.backgroundColor = '#dedede'
+        galop.style.display = 'none'
+        backButton.style.display = 'none'
+    }
+
+    async function notificationNow() {
+        button.style.display = 'block'
+        backButton.style.display = 'block'
+        galop.style.backgroundColor = '#dedede'
+        if (galop.style.display === "block") {
+            galop.style.display = 'none';
+        }
+        else if (galop.style.display === "none") {
+            galop.style.display = 'block';
+        }
+
+        try {
+            await api.post('/notificacoes/mark_as_read/')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        api.get('/notificacoes/')
+            .then(response => {
+                setNotifications(response.data.results);
+
+                const unreadNotifications = response.data.results.filter((notification) => notification.is_read == false);
+
+                setNotReadNotifications(unreadNotifications);
+                setNotReadNotificationsNumber(unreadNotifications.length);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }, []);
 
     return (
         <>
@@ -176,6 +227,35 @@ const Header = () => {
                             </>
                         )}
                     </form>
+                    {notifications.length > 0 && (<div className="ntf-cation-mobile" onClick={notificationNow}>
+                        <MdNotifications className="notification-mobile" />
+                        {notReadNotificationsNumber != 0 && (<div className="ntf-number">{notReadNotificationsNumber}</div>)}
+                    </div>)}
+                    {notifications.length > 0 ? (
+                    <div id="content-notification" className="content-notification-mobile">
+                        <MdArrowBack id="back-notification" className="back-notification" onClick={notificationNow} />
+                        {notifications.map((notification) => (
+                            <div key={notification.idPost} className="nofitify-content-inside-mobile">
+                                 <FragmentDetailsNotification
+                                    publication_id={notification.publication}
+                                    user_id={notification.sender}
+                                    message={notification.message}
+                                    notification_type={notification.notification_type}
+                                    mark_as_read={notification.is_read}
+                                />
+                            </div>
+                        ))}
+                         <Link
+                            to={`/notifications/${id}`}
+                            state={{
+                                prevPath: location.pathname
+                            }}
+                            style={{ textDecoration: "none", color: "#000" }}
+                        >
+                            <div id="more-notify" className="more-notify-mobile"><p>Ver mais</p></div>
+                        </Link>
+                    </div>)
+                    : true}
                 </div>
             </header>
         </>

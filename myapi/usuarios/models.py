@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from datetime import date
 from django.utils import timezone
 
+from django.utils import timezone
+
 REVIEWS = [
     (1,'1 - Horrível'),
     (2,'2 - Ruim'),
@@ -48,6 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     birth_date = models.DateField('Birth date', validators=[validate_birth_date])
     email = models.EmailField(max_length=100, unique=True)
     super_reviewer = models.BooleanField(default=False)
+    profile_image = models.URLField(blank=True)
     
     USERNAME_FIELD = 'email'
     
@@ -125,6 +128,9 @@ class Comment(models.Model):
 class WatchList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     movie_id = models.CharField(max_length=300)
+    poster_img = models.URLField(blank=False, default='')
+    movie_title = models.CharField(max_length=200, blank=False, default='')
+    date = models.DateTimeField(default=timezone.now)
 
 class FavoritesList(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -132,3 +138,15 @@ class FavoritesList(models.Model):
     poster_img = models.URLField(blank=False, default='')
     movie_title = models.CharField(max_length=200, blank=False, default='')
     date = models.DateTimeField(default=timezone.now)
+    
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_notifications')
+    publication = models.ForeignKey('usuarios.Publication', on_delete=models.CASCADE, null=True, blank=True)
+    notification_type = models.CharField(max_length=20)  # Exemplo: 'like', 'comment'
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    message = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f'{self.sender.username} - {self.notification_type}'

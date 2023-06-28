@@ -34,6 +34,10 @@
     background: #9d9097;
 }
 
+.interactive-into h1 {
+    font-size: 14px;
+}
+
 .button-cancel {
     display: none;
     font-weight: bold;
@@ -155,7 +159,8 @@
 }
 
 .review-full{
-    word-break: break-all;
+    text-align: justify;
+    word-break: break-word;
 }
 
 .movie-options {
@@ -363,6 +368,26 @@ select {
 .user-insert:hover{
     color: #ff0381;
     transition: 0.2s;
+}
+
+.user-insert-comment{
+    padding-left: 5px;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    display:flex;
+}
+
+.user-insert-comment:hover{
+    color: #ff0381;
+    transition: 0.2s;
+}
+
+.date-release{
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.562);
+    margin-top: 3px;
+    margin-left: 5px;
 }
 
 .date-release{

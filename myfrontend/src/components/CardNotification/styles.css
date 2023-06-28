@@ -1,0 +1,17 @@
+.card-notification-content {
+    height: 60px;
+    width: 80%;
+    margin: auto;
+    cursor: pointer;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-notification-content:hover {
+    background-color: #4b4949;
+}
+
+.card-notification-content p {
+    color: #fff;
+}
