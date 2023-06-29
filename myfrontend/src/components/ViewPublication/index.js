@@ -6,6 +6,7 @@ import { IoMdSend } from "react-icons/io";
 import { AiTwotoneLike, AiTwotoneDislike } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import UserGet from "../UserGet"
+import userImage from '../../assets/user-default.png';
 
 import api from "../../api";
 
@@ -18,6 +19,7 @@ const ViewPublication = ({
   image,
   date,
   myPub,
+  toggleComment,
 }) => {
 
   const [movie, setMovie] = useState([]);
@@ -35,6 +37,8 @@ const ViewPublication = ({
   const [showComments, setShowComments] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [commentVerify, setCommentVerify] = useState('');
+
+  const [showCommentPost, setShowCommentPost] = useState(false);
 
   let loginItem;
 
@@ -248,9 +252,9 @@ const ViewPublication = ({
     }
   }
 
-  if (showPost) {
-    showPost.style.display = "none";
-  }
+  // if (showPost) {
+  //   showPost.style.display = "none";
+  // }
 
   if (commentPub) {
     commentPub.style.width = "96%";
@@ -285,9 +289,9 @@ const ViewPublication = ({
     navigate(`/user/${userID}`);
   }
 
-  async function showCommentPost() {
-    showPost.style.display = "block";
-  }
+  // async function showCommentPost() {
+  //   showPost.style.display = "block";
+  // }
 
   async function cancelCommentPost() {
     showPost.style.display = "none";
@@ -431,14 +435,12 @@ const ViewPublication = ({
     api.post(`/comentarios/${idPost}/`, commentText, { headers })
       .then(response => {
         console.log('Resposta:', response.data);
-        setTimeout(function () {
-          window.location.reload();
-        }, 100);
+        window.location.reload();
+
       })
       .catch(error => {
         console.error('Erro:', error);
       });
-
 
   };
 
@@ -488,6 +490,16 @@ const ViewPublication = ({
     }
   };
 
+  useEffect(() => {
+    const showPost = document.getElementById(`post-comment-${idPost}`);
+
+    if(showCommentPost) {
+      showPost.style.display = "block";
+    } else {
+      showPost.style.display = "none";
+    }
+  }, [showCommentPost])
+
   return (
     <>
       <div className="publication-content">
@@ -495,7 +507,7 @@ const ViewPublication = ({
           <div className="content-conf-review-write">
             <img
               className="user-image"
-              src={user.profile_image ? user.profile_image : "https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"}
+              src={user.profile_image ? user.profile_image : userImage}
               alt="user-photo"
               style={{ objectFit: "cover" }}
             />
@@ -548,7 +560,7 @@ const ViewPublication = ({
               <h1>{deslikeNum}</h1>
             </div>
           </div>
-          <div className="interactive-into" onClick={showCommentPost}>
+          <div className="interactive-into" onClick={() => setShowCommentPost(!showCommentPost)}>
             Comentar
           </div>
         </div>
@@ -564,13 +576,13 @@ const ViewPublication = ({
             <div id={`all-comments-on-review-${idPost}`} className={`all-comments-on-review-${idPost}`}>
               {showComments.map((showCommentsAll) => (
                 <div className="self-comment-on">
-                    <UserGet
-                      idUSerComment={showCommentsAll.user_id}
-                      dateUserComment={showCommentsAll.date}
-                      userID={userID}
-                      setUser={setUser}
-                      comment={showCommentsAll.comment_text}
-                    />
+                  <UserGet
+                    idUSerComment={showCommentsAll.user_id}
+                    dateUserComment={showCommentsAll.date}
+                    userID={userID}
+                    setUser={setUser}
+                    comment={showCommentsAll.comment_text}
+                  />
                 </div>
               ))}
             </div>

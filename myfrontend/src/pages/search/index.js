@@ -17,7 +17,7 @@ import posternotfound from "../../assets/posternotfound.png";
 
 import api from "../../api";
 
-import userImage from '../../assets/user-default.jpg';
+import userImage from '../../assets/user-default.png';
 
 const Search = () => {
   const [showImage, setShowImage] = useState(false);
