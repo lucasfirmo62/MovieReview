@@ -12,6 +12,8 @@ import { FaCheck } from 'react-icons/fa';
 import StarRating from "../StarRating";
 
 import { debounce } from 'lodash';
+import userImage from '../../assets/user-default.png';
+
 
 const Publication = () => {
 
@@ -215,7 +217,7 @@ const Publication = () => {
                     <div className="content-conf-review-write">
                         {user && (<img
                             className="user-image"
-                            src={user.profile_image ? user.profile_image : "https://ibaseminario.com.br/novo/wp-content/uploads/2013/09/default-avatar.png"}
+                            src={user.profile_image ? user.profile_image : userImage}
                             alt="user-photo"
                             style={{ objectFit: "cover" }}
                         />)}
