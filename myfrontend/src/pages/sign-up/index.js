@@ -104,52 +104,57 @@ const SignUp = () => {
         document.getElementById("alert-password").style.display = "none"
         document.getElementById("alert-email").style.display = "none"
 
+        let errors = [];
 
         if (full_name === "") {
-            alert("Por favor, preencha todos os campos obrigatórios.");
-            document.getElementById("alert-name").innerHTML = "Preencha este campo com seu nome completo"
+            errors.push("Preencha este campo com seu nome completo");
+            document.getElementById("alert-name").innerHTML = "Preencha seu nome completo"
             document.getElementById("alert-name").style.display = "block"
-            return;
         }
         if (nickname === "") {
-            alert("Por favor, preencha todos os campos obrigatórios.");
-            document.getElementById("alert-username").innerHTML = "Preencha este campo com um nome de usuário"
+            errors.push("Preencha este campo com um nome de usuário");
+            document.getElementById("alert-username").innerHTML = "Preencha seu nome de usuário"
             document.getElementById("alert-username").style.display = "block"
-            return;
         }
         if (birth_date === "") {
-            alert("Por favor, preencha todos os campos obrigatórios.");
-            document.getElementById("alert-date").innerHTML = "Preencha com sua data de nascimento"
+            errors.push("Preencha sua data de nascimento");
+            document.getElementById("alert-date").innerHTML = "Preencha sua data de nascimento"
             document.getElementById("alert-date").style.display = "block"
-            return;
         }
         if (password === "" || firstPassword === "") {
-            alert("Por favor, preencha todos os campos obrigatórios.");
+            errors.push("Senhas não coincidem");
             document.getElementById("alert-password").innerHTML = "Senhas não coincidem"
             document.getElementById("alert-password").style.display = "block"
-            return;
         }
-        if (password != firstPassword) {
+        if (password !== firstPassword) {
+            errors.push("Senhas não coincidem");
             document.getElementById("alert-password").innerHTML = "Senhas não coincidem"
             document.getElementById("alert-password").style.display = "block"
-            return;
         }
-
-        if(validateEmail(email) === false){
-
+        if (validateEmail(email) === false) {
+            errors.push("Digite um email válido");
             document.getElementById("alert-email").innerHTML = "Digite um email válido"
             document.getElementById("alert-email").style.display = "block"
-            return;
         }
-
-
         if (full_name.length > 60 || nickname.length > 60 || email.length > 60 || password.length > 60) {
-            alert("Alguns campos excederam o limite máximo de caracteres (60).");
-            return;
+            errors.push("Alguns campos excederam o limite máximo de caracteres (60).");
+        }
+        if (password.length < 7) {
+            errors.push("A senha deve ter no mínimo 7 caracteres.");
         }
 
-        if (password.length < 7) {
-            alert("A senha deve ter no mínimo 7 caracteres.");
+        const currentDate = new Date();
+        const selectedDate = new Date(birth_date);
+
+        if (selectedDate > currentDate) {
+            errors.push("A data de nascimento não pode ser maior que a data atual.");
+            document.getElementById("alert-date").innerHTML = "Preencha uma data válida"
+            document.getElementById("alert-date").style.display = "block"
+        }
+
+        if (errors.length > 0) {
+            const errorMessage = errors.join("\n");
+            alert(errorMessage);
             return;
         }
 
@@ -164,7 +169,6 @@ const SignUp = () => {
         };
 
         try {
-
             await api.post('/usuarios/', data);
 
             navigate('/login');
