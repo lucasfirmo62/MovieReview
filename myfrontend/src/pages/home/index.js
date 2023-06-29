@@ -75,7 +75,7 @@ const Home = () => {
 
     var idUser = localStorage.getItem('idUser');
 
-    console.log(publications)
+    console.log("aqui", publications)
 
     return (
         <>
@@ -100,8 +100,9 @@ const Home = () => {
                 <div className="content-box-home">
                     <Publication />
                     <TrendingCarousel />
-                    {publications.map((publication) => (
+                    {publications.length > 0 && (publications.map((publication, index) => (
                         <ViewPublication
+                            key={index}
                             userID={publication.user_id}
                             idPost={publication?.id}
                             idMovie={publication.movie_id}
@@ -112,7 +113,7 @@ const Home = () => {
                             myPub={(publication.user_id === parseInt(idUser)) ? true : false}
                             id={publication.id}
                         />
-                    ))}
+                    )))}
                 </div>
 
                 <div className="home-right-content">

@@ -229,8 +229,9 @@ const User = () => {
                             <p className={'tab-profile'}>Assistir no futuro</p>
                         </Link>
                     </div>
-                    {publications.map((publication) => (
+                    {publications.length > 0 && (publications.map((publication, index) => (
                         <ViewPublication
+                            key={index}
                             userID={publication.user_id}
                             idPost={publication?.id}
                             idMovie={publication.movie_id}
@@ -241,7 +242,7 @@ const User = () => {
                             myPub={(publication.user_id === parseInt(idMyUser)) ? true : false}
                             id={publication.id}
                         />
-                    ))}
+                    )))}
                 </div>
                 <div className="right-content">
 
