@@ -477,15 +477,18 @@ const ViewPublication = ({
 
   const handleButtonClick = () => {
     setIsLoading(true);
-    if (readMoreComment.innerHTML === "Ver comentários") {
-      readMoreComment.innerHTML = "Ocultar comentários"
-    }
-    if (commentAllPub) {
-      if (commentAllPub.style.display === 'none') {
-        commentAllPub.style.display = 'block'
-      } else {
-        readMoreComment.innerHTML = "Ver comentários"
-        commentAllPub.style.display = 'none'
+    if(readMoreComment)
+    {
+      if (readMoreComment.innerHTML === "Ver comentários") {
+        readMoreComment.innerHTML = "Ocultar comentários"
+      }
+      if (commentAllPub) {
+        if (commentAllPub.style.display === 'none') {
+          commentAllPub.style.display = 'block'
+        } else {
+          readMoreComment.innerHTML = "Ver comentários"
+          commentAllPub.style.display = 'none'
+        }
       }
     }
   };
